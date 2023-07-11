@@ -1,7 +1,7 @@
 package alticshaw.com.coszastore.services;
 
 import alticshaw.com.coszastore.entity.UserEntity;
-import alticshaw.com.coszastore.payload.request.AuthRequest;
+import alticshaw.com.coszastore.payload.request.SignUpRequest;
 import alticshaw.com.coszastore.repository.UserRepository;
 import alticshaw.com.coszastore.services.imp.AuthServiceImp;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,7 @@ public class AuthService implements AuthServiceImp {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Override
-    public UserEntity addUser(AuthRequest request) {
+    public UserEntity addUser(SignUpRequest request) {
         UserEntity user = new UserEntity();
         try {
             user.setUsername(request.getUsername());
