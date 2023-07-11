@@ -1,5 +1,8 @@
 package alticshaw.com.coszastore.payload.response;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class BaseResponse {
     private int statusCode;
     private String message;
@@ -29,7 +32,8 @@ public class BaseResponse {
         this.data = data;
     }
 
-    public BaseResponse() {}
+    public BaseResponse() {
+    }
 
     public BaseResponse(int statusCode, String message, Object data) {
         this.statusCode = statusCode;

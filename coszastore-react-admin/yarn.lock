@@ -5790,7 +5790,7 @@ fsevents@^1.2.7:
     bindings "^1.5.0"
     nan "^2.12.1"
 
-fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.2:
+fsevents@^2.1.2, fsevents@^2.1.3, fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
@@ -10468,6 +10468,13 @@ react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-jwt@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-jwt/-/react-jwt-1.2.0.tgz#985c507dbbc0980606719a0d78c2a164282d0569"
+  integrity sha512-HmEaS63CaqxHPIWoLh68KpGacXX7tAiWS2YIREVDosc2m4hTYoMp23Oz1lRM3MivT8DGibwTFIg5k4HNLfMv1w==
+  optionalDependencies:
+    fsevents "^2.3.2"
 
 react-refresh@^0.8.3:
   version "0.8.3"
