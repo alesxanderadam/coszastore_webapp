@@ -4,6 +4,7 @@ import alticshaw.com.coszastore.entity.UserEntity;
 import alticshaw.com.coszastore.payload.request.AuthRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.MessageResponse;
+import alticshaw.com.coszastore.repository.UserRepository;
 import alticshaw.com.coszastore.services.imp.AuthServiceImp;
 import alticshaw.com.coszastore.utils.JwtHelper;
 import org.springframework.http.HttpStatus;
@@ -31,13 +32,15 @@ public class AuthController {
 
     @Resource
     private MessageResponse messageResponse = new MessageResponse();
+
     @Resource
     private AuthServiceImp authServiceImp;
+
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password){
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
             authenticationManager.authenticate(token);
-            String jwt = jwtHelper.generateToken("Tui là subject token khi login thành công nè");
+            String jwt = jwtHelper.generateToken(email);
             baseResponse.setStatusCode(200);
             baseResponse.setData(jwt);
             baseResponse.setMessage(messageResponse.success());
