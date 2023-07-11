@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class AuthController {
 
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest request){
+        try{
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
             authenticationManager.authenticate(token);
             String jwt = jwtHelper.generateToken(request.getEmail());
@@ -50,6 +52,12 @@ public class AuthController {
             baseResponse.setData(jwt);
             baseResponse.setMessage(messageResponse.success());
             return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        }catch (AuthenticationException e){
+            baseResponse.setStatusCode(401);
+            baseResponse.setMessage("Invalid email or password");
+            return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     @PostMapping("/signUp")
