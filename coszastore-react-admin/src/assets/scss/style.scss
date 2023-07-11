@@ -1,0 +1,16 @@
+.table-action-button {
+    font-weight: 600;
+    font-size: 12px;
+    height: 36px;
+    padding: 0px 12px 1px 14px;
+    line-height: 14px;
+}
+
+.ant-table-cell-fix-left-last,
+.ant-table-cell-fix-right-first {
+    background-color: #ffff !important;
+}
+
+.ant-table-cell-fix-right-first {
+    text-align: center !important;
+}
