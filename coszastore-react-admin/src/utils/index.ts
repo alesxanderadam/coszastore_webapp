@@ -1,5 +1,4 @@
 import $const from './constants';
-import $config from './config';
 import $datetime from './datetime';
 import $number from './number';
 import $tree from './tree';
@@ -34,7 +33,6 @@ export function converVietNamese(str = '') {
 }
 
 const utils = {
-    $config,
     $const,
     $datetime,
     $number,

@@ -22,13 +22,16 @@ import {
     Input,
     Switch,
 } from "antd";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../../assets/images/img-signin.jpg";
 import {
     DribbbleOutlined,
     TwitterOutlined,
     InstagramOutlined,
     GithubOutlined,
 } from "@ant-design/icons";
+import services from "apis";
+import { SignInModel } from "models/auth.model";
+import { ACCESS_TOKEN, settings } from "utils/config";
 function onChange(checked) {
     console.log(`switch to ${checked}`);
 }
@@ -116,8 +119,8 @@ const signin = [
 ];
 export default class SignIn extends Component {
     render() {
-        const onFinish = (values) => {
-            console.log("Success:", values);
+        const onFinish = (values: SignInModel) => {
+            services.authApi.signIn(values).then((res: any) => settings.setStorage(ACCESS_TOKEN, res.data));
         };
 
         const onFinishFailed = (errorInfo) => {
