@@ -66,3 +66,6 @@
 2023-07-12 13:20:59,055 INFO org.apache.juli.logging.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
 2023-07-12 13:20:59,084 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path ''
 2023-07-12 13:20:59,101 INFO org.springframework.boot.StartupInfoLogger [main] Started CoszastoreApplication in 5.109 seconds (JVM running for 6.134)
+2023-07-12 13:24:41,485 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:24:41,489 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-07-12 13:24:41,517 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
