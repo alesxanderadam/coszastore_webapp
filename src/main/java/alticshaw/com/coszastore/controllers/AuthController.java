@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-@CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
