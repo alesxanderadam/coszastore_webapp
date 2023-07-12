@@ -31,3 +31,126 @@
 2023-07-11 15:50:24,100 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
 2023-07-11 15:50:24,105 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
 2023-07-11 15:50:24,130 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
+2023-07-12 13:26:50,356 INFO org.hibernate.validator.internal.util.Version [background-preinit] HV000001: Hibernate Validator 6.2.5.Final
+2023-07-12 13:26:50,363 INFO org.springframework.boot.StartupInfoLogger [main] Starting CoszastoreApplication using Java 19.0.2 on MSI with PID 11544 (D:\project\coszastore_webapp\target\classes started by Quang Huy in D:\project\coszastore_webapp)
+2023-07-12 13:26:50,364 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2023-07-12 13:26:51,018 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:26:51,020 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-07-12 13:26:51,118 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 93 ms. Found 1 JPA repository interfaces.
+2023-07-12 13:26:51,129 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:26:51,133 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-07-12 13:26:51,144 INFO org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport [main] Spring Data Redis - Could not safely identify store assignment for repository candidate interface alticshaw.com.coszastore.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2023-07-12 13:26:51,144 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2023-07-12 13:26:51,567 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat initialized with port(s): 8080 (http)
+2023-07-12 13:26:51,572 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:26:51,573 INFO org.apache.juli.logging.DirectJDKLog [main] Starting service [Tomcat]
+2023-07-12 13:26:51,574 INFO org.apache.juli.logging.DirectJDKLog [main] Starting Servlet engine: [Apache Tomcat/9.0.76]
+2023-07-12 13:26:51,703 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing Spring embedded WebApplicationContext
+2023-07-12 13:26:51,703 INFO org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext [main] Root WebApplicationContext: initialization completed in 1291 ms
+2023-07-12 13:26:51,826 INFO org.hibernate.jpa.internal.util.LogHelper [main] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-07-12 13:26:51,878 INFO org.hibernate.Version [main] HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-07-12 13:26:52,000 INFO org.hibernate.annotations.common.reflection.java.JavaReflectionManager [main] HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-07-12 13:26:52,075 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2023-07-12 13:26:52,326 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2023-07-12 13:26:52,344 INFO org.hibernate.dialect.Dialect [main] HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-07-12 13:26:52,648 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:26:52,648 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:26:52,648 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:26:52,648 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:26:52,649 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:26:52,649 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:26:53,008 INFO org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator [main] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-07-12 13:26:53,015 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [main] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:26:53,618 INFO org.springframework.security.web.DefaultSecurityFilterChain [main] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@60655642, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5c7b504, org.springframework.security.web.context.SecurityContextPersistenceFilter@60e5b3a8, org.springframework.security.web.header.HeaderWriterFilter@9da386c, org.springframework.security.web.authentication.logout.LogoutFilter@10c67c1c, alticshaw.com.coszastore.filter.JwtFilter@67bb4dcd, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@31c31fa6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@48cc060d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@772589ed, org.springframework.security.web.session.SessionManagementFilter@78a0d664, org.springframework.security.web.access.ExceptionTranslationFilter@70fcd3e5, org.springframework.security.web.access.intercept.AuthorizationFilter@640028f2]
+2023-07-12 13:26:53,671 WARN org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration [main] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-07-12 13:26:54,030 INFO org.apache.juli.logging.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:26:54,045 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path ''
+2023-07-12 13:26:54,053 INFO org.springframework.boot.StartupInfoLogger [main] Started CoszastoreApplication in 3.982 seconds (JVM running for 4.664)
+2023-07-12 13:28:23,688 INFO org.apache.juli.logging.DirectJDKLog [http-nio-8080-exec-1] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-07-12 13:28:23,688 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Initializing Servlet 'dispatcherServlet'
+2023-07-12 13:28:23,689 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Completed initialization in 1 ms
+2023-07-12 13:29:42,226 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:29:42,228 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-07-12 13:29:42,253 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
+2023-07-12 13:29:47,287 INFO org.hibernate.validator.internal.util.Version [background-preinit] HV000001: Hibernate Validator 6.2.5.Final
+2023-07-12 13:29:47,295 INFO org.springframework.boot.StartupInfoLogger [main] Starting CoszastoreApplication using Java 19.0.2 on MSI with PID 3620 (D:\project\coszastore_webapp\target\classes started by Quang Huy in D:\project\coszastore_webapp)
+2023-07-12 13:29:47,296 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2023-07-12 13:29:47,955 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:29:47,956 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-07-12 13:29:48,060 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 97 ms. Found 1 JPA repository interfaces.
+2023-07-12 13:29:48,070 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:29:48,073 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-07-12 13:29:48,084 INFO org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport [main] Spring Data Redis - Could not safely identify store assignment for repository candidate interface alticshaw.com.coszastore.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2023-07-12 13:29:48,084 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2023-07-12 13:29:48,585 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat initialized with port(s): 8080 (http)
+2023-07-12 13:29:48,591 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:29:48,593 INFO org.apache.juli.logging.DirectJDKLog [main] Starting service [Tomcat]
+2023-07-12 13:29:48,594 INFO org.apache.juli.logging.DirectJDKLog [main] Starting Servlet engine: [Apache Tomcat/9.0.76]
+2023-07-12 13:29:48,730 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing Spring embedded WebApplicationContext
+2023-07-12 13:29:48,730 INFO org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext [main] Root WebApplicationContext: initialization completed in 1387 ms
+2023-07-12 13:29:48,882 INFO org.hibernate.jpa.internal.util.LogHelper [main] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-07-12 13:29:48,923 INFO org.hibernate.Version [main] HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-07-12 13:29:49,047 INFO org.hibernate.annotations.common.reflection.java.JavaReflectionManager [main] HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-07-12 13:29:49,131 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2023-07-12 13:29:49,425 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2023-07-12 13:29:49,443 INFO org.hibernate.dialect.Dialect [main] HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-07-12 13:29:49,799 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:29:49,799 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:29:49,800 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:29:49,800 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:29:49,800 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:29:49,801 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:29:50,203 INFO org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator [main] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-07-12 13:29:50,215 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [main] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:29:50,941 INFO org.springframework.security.web.DefaultSecurityFilterChain [main] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7364073b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@50331591, org.springframework.security.web.context.SecurityContextPersistenceFilter@2703785e, org.springframework.security.web.header.HeaderWriterFilter@1e084a26, org.springframework.security.web.authentication.logout.LogoutFilter@c040c8d, alticshaw.com.coszastore.filter.JwtFilter@603cabc4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5a2297d7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4b8601a1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5cfde2a4, org.springframework.security.web.session.SessionManagementFilter@4cbd17b3, org.springframework.security.web.access.ExceptionTranslationFilter@1dbb9a4a, org.springframework.security.web.access.intercept.AuthorizationFilter@2bb118ae]
+2023-07-12 13:29:50,993 WARN org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration [main] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-07-12 13:29:51,347 INFO org.apache.juli.logging.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:29:51,361 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path ''
+2023-07-12 13:29:51,369 INFO org.springframework.boot.StartupInfoLogger [main] Started CoszastoreApplication in 4.449 seconds (JVM running for 5.254)
+2023-07-12 13:29:56,731 INFO org.apache.juli.logging.DirectJDKLog [http-nio-8080-exec-1] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-07-12 13:29:56,731 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Initializing Servlet 'dispatcherServlet'
+2023-07-12 13:29:56,732 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Completed initialization in 1 ms
+2023-07-12 13:32:09,828 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:32:09,831 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-07-12 13:32:09,876 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
+2023-07-12 13:32:14,322 INFO org.hibernate.validator.internal.util.Version [background-preinit] HV000001: Hibernate Validator 6.2.5.Final
+2023-07-12 13:32:14,328 INFO org.springframework.boot.StartupInfoLogger [main] Starting CoszastoreApplication using Java 19.0.2 on MSI with PID 20548 (D:\project\coszastore_webapp\target\classes started by Quang Huy in D:\project\coszastore_webapp)
+2023-07-12 13:32:14,329 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2023-07-12 13:32:15,058 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:32:15,061 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-07-12 13:32:15,223 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 151 ms. Found 1 JPA repository interfaces.
+2023-07-12 13:32:15,239 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Multiple Spring Data modules found, entering strict repository configuration mode
+2023-07-12 13:32:15,240 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-07-12 13:32:15,252 INFO org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport [main] Spring Data Redis - Could not safely identify store assignment for repository candidate interface alticshaw.com.coszastore.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2023-07-12 13:32:15,253 INFO org.springframework.data.repository.config.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2023-07-12 13:32:15,786 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat initialized with port(s): 8080 (http)
+2023-07-12 13:32:15,793 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:32:15,795 INFO org.apache.juli.logging.DirectJDKLog [main] Starting service [Tomcat]
+2023-07-12 13:32:15,796 INFO org.apache.juli.logging.DirectJDKLog [main] Starting Servlet engine: [Apache Tomcat/9.0.76]
+2023-07-12 13:32:15,909 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing Spring embedded WebApplicationContext
+2023-07-12 13:32:15,909 INFO org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext [main] Root WebApplicationContext: initialization completed in 1505 ms
+2023-07-12 13:32:16,044 INFO org.hibernate.jpa.internal.util.LogHelper [main] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-07-12 13:32:16,090 INFO org.hibernate.Version [main] HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-07-12 13:32:16,204 INFO org.hibernate.annotations.common.reflection.java.JavaReflectionManager [main] HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-07-12 13:32:16,275 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2023-07-12 13:32:16,551 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2023-07-12 13:32:16,575 INFO org.hibernate.dialect.Dialect [main] HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-07-12 13:32:16,951 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:32:16,951 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.BlogTagIds
+2023-07-12 13:32:16,952 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:32:16,952 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.OrderProductIds
+2023-07-12 13:32:16,952 WARN org.hibernate.mapping.RootClass [main] HHH000038: Composite-id class does not override equals(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:32:16,953 WARN org.hibernate.mapping.RootClass [main] HHH000039: Composite-id class does not override hashCode(): alticshaw.com.coszastore.entity.ids.CategoryTagIds
+2023-07-12 13:32:17,319 INFO org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator [main] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-07-12 13:32:17,327 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [main] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:32:17,939 INFO org.springframework.security.web.DefaultSecurityFilterChain [main] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5e8bc83e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6c75c5e8, org.springframework.security.web.context.SecurityContextPersistenceFilter@4619854a, org.springframework.security.web.header.HeaderWriterFilter@10c67c1c, org.springframework.security.web.authentication.logout.LogoutFilter@63df2eb8, alticshaw.com.coszastore.filter.JwtFilter@67bb4dcd, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3453f79c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@62536882, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@69374e28, org.springframework.security.web.session.SessionManagementFilter@60655642, org.springframework.security.web.access.ExceptionTranslationFilter@5c3e7128, org.springframework.security.web.access.intercept.AuthorizationFilter@435e224d]
+2023-07-12 13:32:17,991 WARN org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration [main] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-07-12 13:32:18,363 INFO org.apache.juli.logging.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
+2023-07-12 13:32:18,377 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path ''
+2023-07-12 13:32:18,385 INFO org.springframework.boot.StartupInfoLogger [main] Started CoszastoreApplication in 4.393 seconds (JVM running for 5.143)
+2023-07-12 13:32:32,175 INFO org.apache.juli.logging.DirectJDKLog [http-nio-8080-exec-1] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-07-12 13:32:32,175 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Initializing Servlet 'dispatcherServlet'
+2023-07-12 13:32:32,177 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-1] Completed initialization in 2 ms
+2023-07-12 13:35:25,893 INFO org.springframework.orm.jpa.AbstractEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-07-12 13:35:25,895 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-07-12 13:35:25,916 INFO com.zaxxer.hikari.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
