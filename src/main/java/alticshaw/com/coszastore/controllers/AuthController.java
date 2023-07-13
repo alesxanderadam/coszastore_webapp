@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.controllers;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.exception.AuthException;
 import alticshaw.com.coszastore.payload.request.SignInRequest;
 import alticshaw.com.coszastore.payload.request.SignUpRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
@@ -43,21 +44,16 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest request){
-        try{
+    public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest request) {
+        try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
             authenticationManager.authenticate(token);
             String jwt = jwtHelper.generateToken(request.getEmail());
-            baseResponse.setStatusCode(200);
-            baseResponse.setData(jwt);
-            baseResponse.setMessage(messageResponse.success());
-            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
-        }catch (AuthenticationException e){
-            baseResponse.setStatusCode(401);
-            baseResponse.setMessage("Invalid email or password");
-            return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.ok()
+                    .body(new BaseResponse(200, messageResponse.success(), jwt));
+        } catch (AuthenticationException e) {
+            throw new AuthException(401, "Invalid email or password");
         }
-
     }
 
     @PostMapping("/signUp")

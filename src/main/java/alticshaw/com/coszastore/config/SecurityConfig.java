@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.config;
 
 import alticshaw.com.coszastore.filter.JwtFilter;
+import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,11 @@ public class SecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .authenticationProvider(customAuthenticationProvider)
                 .build();
+    }
+
+    @Bean
+    public BaseResponse baseResponse() {
+        return new BaseResponse();
     }
 
     @Bean
