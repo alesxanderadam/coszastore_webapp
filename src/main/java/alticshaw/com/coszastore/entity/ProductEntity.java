@@ -20,14 +20,31 @@ public class ProductEntity {
     @Column(name = "price")
     private double price;
 
+    @Column(name = "short_description")
+    private String short_description;
+
     @Column(name = "description")
     private String description;
 
     @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "weight")
+    private String weight;
+
+    @Column(name = "dimensions ")
+    private String dimensions;
+
+    @Column(name = "materials")
+    private String materials;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
+    private TagEntity tag_id;
+
     @Column(name = "list_image")
     private String listImage;
+
     @Column(name = "created_at")
     private Timestamp createdTime;
 
@@ -48,6 +65,19 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "size_id")
     private SizeEntity size;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
+    private TagEntity tag;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<SaleEntity> saleEntities;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<FeedBackEntity> feedbacks;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<RateEntity> rateEntities;
 
     public int getId() {
         return id;
@@ -151,5 +181,77 @@ public class ProductEntity {
 
     public void setSize(SizeEntity size) {
         this.size = size;
+    }
+
+    public String getShort_description() {
+        return short_description;
+    }
+
+    public void setShort_description(String short_description) {
+        this.short_description = short_description;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public String getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(String materials) {
+        this.materials = materials;
+    }
+
+    public TagEntity getTag_id() {
+        return tag_id;
+    }
+
+    public void setTag_id(TagEntity tag_id) {
+        this.tag_id = tag_id;
+    }
+
+    public TagEntity getTag() {
+        return tag;
+    }
+
+    public void setTag(TagEntity tag) {
+        this.tag = tag;
+    }
+
+    public Set<SaleEntity> getSaleEntities() {
+        return saleEntities;
+    }
+
+    public void setSaleEntities(Set<SaleEntity> saleEntities) {
+        this.saleEntities = saleEntities;
+    }
+
+    public Set<FeedBackEntity> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(Set<FeedBackEntity> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
+
+    public Set<RateEntity> getRateEntities() {
+        return rateEntities;
+    }
+
+    public void setRateEntities(Set<RateEntity> rateEntities) {
+        this.rateEntities = rateEntities;
     }
 }
