@@ -19,6 +19,9 @@ public class TagEntity {
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     private Set<CategoryTagEntity> categoryTags;
 
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
+    private Set<ProductEntity> productTags;
+
     public int getId() {
         return id;
     }
@@ -49,5 +52,13 @@ public class TagEntity {
 
     public void setCategoryTags(Set<CategoryTagEntity> categoryTags) {
         this.categoryTags = categoryTags;
+    }
+
+    public Set<ProductEntity> getProductTags() {
+        return productTags;
+    }
+
+    public void setProductTags(Set<ProductEntity> productTags) {
+        this.productTags = productTags;
     }
 }
