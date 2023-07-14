@@ -19,6 +19,7 @@ public class OrderEntity {
 
     @Column(name = "postcode")
     private String postCode;
+
     @Column(name = "created_at")
     private Timestamp createdTime;
 
