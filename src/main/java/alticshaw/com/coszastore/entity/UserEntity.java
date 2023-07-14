@@ -21,7 +21,7 @@ public class UserEntity {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "role_id")
     private RoleEntity role;
 
     @Column(name = "created_at")
@@ -120,5 +120,13 @@ public class UserEntity {
 
     public void setRateEntities(Set<RateEntity> rateEntities) {
         this.rateEntities = rateEntities;
+    }
+
+    public RoleEntity getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }

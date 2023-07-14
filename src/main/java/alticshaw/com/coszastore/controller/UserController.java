@@ -20,6 +20,7 @@ public class UserController {
     public ResponseEntity<?> findAll() {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
+        response.setMessage("Success!!!!");
         response.setData(userServiceImp.findAll());
 
         return new ResponseEntity<>(response, HttpStatus.OK);

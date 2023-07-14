@@ -28,7 +28,7 @@ public class UserService implements UserServiceImp {
             userResponse.setEmail(data.getEmail());
             userResponse.setCreatedTime(data.getCreatedTime());
             userResponse.setUpdatedTime(data.getUpdatedTime());
-
+            userResponse.setRoleId(data.getRole());
             userResponseList.add(userResponse);
         }
 

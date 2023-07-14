@@ -1,5 +1,7 @@
 package alticshaw.com.coszastore.payload.response;
 
+import alticshaw.com.coszastore.entity.RoleEntity;
+
 import java.sql.Timestamp;
 
 public class UserResponse {
@@ -8,6 +10,7 @@ public class UserResponse {
     private String email;
     private Timestamp createdTime;
     private Timestamp updatedTime;
+    private RoleEntity roleId;
 
     public int getId() {
         return id;
@@ -47,5 +50,13 @@ public class UserResponse {
 
     public void setUpdatedTime(Timestamp updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    public RoleEntity getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(RoleEntity roleId) {
+        this.roleId = roleId;
     }
 }
