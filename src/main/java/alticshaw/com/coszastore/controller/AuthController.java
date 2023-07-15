@@ -74,7 +74,7 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<?> signUp(@Valid SignUpRequest signUpRequest, BindingResult signUpBindingResult) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult signUpBindingResult) {
         UserEntity user = authServiceImp.addUser(signUpRequest, signUpBindingResult);
         if(user != null){
             UserResponse userResponse = new UserResponse().MapUserEntityToUserResponse(user);
