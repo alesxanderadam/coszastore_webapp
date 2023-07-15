@@ -1,5 +1,8 @@
 package alticshaw.com.coszastore.utils;
 
+import alticshaw.com.coszastore.exception.JwtCustomException;
+import alticshaw.com.coszastore.payload.response.MessageResponse;
+import alticshaw.com.coszastore.payload.response.UserResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,7 +29,7 @@ public class JwtHelper {
     private String publicKey;
     private static final long EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000; // 2 ngày nha
 
-    public String generateToken(String email) {
+    public String generateToken(UserResponse user) {
         try {
             byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyBytes);
@@ -37,16 +40,16 @@ public class JwtHelper {
             Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
             return Jwts.builder()
-                    .setSubject("coszastore_webapp token")
-                    .claim("email",email)
+                    .setSubject("coszasotre webapp")
+                    .claim("infoUser", user)
+                    .claim("role", user.getRole_name())
                     .setIssuedAt(now)
                     .setExpiration(expiryDate)
                     .signWith(privateKey1, SignatureAlgorithm.RS256)
                     .compact();
         } catch (Exception error) {
-            System.out.println("error jwt helper " + error);
+            throw new JwtCustomException("Lỗi sinh token", 500);
         }
-        return null;
     }
 
     public Claims decodeToken(String token) {
@@ -62,8 +65,7 @@ public class JwtHelper {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            System.out.println("error jwt helper decode " + e);
+            throw new JwtCustomException(new MessageResponse().invalid("Token"), 401);
         }
-        return null;
     }
 }

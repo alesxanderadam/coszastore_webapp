@@ -47,10 +47,10 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests()
-                .antMatchers("/api/auth**").permitAll()
-//                .anyRequest().authenticated()
-                .and()
+                .authorizeHttpRequests((authorize) -> authorize
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/test").hasAuthority("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

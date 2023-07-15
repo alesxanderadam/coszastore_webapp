@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class SignInRequest{
 
@@ -15,7 +16,8 @@ public class SignInRequest{
 
     @NotNull(message = "Email not null")
     @NotEmpty(message = "Email not empty")
-    @Email(message = "Email invalid format", regexp = "^[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")
+    @Email(message = "Email invalid format")
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Email invalid format")
     private String email;
     public String getPassword() {
         return password;

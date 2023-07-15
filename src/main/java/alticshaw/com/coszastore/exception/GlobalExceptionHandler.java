@@ -5,10 +5,12 @@ import alticshaw.com.coszastore.payload.response.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.annotation.Resource;
+import javax.security.auth.message.AuthException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,11 +28,33 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<?> handleAuthException(Exception e){
-        baseResponse.setMessage(e.getMessage());
-        baseResponse.setStatusCode(401);
+    @ExceptionHandler(AuthCustomException.class)
+    public ResponseEntity<?> handleAuthException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
+    }
 
-        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(JwtCustomException.class)
+    public ResponseEntity<?> handleJwtCustomException(JwtCustomException e) {
+        return ResponseEntity.status(e.getStatusCode())
+                .body(new ErrorResponse(e.getStatusCode(),e.getMessage()));
+    }
+
+    @ExceptionHandler(ValidationCustomException.class)
+    public ResponseEntity<?> handleValidationException(ValidationCustomException exc) {
+        return ResponseEntity.status(exc.getStatusCode())
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), exc.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictCustomException.class)
+    public ResponseEntity<?> handleConflictException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(RoleCustomException.class)
+    public ResponseEntity<?> handleRoleNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 }
