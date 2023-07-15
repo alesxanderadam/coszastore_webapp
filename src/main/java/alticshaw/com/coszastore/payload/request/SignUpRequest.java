@@ -1,8 +1,6 @@
 package alticshaw.com.coszastore.payload.request;
 
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Email;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +10,8 @@ public class SignUpRequest extends SignInRequest {
     private String username;
 
     @NotNull(message = "Role not null")
-    private int role_id;
+    @Digits(integer = 10, fraction = 0, message = "Role must be a valid number")
+    private Integer role_id;
 
     public String getUsername() {
         return username;

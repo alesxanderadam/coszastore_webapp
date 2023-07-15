@@ -1,5 +1,7 @@
 package alticshaw.com.coszastore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private RoleEntity role;
 
     @Column(name = "created_at")

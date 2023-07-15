@@ -42,6 +42,7 @@ public class JwtHelper {
             return Jwts.builder()
                     .setSubject("coszasotre webapp")
                     .claim("infoUser", user)
+                    .claim("email", user.getEmail())
                     .claim("role", user.getRole_name())
                     .setIssuedAt(now)
                     .setExpiration(expiryDate)
