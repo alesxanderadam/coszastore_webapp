@@ -13,8 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/file")
 public class FileController {
+    private final FileStorageServiceImp fileStorageServiceImp;
+
     @Autowired
-    private FileStorageServiceImp fileStorageServiceImp;
+    public FileController(FileStorageServiceImp fileStorageServiceImp) {
+        this.fileStorageServiceImp = fileStorageServiceImp;
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<?> save(@RequestParam MultipartFile file) {

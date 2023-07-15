@@ -18,9 +18,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<?> handleFileStorageException(Exception e) {
-        ErrorResponse response = new ErrorResponse();
-        response.setStatusCode(500);
-        response.setMessage(e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok().body(new ErrorResponse(500, e.getMessage()));
     }
 }
