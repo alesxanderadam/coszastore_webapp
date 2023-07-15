@@ -8,8 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class CoszastoreApplication implements CommandLineRunner {
+	private final FileStorageService fileStorageService;
+
 	@Autowired
-	private FileStorageService fileStorageService;
+	public CoszastoreApplication(FileStorageService fileStorageService) {
+		this.fileStorageService = fileStorageService;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(CoszastoreApplication.class, args);
