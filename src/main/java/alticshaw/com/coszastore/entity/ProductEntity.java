@@ -40,7 +40,7 @@ public class ProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    private TagEntity tag_id;
+    private TagEntity tag;
 
     @Column(name = "list_image")
     private String listImage;
@@ -65,10 +65,6 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "size_id")
     private SizeEntity size;
-
-    @ManyToOne
-    @JoinColumn(name = "tag_id")
-    private TagEntity tag;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<SaleEntity> saleEntities;
@@ -213,14 +209,6 @@ public class ProductEntity {
 
     public void setMaterials(String materials) {
         this.materials = materials;
-    }
-
-    public TagEntity getTag_id() {
-        return tag_id;
-    }
-
-    public void setTag_id(TagEntity tag_id) {
-        this.tag_id = tag_id;
     }
 
     public TagEntity getTag() {
