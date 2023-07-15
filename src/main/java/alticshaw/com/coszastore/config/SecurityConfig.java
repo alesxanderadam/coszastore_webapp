@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.config;
 
 import alticshaw.com.coszastore.filter.JwtFilter;
+import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,15 +44,20 @@ public class SecurityConfig {
     }
 
     @Bean
+    public BaseResponse baseResponse() {
+        return new BaseResponse();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests()
-                .antMatchers("/api/auth**").permitAll()
-//                .anyRequest().authenticated()
-                .and()
+                .authorizeHttpRequests((authorize) -> authorize
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/test").hasAuthority("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

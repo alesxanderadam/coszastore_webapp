@@ -21,6 +21,10 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
+
     @Column(name = "created_at")
     private Timestamp createdTime;
 
@@ -42,6 +46,12 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<OrderEntity> orders;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<FeedBackEntity> feedbacks;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<RateEntity> rateEntities;
 
     public int getId() {
         return id;
@@ -105,5 +115,29 @@ public class UserEntity {
 
     public void setOrders(Set<OrderEntity> orders) {
         this.orders = orders;
+    }
+
+    public Set<FeedBackEntity> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(Set<FeedBackEntity> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
+
+    public Set<RateEntity> getRateEntities() {
+        return rateEntities;
+    }
+
+    public void setRateEntities(Set<RateEntity> rateEntities) {
+        this.rateEntities = rateEntities;
+    }
+
+    public RoleEntity getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }
