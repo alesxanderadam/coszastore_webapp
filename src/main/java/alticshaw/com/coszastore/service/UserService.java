@@ -1,6 +1,8 @@
 package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.exception.CustomException;
+import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
 import alticshaw.com.coszastore.service.imp.UserServiceImp;
@@ -33,5 +35,18 @@ public class UserService implements UserServiceImp {
         }
 
         return userResponseList;
+    }
+
+    @Override
+    public boolean addUser(UserEntity userEntity) {
+        boolean isSuccess;
+        try {
+            userRepository.save(userEntity);
+            isSuccess = true;
+        }catch (Exception e) {
+            throw new CustomException("Error addUser "+e.getMessage());
+
+        }
+        return isSuccess;
     }
 }
