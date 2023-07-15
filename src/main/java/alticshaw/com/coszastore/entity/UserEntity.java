@@ -121,4 +121,12 @@ public class UserEntity {
     public void setRateEntities(Set<RateEntity> rateEntities) {
         this.rateEntities = rateEntities;
     }
+
+    public RoleEntity getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEntity role) {
+        this.role = role;
+    }
 }
