@@ -11,6 +11,6 @@ import java.util.List;
 public interface CategoryServiceImp {
     List<CategoryRespone> getAllCategory();
     boolean addCategory(CategoryRequest category);
-    boolean deleteCategory(CategoryRequest category);
+    boolean deleteCategory(int id);
     boolean updateCategory(CategoryRequest category);
 }

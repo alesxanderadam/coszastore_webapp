@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
+@CrossOrigin
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 public class CateGoryController {
     @Autowired
     private CategoryServiceImp categoryServiceImp;
@@ -30,28 +30,24 @@ public class CateGoryController {
     @GetMapping("")
     public ResponseEntity<?> getAllCategory(){
         BaseResponse response=new BaseResponse();
-        response.setStatusCode(200);
-        response.setMessage("getAllCategory OK");
         response.setData(categoryServiceImp.getAllCategory());
+        response.setStatusCode(200);
+        response.setMessage("success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<?> addCategory(@Valid CategoryRequest request, BindingResult result){
         List<FieldError> list=result.getFieldErrors();
-        boolean isSuccess=categoryServiceImp.addCategory(request);
+        categoryServiceImp.addCategory(request);
         BaseResponse response=new BaseResponse();
-        if(isSuccess==false){
-            response.setMessage(list.toString());
-        }else {
-            response.setMessage("Success");
-        }
+        response.setMessage("success");
         response.setStatusCode(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteCategory(@Valid CategoryRequest request){
+    public ResponseEntity<?> deleteCategory(@RequestParam int id){
         BaseResponse response=new BaseResponse();
-        boolean isSuccess=categoryServiceImp.deleteCategory(request);
+        categoryServiceImp.deleteCategory(id);
         response.setMessage("success");
         response.setStatusCode(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -60,8 +56,8 @@ public class CateGoryController {
     public ResponseEntity<?> updateCategory(@Valid CategoryRequest request, BindingResult result ){
         List<FieldError> list=result.getFieldErrors();
         BaseResponse response=new BaseResponse();
-        boolean isSuccess=categoryServiceImp.updateCategory(request);
-
+        categoryServiceImp.updateCategory(request);
+        response.setMessage("success");
         response.setStatusCode(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

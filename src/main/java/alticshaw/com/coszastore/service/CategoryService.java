@@ -65,10 +65,10 @@ public class CategoryService implements CategoryServiceImp {
     }
 
     @Override
-    public boolean deleteCategory(CategoryRequest request) {
+    public boolean deleteCategory(int id) {
         boolean isSuccess=false;
         try{
-            CategoryEntity category=categoryRepository.getReferenceById(request.getId());
+            CategoryEntity category=categoryRepository.getReferenceById(id);
             categoryRepository.delete(category);
             isSuccess=true;
         }catch (Exception e){

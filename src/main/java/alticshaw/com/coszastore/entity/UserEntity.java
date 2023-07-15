@@ -2,6 +2,7 @@ package alticshaw.com.coszastore.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 @Entity(name = "user")
@@ -21,7 +22,7 @@ public class UserEntity {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "role_id")
     private RoleEntity role;
 
     @Column(name = "created_at")
@@ -29,6 +30,16 @@ public class UserEntity {
 
     @Column(name = "updated_at")
     private Timestamp updatedTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createdTime = new Timestamp(new Date().getTime());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedTime = new Timestamp(new Date().getTime());
+    }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<BlogEntity> blogs;
@@ -120,5 +131,13 @@ public class UserEntity {
 
     public void setRateEntities(Set<RateEntity> rateEntities) {
         this.rateEntities = rateEntities;
+    }
+
+    public RoleEntity getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }
