@@ -22,10 +22,11 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<?> save(@RequestParam MultipartFile file) {
-        fileStorageServiceImp.save(file);
+        boolean isSuccess =  fileStorageServiceImp.save(file);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Upload " + file.getOriginalFilename() + " successfully");
+        response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -40,19 +41,21 @@ public class FileController {
 
     @GetMapping("/delete/{filename}")
     public ResponseEntity<?> deleteFile(@PathVariable String filename) {
-        fileStorageServiceImp.deleteByName(filename);
+        boolean isSuccess =  fileStorageServiceImp.deleteByName(filename);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Delete " + filename + " successfully!");
+        response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/deleteAll")
+    @GetMapping("/delete/all")
     public ResponseEntity<?> deleteAll() {
-        fileStorageServiceImp.deleteAll();
+        boolean isSuccess = fileStorageServiceImp.deleteAll();
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Delete all files successfully!");
+        response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

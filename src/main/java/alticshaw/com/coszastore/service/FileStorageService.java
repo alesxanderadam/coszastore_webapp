@@ -32,13 +32,14 @@ public class FileStorageService implements FileStorageServiceImp {
     }
 
     @Override
-    public void deleteByName(String filename) {
+    public boolean deleteByName(String filename) {
         try {
             Path file = Paths.get(this.directory).resolve(filename);
             if (!Files.exists(file)) {
                 throw new FileStorageException("A file of that name is not exist.");
             }
             Files.delete(file);
+            return true;
         } catch (Exception e) {
             throw new FileStorageException("Could not delete " + filename);
         }
@@ -47,13 +48,14 @@ public class FileStorageService implements FileStorageServiceImp {
 
 
     @Override
-    public void save(MultipartFile file) {
+    public boolean save(MultipartFile file) {
         try {
             String filename = file.getOriginalFilename();
             if (filename == null) {
                 throw new FileStorageException("Filename can not be null.");
             }
             Files.copy(file.getInputStream(), Paths.get(this.directory).resolve(file.getOriginalFilename()));
+            return true;
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {
                 throw new FileStorageException("A file of that name already exists.");
@@ -79,8 +81,9 @@ public class FileStorageService implements FileStorageServiceImp {
     }
 
     @Override
-    public void deleteAll() {
+    public boolean deleteAll() {
         FileSystemUtils.deleteRecursively(Paths.get(this.directory).toFile());
         init();
+        return true;
     }
 }

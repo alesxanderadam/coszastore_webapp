@@ -5,8 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageServiceImp {
     void init();
-    void save(MultipartFile file);
+    boolean save(MultipartFile file);
     Resource loadAsResource(String Filename);
-    void deleteAll();
-    void deleteByName(String filename);
+    boolean deleteAll();
+    boolean deleteByName(String filename);
 }
