@@ -29,7 +29,8 @@ public class BaseResponse {
         this.data = data;
     }
 
-    public BaseResponse() {}
+    public BaseResponse() {
+    }
 
     public BaseResponse(int statusCode, String message, Object data) {
         this.statusCode = statusCode;

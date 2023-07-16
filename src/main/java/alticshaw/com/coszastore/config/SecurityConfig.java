@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.config;
 
 import alticshaw.com.coszastore.filter.JwtFilter;
+import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,11 +10,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -37,15 +44,31 @@ public class SecurityConfig {
     }
 
     @Bean
+    public BaseResponse baseResponse() {
+        return new BaseResponse();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
+                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests()
-                .antMatchers("/signup", "/signin").permitAll()
-                .anyRequest().authenticated()
-                .and()
+                .authorizeHttpRequests((authorize) -> authorize
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/test").hasAuthority("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
