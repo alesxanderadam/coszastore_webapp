@@ -1,6 +1,9 @@
 package alticshaw.com.coszastore.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity(name = "comment")
@@ -10,15 +13,27 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull(message = "Content is required!")
+    @NotEmpty(message = "Content is not empty!")
     @Column(name = "content")
     private String content;
 
+    @NotNull(message = "Email can not be null!")
+    @NotEmpty(message = "Email can not be empty!")
+    @Email(message = "Email must be in right format!",
+            regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     @Column(name = "email")
     private String email;
+
+    @NotNull(message = "Name is required!")
+    @NotEmpty(message = "Name is not empty!")
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "website")
     private String website;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "blog_id")
     private BlogEntity blog;
@@ -51,6 +66,14 @@ public class CommentEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getWebsite() {
