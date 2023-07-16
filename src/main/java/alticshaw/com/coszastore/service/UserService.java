@@ -2,7 +2,6 @@ package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.UserEntity;
 import alticshaw.com.coszastore.exception.CustomException;
-import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
 import alticshaw.com.coszastore.service.imp.UserServiceImp;
@@ -49,4 +48,32 @@ public class UserService implements UserServiceImp {
         }
         return isSuccess;
     }
+
+    @Override
+    public boolean updateUser(Integer userId, UserEntity updatedUser) {
+        boolean isSuccess;
+        UserEntity existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));;
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPassword(updatedUser.getPassword());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setUpdatedTime(updatedUser.getUpdatedTime());
+        userRepository.save(existingUser);
+        isSuccess = true;
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean deleteUser(Integer userId, UserEntity updatedUser) {
+        boolean isSuccess;
+        UserEntity deleteUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));;
+        userRepository.delete(deleteUser);
+        isSuccess = true;
+
+        return isSuccess;
+    }
+
+
 }

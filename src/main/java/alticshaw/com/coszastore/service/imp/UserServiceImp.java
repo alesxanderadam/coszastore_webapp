@@ -9,6 +9,10 @@ import java.util.List;
 public interface UserServiceImp {
     List<UserResponse> findAll();
 
+
     boolean addUser(UserEntity userEntity);
 
+
+    boolean updateUser(Integer userId,UserEntity updatedUser);
+    boolean deleteUser(Integer userId,UserEntity updatedUser);
 }

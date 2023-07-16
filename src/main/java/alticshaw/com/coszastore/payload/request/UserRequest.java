@@ -14,7 +14,9 @@ public class UserRequest {
     private String password;
     @NotNull
     private String email;
+    @NotNull
     private Timestamp createdTime;
+    @NotNull
     private Timestamp updatedTime;
     @NotNull
     private RoleEntity role;
