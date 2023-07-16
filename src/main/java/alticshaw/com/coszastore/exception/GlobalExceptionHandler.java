@@ -5,8 +5,6 @@ import alticshaw.com.coszastore.payload.response.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -56,8 +54,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleRoleNotFoundException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<?> handleFileStorageException(Exception e) {
-        return ResponseEntity.ok().body(new ErrorResponse(500, e.getMessage()));
+        return ResponseEntity.ok()
+                .body(new ErrorResponse(500, e.getMessage()));
     }
 }
