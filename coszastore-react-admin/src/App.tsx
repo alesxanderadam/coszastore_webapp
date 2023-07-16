@@ -43,35 +43,19 @@ import { Product } from "pages/product/product-list";
 import ProductAdd from "pages/product/product-add";
 import { ProductEdit } from "pages/product/product-edit";
 import './assets/scss/style.scss'
+import SignUp from "pages/SignUp";
+import SignIn from "pages/auth/sign-in";
+import { ACCESS_TOKEN, settings } from "utils/config";
 UrlResolver.resolve();
 
 function App() {
-	const [userInfor, setUserInfor] = useState<IUserInforModel>(null!);
-	const history = useHistory();
-
-	useEffect(() => {
-		services.authApi.getUserInfor()
-			.then((response) => {
-				if (response) {
-					setUserInfor(response);
-					return;
-				}
-
-				// Unauthoried
-				window.location.href = PageRouteConstant.LOGIN_PAGE;
-			})
-			.catch((e) => {
-				// Unauthoried
-				window.location.href = PageRouteConstant.LOGIN_PAGE;
-			});
-	}, []);
 
 	return (
 		<div className="App">
 			<Switch>
-				{/* <Route path={UrlResolver.buildUrl(`/sign-up`)} exact component={SignUp} />
-				<Route path={UrlResolver.buildUrl(`/sign-in`)} exact component={SignIn} /> */}
-				<Main>
+				<Route path={UrlResolver.buildUrl(`/sign-up`)} exact component={SignUp} />
+				<Route path={UrlResolver.buildUrl(`/sign-in`)} exact component={SignIn} />
+				{settings.getStore(ACCESS_TOKEN) ? <Main>
 					<Route exact path={UrlResolver.buildUrl(`/dashboard`)} component={Home} />
 					<Route exact path={UrlResolver.buildUrl(`/admin/tables`)} component={Tables} />
 					<Route exact path={UrlResolver.buildUrl(`/admin/billing`)} component={Billing} />
@@ -97,9 +81,10 @@ function App() {
 					<Route exact path={UrlResolver.buildUrl(`/${PageConstant.product}`)} component={Product}></Route>
 					<Route exact path={UrlResolver.buildUrl(`/${PageConstant.product}/add`)} component={ProductAdd}></Route>
 					<Route exact path={UrlResolver.buildUrl(`/${PageConstant.product}/:id/edit`)} component={ProductEdit} />
-				</Main>
+				</Main> : <Redirect to={PageRouteConstant.LOGIN_PAGE} />}
+
 			</Switch>
-		</div>
+		</div >
 	);
 }
 
