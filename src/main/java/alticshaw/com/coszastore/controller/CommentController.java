@@ -26,15 +26,19 @@ public class CommentController {
             @RequestBody @Valid CommentEntity comment,
             BindingResult commentBidingResult
     ) {
-        commentServiceImp.post(comment, commentBidingResult);
-        return new ResponseEntity<>("", HttpStatus.OK);
-    }
-
-    @GetMapping("")
-    public ResponseEntity<?> getAllComments() {
+        boolean isSuccess = commentServiceImp.post(comment, commentBidingResult);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
-        response.setMessage("List all comment");
+        response.setMessage("Post comment success!");
+        response.setData(isSuccess);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{blogId}")
+    public ResponseEntity<?> getAllComments(@PathVariable int blogId) {
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("List all comment!");
         response.setData(commentServiceImp.getAllComments());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -44,12 +48,13 @@ public class CommentController {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
-//    @GetMapping("/edit")
-//    public ResponseEntity<?> editComment(
-//            @RequestBody @Valid CommentRequest commentRequest,
-//            BindingResult commentBindingResult
-//    ) {
-//        return new ResponseEntity<>("", HttpStatus.OK);
-//    }
+    @PostMapping("/edit")
+    public ResponseEntity<?> editComment(
+            @RequestBody @Valid CommentEntity comment,
+            BindingResult commentBindingResult
+    ) {
+        commentServiceImp.edit(comment, commentBindingResult);
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 
 }
