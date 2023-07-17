@@ -2,6 +2,7 @@ package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.CommentEntity;
 import alticshaw.com.coszastore.exception.CommentNotFoundException;
+import alticshaw.com.coszastore.exception.CustomIllegalArgumentException;
 import alticshaw.com.coszastore.exception.ValidationCustomException;
 import alticshaw.com.coszastore.payload.response.CommentResponse;
 import alticshaw.com.coszastore.repository.CommentRepository;
@@ -19,21 +20,31 @@ import java.util.Optional;
 public class CommentService implements CommentServiceImp {
     private final CommentRepository commentRepository;
 
+    @Autowired
+    public CommentService(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
     @Override
-    public List<CommentResponse> getAllComments(int blogId) {
-        List<CommentEntity> commentEntityList = commentRepository.findAllByBlogId(blogId);
+    public List<CommentResponse> getAllComments(String blogId) {
         List<CommentResponse> commentResponseList = new ArrayList<>();
-        for (CommentEntity data : commentEntityList) {
-            CommentResponse comment = new CommentResponse(
-                    data.getContent(),
-                    data.getEmail(),
-                    data.getWebsite(),
-                    data.getName(),
-                    data.getCreatedTime(),
-                    data.getUpdatedTime(),
-                    data.getBlog()
-            );
-            commentResponseList.add(comment);
+        try {
+            int validBlogId = Integer.parseInt(blogId);
+            List<CommentEntity> commentEntityList = commentRepository.findAllByBlogId(validBlogId);
+            for (CommentEntity data : commentEntityList) {
+                CommentResponse comment = new CommentResponse(
+                        data.getContent(),
+                        data.getEmail(),
+                        data.getWebsite(),
+                        data.getName(),
+                        data.getCreatedTime(),
+                        data.getUpdatedTime(),
+                        data.getBlog()
+                );
+                commentResponseList.add(comment);
+            }
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Illegal blog id: + " + blogId);
         }
         return commentResponseList;
     }
@@ -54,7 +65,7 @@ public class CommentService implements CommentServiceImp {
         if (!commentBindingResult.hasErrors()) {
             Optional<CommentEntity> commentOptional = commentRepository.findById(comment.getId());
             commentOptional.orElseThrow(() ->
-                    new CommentNotFoundException("Comment not found - Can not edit!"));
+                    new CommentNotFoundException("Comment not found with id: " + comment.getId() +" - Can not edit!"));
             commentRepository.updateComment(
                     comment.getContent(),
                     comment.getEmail(), 
@@ -70,19 +81,16 @@ public class CommentService implements CommentServiceImp {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(String id) {
         try {
-            commentRepository.findById(id);
-        } catch (Exception e) {
-            throw new CommentNotFoundException("Helo");
+            int commentId = Integer.parseInt(id);
+            Optional<CommentEntity> commentEntityOptional = commentRepository.findById(commentId);
+            commentEntityOptional.orElseThrow(() ->
+                    new CommentNotFoundException("Comment not found with id: " + commentId));
+            commentRepository.deleteById(commentId);
+            return true;
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Illegal comment id: " + id);
         }
-        return true;
-    }
-
-
-
-    @Autowired
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
     }
 }

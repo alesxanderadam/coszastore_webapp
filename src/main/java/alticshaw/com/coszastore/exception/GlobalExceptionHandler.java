@@ -5,12 +5,9 @@ import alticshaw.com.coszastore.payload.response.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.security.auth.message.AuthException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -62,5 +59,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(CustomIllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 }
