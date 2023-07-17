@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface CommentServiceImp {
-    List<CommentResponse> getAllComments();
+    List<CommentResponse> getAllComments(int blogId);
     boolean post(CommentEntity comment, BindingResult commentBindingResult);
     boolean edit(CommentEntity comment, BindingResult commentBindingResult);
     boolean delete(Integer id);

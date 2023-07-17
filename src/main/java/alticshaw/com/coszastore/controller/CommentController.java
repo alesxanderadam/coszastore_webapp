@@ -29,7 +29,7 @@ public class CommentController {
         boolean isSuccess = commentServiceImp.post(comment, commentBidingResult);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
-        response.setMessage("Post comment success!");
+        response.setMessage("Post comment successfully!");
         response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -53,8 +53,12 @@ public class CommentController {
             @RequestBody @Valid CommentEntity comment,
             BindingResult commentBindingResult
     ) {
-        commentServiceImp.edit(comment, commentBindingResult);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        boolean isSuccess = commentServiceImp.edit(comment, commentBindingResult);
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Update comment successfully!");
+        response.setData(isSuccess);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

@@ -17,8 +17,9 @@ public class CommentService implements CommentServiceImp {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<CommentResponse> getAllComments() {
-        return null;
+    public List<CommentResponse> getAllComments(int blogId) {
+
+        return commentRepository.findAllByBlogId(blogId) ;
     }
 
     @Override
