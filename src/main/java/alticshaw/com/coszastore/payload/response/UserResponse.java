@@ -1,16 +1,28 @@
 package alticshaw.com.coszastore.payload.response;
 
-import alticshaw.com.coszastore.entity.RoleEntity;
-
-import java.sql.Timestamp;
+import alticshaw.com.coszastore.entity.UserEntity;
 
 public class UserResponse {
     private int id;
+
     private String username;
+
     private String email;
-    private Timestamp createdTime;
-    private Timestamp updatedTime;
-    private RoleEntity roleId;
+
+    private String role_name;
+
+    public UserResponse(int id, String username, String email, String role_name) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.role_name = role_name;
+    }
+
+    public UserResponse MapUserEntityToUserResponse(UserEntity user) {
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName());
+    }
+
+    public UserResponse(){}
 
     public int getId() {
         return id;
@@ -36,27 +48,11 @@ public class UserResponse {
         this.email = email;
     }
 
-    public Timestamp getCreatedTime() {
-        return createdTime;
+    public String getRole_name() {
+        return role_name;
     }
 
-    public void setCreatedTime(Timestamp createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Timestamp getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Timestamp updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
-    public RoleEntity getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(RoleEntity roleId) {
-        this.roleId = roleId;
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
     }
 }
