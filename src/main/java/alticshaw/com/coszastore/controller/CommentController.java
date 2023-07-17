@@ -39,13 +39,14 @@ public class CommentController {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("List all comment!");
-        response.setData(commentServiceImp.getAllComments());
+        response.setData(commentServiceImp.getAllComments(blogId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/delete/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer id) {
-        return new ResponseEntity<>("", HttpStatus.OK);
+        boolean isSuccess = commentServiceImp.delete(id);
+        return new ResponseEntity<>(isSuccess, HttpStatus.OK);
     }
 
     @PostMapping("/edit")

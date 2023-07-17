@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.CommentEntity;
+import alticshaw.com.coszastore.exception.CommentNotFoundException;
 import alticshaw.com.coszastore.exception.ValidationCustomException;
 import alticshaw.com.coszastore.payload.response.CommentResponse;
 import alticshaw.com.coszastore.repository.CommentRepository;
@@ -52,7 +53,8 @@ public class CommentService implements CommentServiceImp {
     public boolean edit(CommentEntity comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
             Optional<CommentEntity> commentOptional = commentRepository.findById(comment.getId());
-//            commentOptional.ifPresentOrElse();
+            commentOptional.orElseThrow(() ->
+                    new CommentNotFoundException("Comment not found - Can not edit!"));
             commentRepository.updateComment(
                     comment.getContent(),
                     comment.getEmail(), 
@@ -69,6 +71,11 @@ public class CommentService implements CommentServiceImp {
 
     @Override
     public boolean delete(Integer id) {
+        try {
+            commentRepository.findById(id);
+        } catch (Exception e) {
+            throw new CommentNotFoundException("Helo");
+        }
         return true;
     }
 
