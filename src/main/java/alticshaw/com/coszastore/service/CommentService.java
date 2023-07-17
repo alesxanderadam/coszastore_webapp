@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService implements CommentServiceImp {
@@ -18,8 +20,21 @@ public class CommentService implements CommentServiceImp {
 
     @Override
     public List<CommentResponse> getAllComments(int blogId) {
-
-        return commentRepository.findAllByBlogId(blogId) ;
+        List<CommentEntity> commentEntityList = commentRepository.findAllByBlogId(blogId);
+        List<CommentResponse> commentResponseList = new ArrayList<>();
+        for (CommentEntity data : commentEntityList) {
+            CommentResponse comment = new CommentResponse(
+                    data.getContent(),
+                    data.getEmail(),
+                    data.getWebsite(),
+                    data.getName(),
+                    data.getCreatedTime(),
+                    data.getUpdatedTime(),
+                    data.getBlog()
+            );
+            commentResponseList.add(comment);
+        }
+        return commentResponseList;
     }
 
     @Override
@@ -36,6 +51,8 @@ public class CommentService implements CommentServiceImp {
     @Override
     public boolean edit(CommentEntity comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
+            Optional<CommentEntity> commentOptional = commentRepository.findById(comment.getId());
+//            commentOptional.ifPresentOrElse();
             commentRepository.updateComment(
                     comment.getContent(),
                     comment.getEmail(), 
