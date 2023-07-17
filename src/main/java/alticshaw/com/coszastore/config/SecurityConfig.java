@@ -1,11 +1,13 @@
 package alticshaw.com.coszastore.config;
 
 import alticshaw.com.coszastore.filter.JwtFilter;
+import alticshaw.com.coszastore.jwt.JwtConfig;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,12 +28,14 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@Import(JwtConfig.class)
 public class SecurityConfig {
-    @Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
-
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final JwtFilter jwtFilter;
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, JwtFilter jwtFilter) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
+        this.jwtFilter = jwtFilter;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,6 +64,10 @@ public class SecurityConfig {
                         .antMatchers("/api/auth/**").permitAll()
                         .antMatchers("/api/test").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
+                .exceptionHandling((exceptions) -> exceptions
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

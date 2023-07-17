@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.provider;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -13,10 +14,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
+
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
@@ -30,8 +33,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         UserEntity user = userRepository.findByEmail(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(String.valueOf(user.getRole()));
-            return new UsernamePasswordAuthenticationToken(username, user.getPassword(), List.of(authority));
+            GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(authority);
+            return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName()), null, authorities);
         }
         return null;
     }

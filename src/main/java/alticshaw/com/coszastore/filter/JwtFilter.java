@@ -1,9 +1,13 @@
 package alticshaw.com.coszastore.filter;
 
+import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.exception.JwtCustomException;
 import alticshaw.com.coszastore.payload.response.MessageResponse;
-import alticshaw.com.coszastore.utils.JwtHelper;
+import alticshaw.com.coszastore.utils.KeyUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,32 +16,44 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    @Resource
-    JwtHelper jwtHelper;
+    @Autowired
+    KeyUtil keyUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
-        if(token != null){
-            Claims claims = jwtHelper.decodeToken(token);
-            if (isTokenExpired(claims)) {
-                throw new JwtCustomException(new MessageResponse().unthorization("Token"), 401);
+        if (token != null) {
+            try {
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(keyUtil.getAccessTokenPublicKey())
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+
+                if (isTokenExpired(claims)) {
+                    throw new JwtCustomException("Invalid Token", 401);
+                }
+
+                List<GrantedAuthority> authorities = getAuthoritiesFromClaims(claims);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } catch (JwtCustomException e){
+                throw new JwtCustomException("Token  Expired", 401);
+            } catch (Exception ex) {
+                throw new CustomException("Token invalid");
             }
-            List<GrantedAuthority> authorities = getAuthoritiesFromClaims(claims);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         filterChain.doFilter(request, response);
     }
@@ -58,7 +74,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isTokenExpired(Claims claims) {
-        Date expirationDate = claims.getExpiration();
-        return expirationDate != null && expirationDate.before(new Date());
+        Instant expirationInstant = claims.getExpiration().toInstant();
+        Instant now = Instant.now();
+        return expirationInstant != null && expirationInstant.isBefore(now);
     }
 }
