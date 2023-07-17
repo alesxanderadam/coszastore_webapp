@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenDto {
-    private UserResponse informationUser;
     private String accessToken;
     private String refreshToken;
 }

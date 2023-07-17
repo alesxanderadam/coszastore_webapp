@@ -104,10 +104,7 @@ public class JwtService {
             );
         }
 
-        UserResponse user = (UserResponse) principal;
-
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setInformationUser(user);
         tokenDto.setAccessToken(generateAccessToken(authentication));
         String refreshToken;
         if (authentication.getPrincipal() instanceof Jwt) {

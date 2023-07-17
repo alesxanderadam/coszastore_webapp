@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.provider;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.exception.AuthCustomException;
 import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             authorities.add(authority);
             return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName()), null, authorities);
         }
-        return null;
+        throw new AuthCustomException("Email and Password is valid!", 404);
     }
 
     @Override

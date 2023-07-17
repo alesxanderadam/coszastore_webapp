@@ -41,7 +41,6 @@ public class JwtFilter extends OncePerRequestFilter {
                         .parseClaimsJws(token)
                         .getBody();
 
-
                 if (isTokenExpired(claims)) {
                     throw new JwtCustomException("Invalid Token", 401);
                 }
@@ -51,8 +50,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } catch (JwtCustomException e){
                 throw new JwtCustomException("Token  Expired", 401);
-            } catch (Exception ex) {
-                throw new CustomException("Token invalid");
             }
         }
         filterChain.doFilter(request, response);

@@ -47,13 +47,13 @@ public class AuthService implements AuthServiceImp {
         UsernamePasswordAuthenticationToken jwtToken = new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
         try {
             Authentication authentication = authenticationManager.authenticate(jwtToken);
-            if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(authentication);
+            if (!authentication.isAuthenticated()) {
+                throw new AuthCustomException("Invalid Email or Password! Try again", 401);
             }
+            return jwtService.generateToken(authentication);
         } catch (Exception e) {
             throw new AuthCustomException("Invalid Email or Password! Try again", 401);
         }
-        return null;
     }
 
     @Override
