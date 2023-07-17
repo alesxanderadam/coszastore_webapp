@@ -27,9 +27,7 @@ public class UserService implements UserServiceImp {
             userResponse.setId(data.getId());
             userResponse.setUsername(data.getUsername());
             userResponse.setEmail(data.getEmail());
-            userResponse.setCreatedTime(data.getCreatedTime());
-            userResponse.setUpdatedTime(data.getUpdatedTime());
-            userResponse.setRoleId(data.getRole());
+            userResponse.setRole_name(data.getRole().getName());
             userResponseList.add(userResponse);
         }
 
@@ -42,8 +40,8 @@ public class UserService implements UserServiceImp {
         try {
             userRepository.save(userEntity);
             isSuccess = true;
-        }catch (Exception e) {
-            throw new CustomException("Error addUser "+e.getMessage());
+        } catch (Exception e) {
+            throw new CustomException("Error addUser " + e.getMessage());
 
         }
         return isSuccess;
@@ -53,7 +51,8 @@ public class UserService implements UserServiceImp {
     public boolean updateUser(Integer userId, UserEntity updatedUser) {
         boolean isSuccess;
         UserEntity existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));;
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        ;
         existingUser.setUsername(updatedUser.getUsername());
         existingUser.setPassword(updatedUser.getPassword());
         existingUser.setEmail(updatedUser.getEmail());
@@ -68,7 +67,8 @@ public class UserService implements UserServiceImp {
     public boolean deleteUser(Integer userId, UserEntity updatedUser) {
         boolean isSuccess;
         UserEntity deleteUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));;
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        ;
         userRepository.delete(deleteUser);
         isSuccess = true;
 
