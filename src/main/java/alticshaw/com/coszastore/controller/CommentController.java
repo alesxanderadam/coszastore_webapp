@@ -1,6 +1,6 @@
 package alticshaw.com.coszastore.controller;
 
-import alticshaw.com.coszastore.entity.CommentEntity;
+import alticshaw.com.coszastore.payload.request.CommentRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.service.imp.CommentServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class CommentController {
 
     @PostMapping("/post")
     public ResponseEntity<?> postComment(
-            @RequestBody @Valid CommentEntity comment,
+            @RequestBody @Valid CommentRequest comment,
             BindingResult commentBidingResult
     ) {
         boolean isSuccess = commentServiceImp.post(comment, commentBidingResult);
@@ -34,30 +34,32 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{blogId}")
-    public ResponseEntity<?> getAllComments(@PathVariable String blogId) {
+    @GetMapping("/list/{blogId}")
+    public ResponseEntity<?> getAllComments(@PathVariable Integer blogId) {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("List all comment!");
-        response.setData(commentServiceImp.getAllComments(blogId));
+//        response.setData(commentServiceImp.getAllComments(blogId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable String id) {
         boolean isSuccess = commentServiceImp.delete(id);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Delete comment with id: " + id + " successfully");
+        response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/edit")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<?> editComment(
-            @RequestBody @Valid CommentEntity comment,
+            @PathVariable String id,
+            @RequestBody @Valid CommentRequest newComment,
             BindingResult commentBindingResult
     ) {
-        boolean isSuccess = commentServiceImp.edit(comment, commentBindingResult);
+        boolean isSuccess = commentServiceImp.edit(id, newComment, commentBindingResult);
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Update comment successfully!");

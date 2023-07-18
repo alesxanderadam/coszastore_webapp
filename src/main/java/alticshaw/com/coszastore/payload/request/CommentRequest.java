@@ -1,16 +1,27 @@
-package alticshaw.com.coszastore.payload.response;
+package alticshaw.com.coszastore.payload.request;
 
-import alticshaw.com.coszastore.entity.BlogEntity;
+import javax.validation.constraints.*;
 
-import java.sql.Timestamp;
+public class CommentRequest {
 
-public class CommentResponse {
+    @NotNull(message = "Content is required!")
+    @NotEmpty(message = "Content is not empty!")
     private String content;
+
+    @NotNull(message = "Email can not be null!")
+    @NotEmpty(message = "Email can not be empty!")
+    @Email(message = "Email must be in right format!",
+            regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
     private String website;
+
+    @NotNull(message = "Name is required!")
+    @NotEmpty(message = "Name is not empty!")
     private String name;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+
+    @NotNull(message = "Blog is not null!")
+    @NotEmpty(message = "Blog is required!")
+    @Pattern(regexp = "^[1-9]\\d*$")
     private int blogId;
 
     public String getContent() {
@@ -45,22 +56,6 @@ public class CommentResponse {
         this.name = name;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public int getBlogId() {
         return blogId;
     }
@@ -69,17 +64,11 @@ public class CommentResponse {
         this.blogId = blogId;
     }
 
-    public CommentResponse() {}
-
-    public CommentResponse(String content, String email, String website,
-                           String name, Timestamp createdAt,
-                           Timestamp updatedAt, int blogId) {
+    public CommentRequest(String content, String email, String website, String name, int blogId) {
         this.content = content;
         this.email = email;
         this.website = website;
         this.name = name;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.blogId = blogId;
     }
 }

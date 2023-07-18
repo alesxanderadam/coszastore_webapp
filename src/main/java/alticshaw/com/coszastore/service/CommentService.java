@@ -1,10 +1,11 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.entity.BlogEntity;
 import alticshaw.com.coszastore.entity.CommentEntity;
-import alticshaw.com.coszastore.exception.CommentNotFoundException;
-import alticshaw.com.coszastore.exception.CustomIllegalArgumentException;
-import alticshaw.com.coszastore.exception.ValidationCustomException;
+import alticshaw.com.coszastore.exception.*;
+import alticshaw.com.coszastore.payload.request.CommentRequest;
 import alticshaw.com.coszastore.payload.response.CommentResponse;
+import alticshaw.com.coszastore.repository.BlogRepository;
 import alticshaw.com.coszastore.repository.CommentRepository;
 import alticshaw.com.coszastore.service.imp.CommentServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,12 @@ import java.util.Optional;
 @Service
 public class CommentService implements CommentServiceImp {
     private final CommentRepository commentRepository;
+    private final BlogRepository blogRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, BlogRepository blogRepository) {
         this.commentRepository = commentRepository;
+        this.blogRepository = blogRepository;
     }
 
     @Override
@@ -30,6 +33,7 @@ public class CommentService implements CommentServiceImp {
         List<CommentResponse> commentResponseList = new ArrayList<>();
         try {
             int validBlogId = Integer.parseInt(blogId);
+            isExistedBlog(validBlogId);
             List<CommentEntity> commentEntityList = commentRepository.findAllByBlogId(validBlogId);
             for (CommentEntity data : commentEntityList) {
                 CommentResponse comment = new CommentResponse(
@@ -39,7 +43,7 @@ public class CommentService implements CommentServiceImp {
                         data.getName(),
                         data.getCreatedTime(),
                         data.getUpdatedTime(),
-                        data.getBlog()
+                        data.getBlog().getId()
                 );
                 commentResponseList.add(comment);
             }
@@ -50,33 +54,46 @@ public class CommentService implements CommentServiceImp {
     }
 
     @Override
-    public boolean post(CommentEntity comment, BindingResult commentBindingResult) {
+    public boolean post(CommentRequest comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
-            comment.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-            commentRepository.save(comment);
+            Optional<BlogEntity> blogOptional = isExistedBlog(comment.getBlogId());
+            CommentEntity commentEntity = new CommentEntity(
+                    comment.getContent(),
+                    comment.getEmail(),
+                    comment.getName(),
+                    comment.getWebsite(),
+                    blogOptional.get(),
+                    new Timestamp(System.currentTimeMillis())
+            );
+            commentRepository.save(commentEntity);
             return true;
         } else {
-            throw new ValidationCustomException(commentBindingResult);
+            throw new CustomValidationException(commentBindingResult);
         }
     }
 
     @Override
-    public boolean edit(CommentEntity comment, BindingResult commentBindingResult) {
-        if (!commentBindingResult.hasErrors()) {
-            Optional<CommentEntity> commentOptional = commentRepository.findById(comment.getId());
-            commentOptional.orElseThrow(() ->
-                    new CommentNotFoundException("Comment not found with id: " + comment.getId() +" - Can not edit!"));
-            commentRepository.updateComment(
-                    comment.getContent(),
-                    comment.getEmail(), 
-                    comment.getWebsite(),
-                    comment.getName(),
-                    comment.getBlog(),
-                    comment.getId()
-            );
-            return true;
-        } else {
-            throw new ValidationCustomException(commentBindingResult);
+    public boolean edit(String id, CommentRequest comment, BindingResult commentBindingResult) {
+        try {
+            int commentId = Integer.parseInt(id);
+            if (!commentBindingResult.hasErrors()) {
+                isExistedComment(commentId);
+                Optional<BlogEntity> optionalBlog = isExistedBlog(comment.getBlogId());
+
+                commentRepository.updateComment(
+                        comment.getContent(),
+                        comment.getEmail(),
+                        comment.getWebsite(),
+                        comment.getName(),
+                        optionalBlog.get(),
+                        commentId
+                );
+                return true;
+            } else {
+                throw new CustomValidationException(commentBindingResult);
+            }
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Comment not found with id: " + id);
         }
     }
 
@@ -84,13 +101,23 @@ public class CommentService implements CommentServiceImp {
     public boolean delete(String id) {
         try {
             int commentId = Integer.parseInt(id);
-            Optional<CommentEntity> commentEntityOptional = commentRepository.findById(commentId);
-            commentEntityOptional.orElseThrow(() ->
-                    new CommentNotFoundException("Comment not found with id: " + commentId));
+            isExistedComment(commentId);
             commentRepository.deleteById(commentId);
             return true;
         } catch (NumberFormatException e) {
             throw new CustomIllegalArgumentException("Illegal comment id: " + id);
         }
+    }
+
+    private void isExistedComment(int commentId) {
+        Optional<CommentEntity> commentOptional = commentRepository.findById(commentId);
+        commentOptional.orElseThrow(() ->
+                new CommentNotFoundException("Comment not found with id: " + commentId));
+    }
+
+    private Optional<BlogEntity> isExistedBlog(int blogId) {
+        Optional<BlogEntity> optionalBlog = blogRepository.findById(blogId);
+        optionalBlog.orElseThrow(() -> new BlogNotFoundException("Blog not found with id: " + blogId));
+        return optionalBlog;
     }
 }

@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.sql.Timestamp;
 import java.util.Set;
 
