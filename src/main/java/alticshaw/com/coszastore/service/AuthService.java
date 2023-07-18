@@ -45,15 +45,11 @@ public class AuthService implements AuthServiceImp {
     public TokenDto signIn(SignInRequest signInRequest, BindingResult signInBindingResult) {
         validateRequest(signInBindingResult);
         UsernamePasswordAuthenticationToken jwtToken = new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
-        try {
-            Authentication authentication = authenticationManager.authenticate(jwtToken);
-            if (!authentication.isAuthenticated()) {
-                throw new AuthCustomException("Invalid Email or Password! Try again", 401);
-            }
+        Authentication authentication = authenticationManager.authenticate(jwtToken);
+        if (authentication.isAuthenticated()) {
             return jwtService.generateToken(authentication);
-        } catch (Exception e) {
-            throw new AuthCustomException("Invalid Email or Password! Try again", 401);
         }
+        throw new CustomException();
     }
 
     @Override

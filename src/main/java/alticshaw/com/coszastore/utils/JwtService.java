@@ -33,23 +33,22 @@ public class JwtService {
     final
     JwtEncoder refreshTokenEncoder;
 
+    final
+    KeyUtil keyUtil;
+
     @Value("${jwt.public.key}")
     private String publicKey;
 
-    public JwtService(JwtEncoder accessTokenEncoder, @Qualifier("jwtRefreshTokenEncoder") JwtEncoder refreshTokenEncoder) {
+    public JwtService(JwtEncoder accessTokenEncoder, @Qualifier("jwtRefreshTokenEncoder") JwtEncoder refreshTokenEncoder, KeyUtil keyUtil) {
         this.accessTokenEncoder = accessTokenEncoder;
         this.refreshTokenEncoder = refreshTokenEncoder;
+        this.keyUtil = keyUtil;
     }
 
     public Claims decodeToken(String token) {
         try {
-            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PublicKey publicKey = keyFactory.generatePublic(keySpec);
-
             return Jwts.parserBuilder()
-                    .setSigningKey(publicKey)
+                    .setSigningKey(keyUtil.getAccessTokenPublicKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -68,6 +67,7 @@ public class JwtService {
                     .subject("coszasotre webapp")
                     .claim("infoUser", user)
                     .claim("role", user.getRole_name())
+                    .claim("email", user.getEmail())
                     .issuedAt(now)
                     .expiresAt(now.plus(5, ChronoUnit.MINUTES))
                     .build();
@@ -87,6 +87,7 @@ public class JwtService {
                     .subject("coszastore webapp")
                     .claim("infoUser", user)
                     .claim("role", user.getRole_name())
+                    .claim("email", user.getEmail())
                     .issuedAt(now)
                     .expiresAt(now.plus(30, ChronoUnit.DAYS))
                     .build();

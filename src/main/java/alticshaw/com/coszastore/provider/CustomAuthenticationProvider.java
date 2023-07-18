@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -32,14 +33,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        UserEntity user = userRepository.findByEmail(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(authority);
-            return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName()), null, authorities);
-        }
-        throw new AuthCustomException("Email and Password is valid!", 404);
+        Optional<UserEntity> userOptional = Optional.ofNullable(userRepository.findByEmail(username));
+        //Avoid handling null when the entity for the given email is not found.
+        return userOptional.map(user -> {
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(authority);
+                return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName()), null, authorities);
+            }else{
+                throw new AuthCustomException("Invalid Email or Password! Try again", 401);
+            }
+        }).orElse(null);
     }
 
     @Override

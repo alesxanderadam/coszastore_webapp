@@ -1,13 +1,11 @@
 package alticshaw.com.coszastore.filter;
 
-import alticshaw.com.coszastore.exception.CustomException;
-import alticshaw.com.coszastore.exception.JwtCustomException;
-import alticshaw.com.coszastore.payload.response.MessageResponse;
+import alticshaw.com.coszastore.exception.ExpiredJwtCustomException;
 import alticshaw.com.coszastore.utils.KeyUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,15 +39,16 @@ public class JwtFilter extends OncePerRequestFilter {
                         .parseClaimsJws(token)
                         .getBody();
 
+                // Kiểm tra thời hạn của token trước khi parse claim
                 if (isTokenExpired(claims)) {
-                    throw new JwtCustomException("Invalid Token", 401);
+                    throw new ExpiredJwtCustomException(null, claims, "Token has expired");
                 }
 
                 List<GrantedAuthority> authorities = getAuthoritiesFromClaims(claims);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            } catch (JwtCustomException e){
-                throw new JwtCustomException("Token  Expired", 401);
+            } catch (ExpiredJwtException e) {
+                throw new ExpiredJwtCustomException(e.getHeader(), e.getClaims(), "Token has expired", e.getCause());
             }
         }
         filterChain.doFilter(request, response);

@@ -21,7 +21,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    // use constructor injection instead of @Autowired -> recommend á
     private final BaseResponse baseResponse;
     private final MessageResponse messageResponse;
     private final AuthServiceImp authServiceImp;
@@ -48,26 +47,20 @@ public class AuthController {
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult signUpBindingResult) {
         UserEntity user = authServiceImp.addUser(signUpRequest, signUpBindingResult);
-        if (user != null) {
-            UserResponse userResponse = new UserResponse().MapUserEntityToUserResponse(user);
-            baseResponse.setStatusCode(200);
-            baseResponse.setMessage(messageResponse.success());
-            baseResponse.setData(userResponse);
-            return ResponseEntity.ok(baseResponse);
-        }
-        throw new AuthCustomException("Failed to sign up user", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        UserResponse userResponse = new UserResponse().MapUserEntityToUserResponse(user);
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(messageResponse.success());
+        baseResponse.setData(userResponse);
+        return ResponseEntity.ok(baseResponse);
     }
 
 
     @GetMapping("/infor")
     public ResponseEntity<?> getInforUser(@RequestParam String token) {
         UserResponse userResponse = authServiceImp.getInfoUser(token);
-        if (userResponse != null) {
-            baseResponse.setStatusCode(200);
-            baseResponse.setMessage(messageResponse.success());
-            baseResponse.setData(userResponse);
-            return ResponseEntity.ok(baseResponse);
-        }
-        throw new AuthCustomException("Failed to get information user", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(messageResponse.success());
+        baseResponse.setData(userResponse);
+        return ResponseEntity.ok(baseResponse);
     }
 }

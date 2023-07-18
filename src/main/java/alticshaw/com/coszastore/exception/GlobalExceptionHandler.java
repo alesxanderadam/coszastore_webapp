@@ -2,6 +2,7 @@ package alticshaw.com.coszastore.exception;
 
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,9 @@ import javax.security.auth.message.AuthException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     BaseResponse baseResponse;
+
     @Autowired
-    public GlobalExceptionHandler(BaseResponse baseResponse){
+    public GlobalExceptionHandler(BaseResponse baseResponse) {
         this.baseResponse = baseResponse;
     }
 
@@ -37,7 +39,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtCustomException.class)
     public ResponseEntity<?> handleJwtCustomException(JwtCustomException e) {
         return ResponseEntity.status(e.getStatusCode())
-                .body(new ErrorResponse(e.getStatusCode(),e.getMessage()));
+                .body(new ErrorResponse(e.getStatusCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(ExpiredJwtCustomException.class)
+    public ResponseEntity<?> handleExpiredJwtCustomException(ExpiredJwtCustomException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 
     @ExceptionHandler(ValidationCustomException.class)
