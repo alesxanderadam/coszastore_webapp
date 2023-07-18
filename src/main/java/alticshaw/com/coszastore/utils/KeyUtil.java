@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Component
 public class KeyUtil {
-    @Autowired
+    final
     Environment environment;
 
     @Value("${access-token.private}")
@@ -38,6 +38,10 @@ public class KeyUtil {
 
     private KeyPair _accessTokenKeyPair;
     private KeyPair _refreshTokenKeyPair;
+
+    public KeyUtil(Environment environment) {
+        this.environment = environment;
+    }
 
     private KeyPair getAccessTokenKeyPair() {
         if (Objects.isNull(_accessTokenKeyPair)) {

@@ -36,9 +36,6 @@ public class JwtService {
     final
     KeyUtil keyUtil;
 
-    @Value("${jwt.public.key}")
-    private String publicKey;
-
     public JwtService(JwtEncoder accessTokenEncoder, @Qualifier("jwtRefreshTokenEncoder") JwtEncoder refreshTokenEncoder, KeyUtil keyUtil) {
         this.accessTokenEncoder = accessTokenEncoder;
         this.refreshTokenEncoder = refreshTokenEncoder;

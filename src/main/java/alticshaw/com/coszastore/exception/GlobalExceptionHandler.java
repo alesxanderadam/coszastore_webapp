@@ -42,12 +42,6 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getStatusCode(), e.getMessage()));
     }
 
-    @ExceptionHandler(ExpiredJwtCustomException.class)
-    public ResponseEntity<?> handleExpiredJwtCustomException(ExpiredJwtCustomException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
-    }
-
     @ExceptionHandler(ValidationCustomException.class)
     public ResponseEntity<?> handleValidationException(ValidationCustomException exc) {
         return ResponseEntity.status(exc.getStatusCode())

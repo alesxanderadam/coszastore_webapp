@@ -1,9 +1,8 @@
 package alticshaw.com.coszastore.filter;
 
-import alticshaw.com.coszastore.exception.ExpiredJwtCustomException;
+import alticshaw.com.coszastore.exception.JwtCustomException;
 import alticshaw.com.coszastore.utils.KeyUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,30 +24,32 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    @Autowired
+    final
     KeyUtil keyUtil;
+
+    @Autowired
+    public JwtFilter(KeyUtil keyUtil) {
+        this.keyUtil = keyUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
         if (token != null) {
             try {
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(keyUtil.getAccessTokenPublicKey())
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
-
-                // Kiểm tra thời hạn của token trước khi parse claim
+                Claims claims = parseJwtToken(token);
                 if (isTokenExpired(claims)) {
-                    throw new ExpiredJwtCustomException(null, claims, "Token has expired");
+                    throw new JwtCustomException();
                 }
 
                 List<GrantedAuthority> authorities = getAuthoritiesFromClaims(claims);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            } catch (ExpiredJwtException e) {
-                throw new ExpiredJwtCustomException(e.getHeader(), e.getClaims(), "Token has expired", e.getCause());
+            } catch (JwtCustomException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{ \"message \": \"Token invalid \", \"statusCode \": 401 }");
+                return;
             }
         }
         filterChain.doFilter(request, response);
@@ -59,6 +60,18 @@ public class JwtFilter extends OncePerRequestFilter {
         String role = claims.get("role", String.class);
         authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
+    }
+
+    private Claims parseJwtToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(keyUtil.getAccessTokenPublicKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            throw new JwtCustomException("Token invalid", 401);
+        }
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
