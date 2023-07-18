@@ -66,7 +66,7 @@ public class JwtService {
                     .claim("role", user.getRole_name())
                     .claim("email", user.getEmail())
                     .issuedAt(now)
-                    .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+                    .expiresAt(now.plus(1, ChronoUnit.DAYS))
                     .build();
             return accessTokenEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
         } catch (Exception error) {
@@ -86,7 +86,7 @@ public class JwtService {
                     .claim("role", user.getRole_name())
                     .claim("email", user.getEmail())
                     .issuedAt(now)
-                    .expiresAt(now.plus(30, ChronoUnit.DAYS))
+                    .expiresAt(now.plus(15, ChronoUnit.DAYS))
                     .build();
             return accessTokenEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
         } catch (Exception error) {
