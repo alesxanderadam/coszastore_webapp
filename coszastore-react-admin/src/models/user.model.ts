@@ -22,7 +22,7 @@ export interface IUserPagingRequest extends IPagingRequest {
 export interface IUserBaseReponse<T> {
     statusCode: number;
     message: string;
-    data: T[]
+    data: T
 }
 
 export interface IUserInforModel {

@@ -64,8 +64,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("**").permitAll()
-                        .antMatchers("/api/test").hasAuthority("ADMIN")
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/test","/api/user/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())

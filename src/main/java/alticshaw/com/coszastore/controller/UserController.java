@@ -25,6 +25,15 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/user_id={user_id}")
+    public ResponseEntity<?> findById(@PathVariable int user_id) {
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Success!!!!");
+        response.setData(userServiceImp.getUserById(user_id));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addUser(@RequestBody UserEntity userEntityUpdate, BindingResult errors) {
         if(errors.hasErrors()){

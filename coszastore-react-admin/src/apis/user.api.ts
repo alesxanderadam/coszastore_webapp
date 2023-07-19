@@ -49,12 +49,12 @@ export default class UserApi extends Fetcher {
     getUserPaging(request: IUserPagingRequest): Promise<IPaginationModel<UserModel>> {
         return this.get(`${this.rootApiUrl}/api/user/paging`, request);
     }
-    getUsers(): Promise<IUserBaseReponse<UserModel>> {
+    getUsers(): Promise<IUserBaseReponse<UserModel[]>> {
         return this.get(`${this.rootApiUrl}/api/user/list`);
     }
 
-    getUserById(id: string): Promise<UserModel> {
-        return this.get(`${this.rootApiUrl}/api/user/${id}`);
+    getUserById(id: string): Promise<IUserBaseReponse<UserModel>> {
+        return this.get(`${this.rootApiUrl}/api/user/user_id=${id}`);
     }
 
     addUser(user: UserUpdateModel): Promise<UserModel> {

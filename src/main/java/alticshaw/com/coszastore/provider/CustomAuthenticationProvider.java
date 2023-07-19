@@ -40,8 +40,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(authority);
-                return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName()), null, authorities);
-            }else{
+                return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getAddress(), user.getPhone_number(), user.getAvatar(), user.getStatus(), user.getRole().getName()), null, authorities);
+            } else {
                 throw new AuthCustomException("Invalid Email or Password! Try again", 401);
             }
         }).orElse(null);
