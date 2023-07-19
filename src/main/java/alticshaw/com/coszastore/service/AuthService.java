@@ -2,6 +2,7 @@ package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.RoleEntity;
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.entity.enums.Status;
 import alticshaw.com.coszastore.exception.*;
 import alticshaw.com.coszastore.payload.request.SignInRequest;
 import alticshaw.com.coszastore.payload.request.SignUpRequest;
@@ -49,7 +50,7 @@ public class AuthService implements AuthServiceImp {
             Authentication authentication = authenticationManager.authenticate(jwtToken);
             if (authentication.isAuthenticated()) {
                 UserEntity user = userRepository.findByEmail(signInRequest.getEmail());
-                UserResponse customUserResp = new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName());
+                UserResponse customUserResp = new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getAddress(), user.getPhone_number(), user.getAvatar(), user.getStatus(), user.getRole().getName());
                 return jwtHelper.generateToken(customUserResp);
             }
         } catch (Exception e) {
@@ -73,7 +74,7 @@ public class AuthService implements AuthServiceImp {
             String email = claims.get("email", String.class);
             UserEntity user = userRepository.findByEmail(email);
             if (user != null) {
-                return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName());
+                return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getAddress(), user.getPhone_number(), user.getAvatar(), user.getStatus(), user.getRole().getName());
             }
         }
         throw new AuthCustomException("Not authorized", 401);

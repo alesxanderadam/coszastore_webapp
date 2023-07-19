@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.service;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.entity.enums.Status;
 import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
@@ -27,6 +28,10 @@ public class UserService implements UserServiceImp {
             userResponse.setId(data.getId());
             userResponse.setUsername(data.getUsername());
             userResponse.setEmail(data.getEmail());
+            userResponse.setAddress(data.getAddress());
+            userResponse.setPhone_number(data.getPhone_number());
+            userResponse.setAvatar(data.getAvatar());
+            userResponse.setStatus(data.getStatus());
             userResponse.setRole_name(data.getRole().getName());
             userResponseList.add(userResponse);
         }

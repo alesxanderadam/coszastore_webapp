@@ -1,5 +1,6 @@
 import { CategoryModel } from 'models/category.model';
 import { IPagingRequest } from './pagination.model';
+import { Status } from './enums/status.enum';
 
 export class ProductUpdateModel {
     code!: string;
@@ -10,7 +11,7 @@ export class ProductUpdateModel {
     basicUnit!: string;
     importPrice!: number;
     salePrice!: number;
-    status!: number;
+    status!: Status;
     category!: CategoryModel;
     productImages!: IProductImageModel[];
     keepedProductImageIds!: string[];

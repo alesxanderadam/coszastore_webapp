@@ -1,5 +1,5 @@
 import { IPaginationModel } from 'models/pagination.model';
-import { IUserPagingRequest, UserModel, UserUpdateModel } from "./../models/user.model";
+import { IUserBaseReponse, IUserPagingRequest, UserModel, UserUpdateModel } from "./../models/user.model";
 import Fetcher from "./fetcher";
 
 // mock.onGet("/users").reply(200, {
@@ -49,8 +49,8 @@ export default class UserApi extends Fetcher {
     getUserPaging(request: IUserPagingRequest): Promise<IPaginationModel<UserModel>> {
         return this.get(`${this.rootApiUrl}/api/user/paging`, request);
     }
-    getUsers(): Promise<UserModel[]> {
-        return this.get(`${this.rootApiUrl}/api/user`);
+    getUsers(): Promise<IUserBaseReponse<UserModel>> {
+        return this.get(`${this.rootApiUrl}/api/user/list`);
     }
 
     getUserById(id: string): Promise<UserModel> {
