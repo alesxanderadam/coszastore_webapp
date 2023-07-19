@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -86,5 +89,15 @@ public class FileStorageService implements FileStorageServiceImp {
         FileSystemUtils.deleteRecursively(Paths.get(this.directory).toFile());
         init();
         return true;
+    }
+
+    @Override
+    public boolean isImage(MultipartFile image) {
+        try (InputStream inputStream = image.getInputStream()) {
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+            return bufferedImage != null;
+        } catch (IOException e) {
+            throw new FileStorageException(image.getOriginalFilename() + " is not an image or something wrong happen!");
+        }
     }
 }

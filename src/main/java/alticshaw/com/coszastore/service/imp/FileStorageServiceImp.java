@@ -9,4 +9,5 @@ public interface FileStorageServiceImp {
     Resource loadAsResource(String Filename);
     boolean deleteAll();
     boolean deleteByName(String filename);
+    boolean isImage(MultipartFile image);
 }
