@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,12 +50,12 @@ public class FileStorageService implements FileStorageServiceImp {
 
     @Override
     public boolean save(MultipartFile file) {
-        try {
+        try (InputStream inputStream = file.getInputStream()) {
             String filename = file.getOriginalFilename();
-            if (filename == null) {
-                throw new FileStorageException("Filename can not be null.");
+            if (filename == null || filename.trim().isEmpty()) {
+                throw new FileStorageException("Filename can not be null or empty");
             }
-            Files.copy(file.getInputStream(), Paths.get(this.directory).resolve(file.getOriginalFilename()));
+            Files.copy(inputStream, Paths.get(this.directory).resolve(file.getOriginalFilename()));
             return true;
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {

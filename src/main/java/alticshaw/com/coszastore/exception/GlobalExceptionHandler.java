@@ -2,7 +2,6 @@ package alticshaw.com.coszastore.exception;
 
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.ErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
