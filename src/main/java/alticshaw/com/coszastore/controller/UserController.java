@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.controller;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.service.imp.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class UserController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id")Integer userId,
-                                        @RequestBody UserEntity userEntityUpdate, BindingResult errors) {
+                                        @RequestBody UserRequest userEntityUpdate, BindingResult errors) {
         if(errors.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
