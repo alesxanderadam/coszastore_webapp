@@ -2,7 +2,6 @@ package alticshaw.com.coszastore.exception;
 
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.ErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +56,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<?> handleFileStorageException(Exception e) {
+        return ResponseEntity.ok()
+                .body(new ErrorResponse(500, e.getMessage()));
     @ExceptionHandler(CommentNotFoundException.class)
     public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
