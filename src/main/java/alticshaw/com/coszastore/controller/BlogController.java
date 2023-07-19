@@ -1,10 +1,14 @@
 package alticshaw.com.coszastore.controller;
 
+import alticshaw.com.coszastore.payload.request.BlogRequest;
 import alticshaw.com.coszastore.service.imp.BlogServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -17,7 +21,8 @@ public class BlogController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> postBlog() {
+    public ResponseEntity<?> postBlog(@RequestPart @Valid BlogRequest blogRequest, BindingResult bindingResult) {
+
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
@@ -33,6 +38,11 @@ public class BlogController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> editBlog(@PathVariable String id) {
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteBlog(@PathVariable String id) {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 }

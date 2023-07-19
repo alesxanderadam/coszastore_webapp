@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleFileStorageException(Exception e) {
         return ResponseEntity.ok()
                 .body(new ErrorResponse(500, e.getMessage()));
+    }
     @ExceptionHandler(CommentNotFoundException.class)
     public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
