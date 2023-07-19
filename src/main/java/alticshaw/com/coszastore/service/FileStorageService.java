@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class FileStorageService implements FileStorageServiceImp {
@@ -25,10 +28,13 @@ public class FileStorageService implements FileStorageServiceImp {
 
     @Override
     public void init() {
-        Path directoryPath = Paths.get(directory);
         try {
-            if (!Files.exists(directoryPath)) {
-                Files.createDirectories(directoryPath);
+            if (!Files.exists(imagePath())) {
+                Files.createDirectories(imagePath());
+            }
+
+            if (!Files.exists(otherFilesPath())) {
+                Files.createDirectories(otherFilesPath());
             }
         } catch (Exception e) {
             throw new FileStorageException("Unable to create storage directory for files");
@@ -38,11 +44,17 @@ public class FileStorageService implements FileStorageServiceImp {
     @Override
     public boolean deleteByName(String filename) {
         try {
+            Path imageFile = imagePath().resolve(filename);
+            Path otherFiles = otherFilesPath().resolve(filename);
             Path file = Paths.get(this.directory).resolve(filename);
-            if (!Files.exists(file)) {
+
+            if (Files.exists(imageFile)) {
+                Files.delete(imageFile);
+            } else if (Files.exists(otherFiles)) {
+                Files.delete(otherFiles);
+            } else {
                 throw new FileStorageException("A file of that name is not exist.");
             }
-            Files.delete(file);
             return true;
         } catch (Exception e) {
             throw new FileStorageException("Could not delete " + filename);
@@ -52,18 +64,24 @@ public class FileStorageService implements FileStorageServiceImp {
 
 
     @Override
-    public boolean save(MultipartFile file) {
+    public String save(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
             String filename = file.getOriginalFilename();
             if (filename == null || filename.trim().isEmpty()) {
                 throw new FileStorageException("Filename can not be null or empty");
             }
-            Files.copy(inputStream, Paths.get(this.directory).resolve(file.getOriginalFilename()));
-            return true;
-        } catch (Exception e) {
-            if (e instanceof FileAlreadyExistsException) {
-                throw new FileStorageException("A file of that name already exists.");
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+            String savedFileName = now.format(formatter) + "_" + filename;
+
+            if (isImage(file)) {
+                Files.copy(inputStream, imagePath().resolve(savedFileName));
+            } else {
+                Files.copy(inputStream, otherFilesPath().resolve(savedFileName));
             }
+            return savedFileName;
+        } catch (Exception e) {
             throw new FileStorageException("Unable to upload file.");
         }
     }
@@ -71,11 +89,15 @@ public class FileStorageService implements FileStorageServiceImp {
     @Override
     public Resource loadAsResource(String filename) {
         try {
-            Path file = Paths.get(this.directory).resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
+            Path imageFile = imagePath().resolve(filename);
+            Path otherFiles = otherFilesPath().resolve(filename);
+            Resource imageResource = new UrlResource(imageFile.toUri());
+            Resource otherFilesResource = new UrlResource(otherFiles.toUri());
 
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
+            if (imageResource.exists() || imageResource.isReadable()) {
+                return imageResource;
+            } else if (otherFilesResource.exists() || otherFilesResource.isReadable()) {
+                return otherFilesResource;
             } else {
                 throw new FileStorageException("Could not read the file!");
             }
@@ -100,4 +122,13 @@ public class FileStorageService implements FileStorageServiceImp {
             throw new FileStorageException(image.getOriginalFilename() + " is not an image or something wrong happen!");
         }
     }
+
+    private Path imagePath() {
+        return Paths.get(this.directory + "\\images");
+    }
+
+    private Path otherFilesPath() {
+        return Paths.get(directory + "\\others");
+    }
+
 }
