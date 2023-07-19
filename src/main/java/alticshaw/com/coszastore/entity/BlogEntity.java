@@ -12,6 +12,9 @@ public class BlogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "image")
     private String image;
 
@@ -40,6 +43,14 @@ public class BlogEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getImage() {
