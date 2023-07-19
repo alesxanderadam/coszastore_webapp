@@ -35,11 +35,11 @@ public class CommentController {
     }
 
     @GetMapping("/list/{blogId}")
-    public ResponseEntity<?> getAllComments(@PathVariable Integer blogId) {
+    public ResponseEntity<?> getAllComments(@PathVariable String blogId) {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("List all comment!");
-//        response.setData(commentServiceImp.getAllComments(blogId));
+        response.setData(commentServiceImp.getAllComments(blogId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

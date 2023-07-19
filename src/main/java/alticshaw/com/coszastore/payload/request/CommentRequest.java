@@ -1,7 +1,14 @@
 package alticshaw.com.coszastore.payload.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentRequest {
 
     @NotNull(message = "Content is required!")
@@ -20,55 +27,6 @@ public class CommentRequest {
     private String name;
 
     @NotNull(message = "Blog is not null!")
-    @NotEmpty(message = "Blog is required!")
-    @Pattern(regexp = "^[1-9]\\d*$")
+    @Digits(integer = 10, fraction = 0, message = "Blog id must be an integer!")
     private int blogId;
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getBlogId() {
-        return blogId;
-    }
-
-    public void setBlogId(int blogId) {
-        this.blogId = blogId;
-    }
-
-    public CommentRequest(String content, String email, String website, String name, int blogId) {
-        this.content = content;
-        this.email = email;
-        this.website = website;
-        this.name = name;
-        this.blogId = blogId;
-    }
 }
