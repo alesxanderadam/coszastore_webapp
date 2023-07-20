@@ -40,5 +40,11 @@ public class RoleEntity {
         this.description = description;
     }
 
+    public Set<UserEntity> getUserEntities() {
+        return userEntities;
+    }
 
+    public void setUserEntities(Set<UserEntity> userEntities) {
+        this.userEntities = userEntities;
+    }
 }

@@ -8,4 +8,11 @@ import java.util.List;
 
 public interface RoleServiceImp {
     List<RoleEntity> findAll();
+
+    RoleEntity addRole(RoleEntity roleEntity);
+
+    RoleEntity updateRole(Integer userId,RoleEntity updatedRole);
+
+    boolean deleteRole(Integer userId,RoleEntity updatedRole);
+
 }
