@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.payload.response;
 
+import alticshaw.com.coszastore.entity.CommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,15 @@ public class CommentResponse {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private int blogId;
+
+    public CommentResponse mapCommentEntityToCommentResponse(CommentEntity commentEntity) {
+        return new CommentResponse(commentEntity.getContent(),
+                commentEntity.getEmail(),
+                commentEntity.getWebsite(),
+                commentEntity.getName(),
+                commentEntity.getCreatedTime(),
+                commentEntity.getUpdatedTime(),
+                commentEntity.getBlog().getId()
+        );
+    }
 }

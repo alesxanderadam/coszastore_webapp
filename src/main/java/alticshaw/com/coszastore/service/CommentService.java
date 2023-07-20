@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService implements CommentServiceImp {
@@ -30,33 +30,23 @@ public class CommentService implements CommentServiceImp {
 
     @Override
     public List<CommentResponse> getAllComments(String blogId) {
-        List<CommentResponse> commentResponseList = new ArrayList<>();
         try {
             int validBlogId = Integer.parseInt(blogId);
             isExistedBlog(validBlogId);
             List<CommentEntity> commentEntityList = commentRepository.findAllByBlogId(validBlogId);
-            for (CommentEntity data : commentEntityList) {
-                CommentResponse comment = new CommentResponse(
-                        data.getContent(),
-                        data.getEmail(),
-                        data.getWebsite(),
-                        data.getName(),
-                        data.getCreatedTime(),
-                        data.getUpdatedTime(),
-                        data.getBlog().getId()
-                );
-                commentResponseList.add(comment);
-            }
+            return commentEntityList.stream()
+                    .map(data -> new CommentResponse().mapCommentEntityToCommentResponse(data))
+                    .collect(Collectors.toList());
         } catch (NumberFormatException e) {
             throw new CustomIllegalArgumentException("Illegal blog id: + " + blogId);
         }
-        return commentResponseList;
     }
 
     @Override
     public boolean post(CommentRequest comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
             Optional<BlogEntity> blogOptional = isExistedBlog(comment.getBlogId());
+            System.out.println(comment);
             CommentEntity commentEntity = new CommentEntity(
                     comment.getContent(),
                     comment.getEmail(),
