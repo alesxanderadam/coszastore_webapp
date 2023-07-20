@@ -5,8 +5,7 @@ import javax.validation.constraints.NotNull;
 
 public class CategoryRequest {
     private int id;
-    @NotNull
-    @NotEmpty
+
     private String name;
 
     public String getName() {

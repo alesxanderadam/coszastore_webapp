@@ -1,10 +1,15 @@
-package alticshaw.com.coszastore.payload.request;
+package alticshaw.com.coszastore.dto;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class SignUpRequest extends SignInRequest {
+@Getter
+@Setter
+public class SignUpDto extends SignInDto{
     @NotNull(message = "Username not null")
     @NotEmpty(message = "Username not empty")
     private String username;

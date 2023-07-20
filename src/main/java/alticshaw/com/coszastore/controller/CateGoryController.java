@@ -36,25 +36,33 @@ public class CateGoryController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<?> addCategory(@Valid CategoryRequest request, BindingResult result){
-        List<FieldError> list=result.getFieldErrors();
+    public ResponseEntity<?> addCategory(@RequestBody @Valid CategoryRequest request, BindingResult result){
+        if(result.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         categoryServiceImp.addCategory(request);
         BaseResponse response=new BaseResponse();
         response.setMessage("success");
-        response.setStatusCode(200);
+        response.setStatusCode(201);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteCategory(@RequestParam int id){
+    public ResponseEntity<?> deleteCategory(@RequestBody @Valid CategoryRequest request, BindingResult result){
+        if(result.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         BaseResponse response=new BaseResponse();
-        categoryServiceImp.deleteCategory(id);
+        categoryServiceImp.deleteCategory(request);
         response.setMessage("success");
         response.setStatusCode(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @RequestMapping(value="/update", method = RequestMethod.POST)
-    public ResponseEntity<?> updateCategory(@Valid CategoryRequest request, BindingResult result ){
-        List<FieldError> list=result.getFieldErrors();
+    public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryRequest request, BindingResult result ){
+        //List<FieldError> list=result.getFieldErrors();
+        if(result.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         BaseResponse response=new BaseResponse();
         categoryServiceImp.updateCategory(request);
         response.setMessage("success");
