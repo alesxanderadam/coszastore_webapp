@@ -22,7 +22,7 @@ public class OrderController {
     private OrderServiceImp orderServiceImp;
 
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<?> findAll() {
         List<OrderResponse> orderResponse = orderServiceImp.findAll();
         BaseResponse response = new BaseResponse();
@@ -31,7 +31,7 @@ public class OrderController {
         response.setData(orderResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<?> addOrder(@RequestBody OrderRequest orderRequest, BindingResult errors) {
         if(errors.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
