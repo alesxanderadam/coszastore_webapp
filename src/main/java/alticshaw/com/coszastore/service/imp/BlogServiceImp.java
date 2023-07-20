@@ -5,4 +5,5 @@ import org.springframework.validation.BindingResult;
 
 public interface BlogServiceImp {
     boolean post(BlogRequest blogRequest, BindingResult bindingResult);
+
 }

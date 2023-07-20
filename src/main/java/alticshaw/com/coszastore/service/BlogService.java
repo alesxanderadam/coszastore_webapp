@@ -42,8 +42,7 @@ public class BlogService implements BlogServiceImp {
             MultipartFile image = blogRequest.getImage();
             String imageName = null;
             if (image != null && fileStorageServiceImp.isImage(image)) {
-                fileStorageServiceImp.save(image);
-                imageName = image.getOriginalFilename();
+                imageName = fileStorageServiceImp.save(image);
             }
             BlogEntity blog = new BlogEntity();
             blog.setContent(blogRequest.getContent());
