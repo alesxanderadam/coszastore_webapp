@@ -8,5 +8,4 @@ import java.util.List;
 public interface TagServiceImp {
     List<TagResponse> getAllTags();
     boolean add(String tagName);
-    List<TagResponse> getByBlogId(int id);
 }

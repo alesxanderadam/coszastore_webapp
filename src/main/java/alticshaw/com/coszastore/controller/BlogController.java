@@ -29,6 +29,7 @@ public class BlogController {
         response.setStatusCode(200);
         response.setMessage("Post blog successfully!");
         response.setData(isSuccess);
+        //Thiếu danh sách tag
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -39,7 +40,11 @@ public class BlogController {
 
     @GetMapping("/list/all")
     public ResponseEntity<?> getAllBlogs() {
-        return new ResponseEntity<>("", HttpStatus.OK);
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Get all blog successfully!");
+        response.setData(blogServiceImp.getAllBlogs());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/edit/{id}")

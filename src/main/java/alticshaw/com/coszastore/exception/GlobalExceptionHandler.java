@@ -96,4 +96,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<?> handleTagNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
 }

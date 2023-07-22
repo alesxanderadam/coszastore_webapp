@@ -18,4 +18,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
     void updateComment(String content, String email, String website, String name, BlogEntity blog, int id);
 
     List<CommentEntity> findAllByBlogId(int id);
+
+    int countByBlogId(int id);
 }
