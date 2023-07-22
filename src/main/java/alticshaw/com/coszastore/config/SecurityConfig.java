@@ -4,7 +4,6 @@ import alticshaw.com.coszastore.filter.JwtFilter;
 import alticshaw.com.coszastore.jwt.JwtConfig;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.provider.CustomAuthenticationProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
