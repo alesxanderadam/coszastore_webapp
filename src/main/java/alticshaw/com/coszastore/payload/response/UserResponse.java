@@ -1,6 +1,5 @@
 package alticshaw.com.coszastore.payload.response;
 
-import alticshaw.com.coszastore.entity.UserEntity;
 
 public class UserResponse {
     private int id;
@@ -16,10 +15,6 @@ public class UserResponse {
         this.username = username;
         this.email = email;
         this.role_name = role_name;
-    }
-
-    public UserResponse MapUserEntityToUserResponse(UserEntity user) {
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName());
     }
 
     public UserResponse(){}

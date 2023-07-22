@@ -112,6 +112,12 @@
             <artifactId>spring-boot-starter-parent</artifactId>
             <version>3.0.4</version>
         </dependency>
+        <!-- Model mapper-->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.1.1</version>
+        </dependency>
     </dependencies>
 
 
