@@ -11,6 +11,7 @@ import java.util.Set;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity,Integer> {
     List<ProductEntity> findByName(String name);
-    @Query("SELECT DISTINCT p FROM product p JOIN FETCH p.productSizes ps JOIN FETCH ps.size JOIN FETCH p.productColors pc JOIN FETCH pc.color")
-    Set<ProductEntity> findAllProductsWithSizes();
+    @Query("SELECT p FROM product p JOIN FETCH p.category c")
+    List<ProductEntity> findAllProductsWithSizes();
+//    @Query("SELECT p FROM Product p JOIN FETCH p.category c")
 }

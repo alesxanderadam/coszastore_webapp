@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class ProductEntity {
     private String name;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "short_description")
     private String short_description;
@@ -58,7 +59,6 @@ public class ProductEntity {
     private Set<OrderProductEntity> orderProducts;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    @JsonIgnore
     private Set<ProductSizeEntity> productSizes;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)

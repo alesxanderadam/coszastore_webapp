@@ -24,7 +24,7 @@ public class ProductResponse {
     private String image;
     private String list_image;
     private int category_id;
-    private Set<TagResponse> tag;
+    private List<TagResponse> tag;
     private List<String> color;
     private List<String> size;
 }

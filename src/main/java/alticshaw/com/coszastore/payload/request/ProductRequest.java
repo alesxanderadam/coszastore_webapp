@@ -27,15 +27,15 @@ public class ProductRequest {
     @Positive(message = "Category ID must be a positive integer.")
     private Integer category_id;
 
-    @NotNull(message = "Color ID must not be null.")
-    @Positive(message = "Color ID must be a positive integer.")
-    private Integer color_id;
-
-    @NotNull(message = "Tag ID must not be null.")
-    @Positive(message = "Tag ID must be a positive integer.")
-    private Integer tag_id;
-
-    @NotNull(message = "Size ID must not be null.")
-    @Positive(message = "Size ID must be a positive integer.")
-    private Integer size_id;
+//    @NotNull(message = "Color ID must not be null.")
+//    @Positive(message = "Color ID must be a positive integer.")
+//    private Integer color_id;
+//
+//    @NotNull(message = "Tag ID must not be null.")
+//    @Positive(message = "Tag ID must be a positive integer.")
+//    private Integer tag_id;
+//
+//    @NotNull(message = "Size ID must not be null.")
+//    @Positive(message = "Size ID must be a positive integer.")
+//    private Integer size_id;
 }
