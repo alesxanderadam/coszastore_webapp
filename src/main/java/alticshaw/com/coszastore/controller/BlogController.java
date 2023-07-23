@@ -29,13 +29,7 @@ public class BlogController {
         response.setStatusCode(200);
         response.setMessage("Post blog successfully!");
         response.setData(isSuccess);
-        //Thiếu danh sách tag
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping("/list/user/{userId}")
-    public ResponseEntity<?> getBlogsByUser(@PathVariable String userId) {
-        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @GetMapping("/list/all")

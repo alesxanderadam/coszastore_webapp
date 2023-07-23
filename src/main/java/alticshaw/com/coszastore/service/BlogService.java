@@ -57,7 +57,7 @@ public class BlogService implements BlogServiceImp {
             //Blog request: tags
             List<TagEntity> tags = tagRepository.findAllById(blogRequest.getTagIdSet());
             if (!tags.isEmpty()) {
-                String imageName = isNullOrValidImage(blogRequest.getImage());
+                String imageName = saveNullOrValidImage(blogRequest.getImage());
                 BlogEntity blog = new BlogEntity();
                 blog.setContent(blogRequest.getContent());
                 blog.setImage(imageName);
@@ -133,18 +133,24 @@ public class BlogService implements BlogServiceImp {
                                 new UserNotFoundException("User not found with id: " + blogRequest.getUser_id()));
                 List<TagEntity> tags = tagRepository.findAllById(blogRequest.getTagIdSet());
                 if (!tags.isEmpty()) {
-                    String imageName = isNullOrValidImage(blogRequest.getImage());
+                    if (blog.getImage() != null) {
+                        fileStorageServiceImp.deleteByName(blog.getImage());
+                    }
+                    String imageName = saveNullOrValidImage(blogRequest.getImage());
                     blog.setContent(blogRequest.getContent());
                     blog.setImage(imageName);
                     blog.setUser(user);
                     blog.setTitle(blogRequest.getTitle());
+                    blog.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
                     Set<BlogTagEntity> blogTags = getBlogTagEntitySet(tags, blog);
+
+                    blogTagRepository.deleteAllByBlog(blog);
 
                     blogTagRepository.saveAll(blogTags);
                     blog.setBlogTags(blogTags);
                     blogRepository.save(blog);
                 } else {
-                    throw new TagNotFoundException("Can not find any tag!");
+                    throw new TagNotFoundException("Can not found any tag!");
                 }
                 return true;
             } else {
@@ -155,7 +161,7 @@ public class BlogService implements BlogServiceImp {
         }
     }
 
-    private String isNullOrValidImage(MultipartFile image) {
+    private String saveNullOrValidImage(MultipartFile image) {
         String imageName = null;
         if (!image.isEmpty()) {
             if (fileStorageServiceImp.isImage(image)) {

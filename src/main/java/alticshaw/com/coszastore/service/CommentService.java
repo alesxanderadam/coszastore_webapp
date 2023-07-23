@@ -46,7 +46,6 @@ public class CommentService implements CommentServiceImp {
     public boolean post(CommentRequest comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
             Optional<BlogEntity> blogOptional = isExistedBlog(comment.getBlog_id());
-            System.out.println(comment);
             CommentEntity commentEntity = new CommentEntity(
                     comment.getContent(),
                     comment.getEmail(),

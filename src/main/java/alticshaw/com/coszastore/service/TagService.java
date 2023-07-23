@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,9 +33,10 @@ public class TagService implements TagServiceImp {
     @Override
     public boolean add(String tagName) {
         if (!(tagName == null || tagName.trim().isEmpty())) {
-            tagRepository.findByName(tagName).orElseThrow(() ->
-                    new TagAlreadyExistException("Tag with that name already existed!")
-            );
+            Optional<TagEntity> tagEntityOptional = tagRepository.findByName(tagName);
+            tagEntityOptional.ifPresent(tagEntity -> {
+                throw new TagAlreadyExistException("Tag already existed with that name: " + tagName);
+            });
 
             TagEntity tagEntity = new TagEntity();
             tagEntity.setName(tagName);
