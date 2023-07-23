@@ -1,6 +1,6 @@
 package alticshaw.com.coszastore.payload.response;
 
-import alticshaw.com.coszastore.dto.UserDto;
+import alticshaw.com.coszastore.dto.UserResponseWithBlogDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +14,9 @@ import java.util.List;
 public class BlogResponse {
     private String image;
     private String content;
-    private UserDto user;
-    private List<TagResponse> tagList;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private UserResponseWithBlogDto user;
+    private List<TagResponse> tags;
+    private Timestamp created_at;
+    private Timestamp updated_at;
     private int commentQuantity;
 }

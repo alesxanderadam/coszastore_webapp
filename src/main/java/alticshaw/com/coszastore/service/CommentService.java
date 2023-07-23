@@ -38,14 +38,14 @@ public class CommentService implements CommentServiceImp {
                     .map(data -> new CommentResponse().mapCommentEntityToCommentResponse(data))
                     .collect(Collectors.toList());
         } catch (NumberFormatException e) {
-            throw new CustomIllegalArgumentException("Illegal blog id: + " + blogId);
+            throw new CustomIllegalArgumentException("Illegal blog id: " + blogId);
         }
     }
 
     @Override
     public boolean post(CommentRequest comment, BindingResult commentBindingResult) {
         if (!commentBindingResult.hasErrors()) {
-            Optional<BlogEntity> blogOptional = isExistedBlog(comment.getBlogId());
+            Optional<BlogEntity> blogOptional = isExistedBlog(comment.getBlog_id());
             System.out.println(comment);
             CommentEntity commentEntity = new CommentEntity(
                     comment.getContent(),
@@ -68,7 +68,7 @@ public class CommentService implements CommentServiceImp {
             int commentId = Integer.parseInt(id);
             if (!commentBindingResult.hasErrors()) {
                 isExistedComment(commentId);
-                Optional<BlogEntity> optionalBlog = isExistedBlog(comment.getBlogId());
+                Optional<BlogEntity> optionalBlog = isExistedBlog(comment.getBlog_id());
 
                 commentRepository.updateComment(
                         comment.getContent(),

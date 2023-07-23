@@ -28,5 +28,5 @@ public class CommentRequest {
 
     @NotNull(message = "Blog is not null!")
     @Digits(integer = 10, fraction = 0, message = "Blog id must be an integer!")
-    private int blogId;
+    private Integer blog_id;
 }

@@ -15,9 +15,9 @@ public class CommentResponse {
     private String email;
     private String website;
     private String name;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-    private int blogId;
+    private Timestamp created_at;
+    private Timestamp updated_at;
+    private int blog_id;
 
     public CommentResponse mapCommentEntityToCommentResponse(CommentEntity commentEntity) {
         return new CommentResponse(commentEntity.getContent(),

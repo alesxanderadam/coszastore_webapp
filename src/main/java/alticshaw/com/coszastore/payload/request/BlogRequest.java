@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.payload.request;
 
+import alticshaw.com.coszastore.exception.NotImageException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -26,17 +29,17 @@ public class BlogRequest {
 
     @NotNull(message = "User id can not null!")
     @Positive(message = "Invalid user id")
-    private int userId;
+    private Integer user_id;
 
     @NotNull(message = "Tag list not null!")
     @NotEmpty(message = "Tag list not empty!")
     @Pattern(regexp = "^(?!.*\\b0\\b)(?!.*\\b(\\d+)\\b.*\\b\\1\\b)\\[(?:\\d+(?:,\\d+)*)?]$", message = "Invalid tag list")
-    private String tagList;
+    private String tag_id;
 
-    public int[] getTagIdArray() {
-        String tagListStr = this.tagList;
+    public Set<Integer> getTagIdSet() {
+        String tagListStr = this.tag_id;
         return Arrays.stream(tagListStr.replaceAll("[\\[\\]]", "").split(","))
-                .mapToInt(Integer::parseInt)
-                .toArray();
+                .map(Integer::parseInt)
+                .collect(Collectors.toSet());
     }
 }

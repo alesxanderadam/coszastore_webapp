@@ -43,17 +43,31 @@ public class BlogController {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Get all blog successfully!");
-        response.setData(blogServiceImp.getAllBlogs());
+        response.setData(blogServiceImp.getAllResponseBlogs());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editBlog(@PathVariable String id) {
-        return new ResponseEntity<>("", HttpStatus.OK);
+    @PutMapping(value = "/edit/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> editBlog(
+            @PathVariable String id,
+            @ModelAttribute @Valid BlogRequest blogRequest,
+            BindingResult bindingResult
+    ) {
+        BaseResponse response = new BaseResponse();
+        boolean isSuccess = blogServiceImp.edit(id, blogRequest, bindingResult);
+        response.setStatusCode(200);
+        response.setMessage("Edit successfully!");
+        response.setData(isSuccess);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable String id) {
-        return new ResponseEntity<>("", HttpStatus.OK);
+        boolean isSuccess = blogServiceImp.deleteById(id);
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Delete successfully!");
+        response.setData(isSuccess);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -1,12 +1,12 @@
 package alticshaw.com.coszastore.service;
 
-import alticshaw.com.coszastore.dto.UserDto;
+import alticshaw.com.coszastore.dto.UserResponseWithBlogDto;
 import alticshaw.com.coszastore.entity.BlogEntity;
 import alticshaw.com.coszastore.entity.BlogTagEntity;
+import alticshaw.com.coszastore.entity.TagEntity;
 import alticshaw.com.coszastore.entity.UserEntity;
-import alticshaw.com.coszastore.exception.CustomValidationException;
-import alticshaw.com.coszastore.exception.TagNotFoundException;
-import alticshaw.com.coszastore.exception.UserNotFoundException;
+import alticshaw.com.coszastore.entity.ids.BlogTagIds;
+import alticshaw.com.coszastore.exception.*;
 import alticshaw.com.coszastore.payload.request.BlogRequest;
 import alticshaw.com.coszastore.payload.response.BlogResponse;
 import alticshaw.com.coszastore.payload.response.TagResponse;
@@ -49,40 +49,30 @@ public class BlogService implements BlogServiceImp {
     @Override
     public boolean post(BlogRequest blogRequest, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
-            Optional<UserEntity> userOptional = userRepository.findById(blogRequest.getUserId());
-            UserEntity user = userOptional.orElseThrow(() ->
-                    new UserNotFoundException("User not found with id: " + blogRequest.getUserId()));
+            // Blog request: userId
+            UserEntity user = userRepository
+                    .findById(blogRequest.getUser_id())
+                    .orElseThrow(() ->
+                            new UserNotFoundException("User not found with id: " + blogRequest.getUser_id()));
+            //Blog request: tags
+            List<TagEntity> tags = tagRepository.findAllById(blogRequest.getTagIdSet());
+            if (!tags.isEmpty()) {
+                String imageName = isNullOrValidImage(blogRequest.getImage());
+                BlogEntity blog = new BlogEntity();
+                blog.setContent(blogRequest.getContent());
+                blog.setImage(imageName);
+                blog.setUser(user);
+                blog.setTitle(blogRequest.getTitle());
+                blog.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+                blogRepository.save(blog);
 
-            MultipartFile image = blogRequest.getImage();
-            String imageName = null;
-            if (image != null && fileStorageServiceImp.isImage(image)) {
-                imageName = fileStorageServiceImp.save(image);
+                Set<BlogTagEntity> blogTags = getBlogTagEntitySet(tags, blog);
+                blogTagRepository.saveAll(blogTags);
+                blog.setBlogTags(blogTags);
+                blogRepository.save(blog);
+            } else {
+                throw new TagNotFoundException("Can not find any tag!");
             }
-            BlogEntity blog = new BlogEntity();
-
-            Set<BlogTagEntity> blogTagEntitySet = new HashSet<>();
-            Arrays.stream(blogRequest.getTagIdArray())
-                    .filter(tagId -> {
-                        boolean isExisted = tagRepository.existsById(tagId);
-                        if (!isExisted) {
-                            throw new TagNotFoundException("Tag not found with id: " + tagId);
-                        }
-                        return true;
-                    })
-                    .forEach(tagId -> {
-                        BlogTagEntity blogTagEntity = new BlogTagEntity();
-                        blogTagEntity.setTag(tagRepository.findById(tagId));
-                        blogTagEntity.setBlog(blog);
-                        blogTagEntitySet.add(blogTagEntity);
-                    });
-            blog.setContent(blogRequest.getContent());
-            blog.setImage(imageName);
-            blog.setUser(user);
-            blog.setTitle(blogRequest.getTitle());
-            blog.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-            blog.setBlogTags(blogTagEntitySet);
-
-            blogRepository.save(blog);
             return true;
         } else {
             throw new CustomValidationException(bindingResult);
@@ -90,14 +80,14 @@ public class BlogService implements BlogServiceImp {
     }
 
     @Override
-    public List<BlogResponse> getAllBlogs() {
-        List<BlogEntity> blogEntity = blogRepository.findAll();
-        return blogEntity.stream()
+    public List<BlogResponse> getAllResponseBlogs() {
+        List<BlogEntity> blogEntityList = blogRepository.findAll();
+        return blogEntityList.stream()
                 .map(data -> new BlogResponse(
                         data.getImage(),
                         data.getContent(),
-                        new UserDto(data.getUser().getId(), data.getUser().getUsername()),
-                        getTagsByBlogId(data.getId()),
+                        new UserResponseWithBlogDto(data.getUser().getId(), data.getUser().getUsername()),
+                        getListTagResponseByBlogId(data.getId()),
                         data.getCreatedTime(),
                         data.getUpdatedTime(),
                         commentRepository.countByBlogId(data.getId())
@@ -106,9 +96,92 @@ public class BlogService implements BlogServiceImp {
     }
 
     @Override
-    public List<TagResponse> getTagsByBlogId(int id) {
+    public List<TagResponse> getListTagResponseByBlogId(int id) {
         return blogTagRepository.findTagsByBlogId(id).stream()
                 .map(data -> new TagResponse().mapTagEntityToTagResponse(data))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean deleteById(String id) {
+        try {
+            int blogId = Integer.parseInt(id);
+            BlogEntity blogEntity = blogRepository.findById(blogId)
+                    .orElseThrow(() -> new BlogNotFoundException("Blog not found with id: " + id));
+            blogRepository.delete(blogEntity);
+            if (blogEntity.getImage() != null) {
+                fileStorageServiceImp.deleteByName(blogEntity.getImage());
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Invalid blog id: " + id);
+
+        }
+    }
+
+    @Override
+    public boolean edit(String id, BlogRequest blogRequest, BindingResult bindingResult) {
+        try {
+            int blogId = Integer.parseInt(id);
+            if (!bindingResult.hasErrors()) {
+                BlogEntity blog = blogRepository.findById(blogId).orElseThrow(() ->
+                        new BlogNotFoundException("Blog not found with id: " + blogId));
+
+                UserEntity user = userRepository
+                        .findById(blogRequest.getUser_id())
+                        .orElseThrow(() ->
+                                new UserNotFoundException("User not found with id: " + blogRequest.getUser_id()));
+                List<TagEntity> tags = tagRepository.findAllById(blogRequest.getTagIdSet());
+                if (!tags.isEmpty()) {
+                    String imageName = isNullOrValidImage(blogRequest.getImage());
+                    blog.setContent(blogRequest.getContent());
+                    blog.setImage(imageName);
+                    blog.setUser(user);
+                    blog.setTitle(blogRequest.getTitle());
+                    Set<BlogTagEntity> blogTags = getBlogTagEntitySet(tags, blog);
+
+                    blogTagRepository.saveAll(blogTags);
+                    blog.setBlogTags(blogTags);
+                    blogRepository.save(blog);
+                } else {
+                    throw new TagNotFoundException("Can not find any tag!");
+                }
+                return true;
+            } else {
+                throw new CustomValidationException(bindingResult);
+            }
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Invalid blog id: " + id);
+        }
+    }
+
+    private String isNullOrValidImage(MultipartFile image) {
+        String imageName = null;
+        if (!image.isEmpty()) {
+            if (fileStorageServiceImp.isImage(image)) {
+                imageName = fileStorageServiceImp.save(image);
+            } else {
+                throw new NotImageException(image.getOriginalFilename() + " is not an image!");
+            }
+        }
+        return imageName;
+    }
+
+    private Set<BlogTagEntity> getBlogTagEntitySet(List<TagEntity> tags, BlogEntity blog) {
+        return tags.stream()
+                .map(tag -> {
+                    BlogTagEntity blogTagEntity = new BlogTagEntity();
+                    BlogTagIds blogTagIds = new BlogTagIds();
+
+                    blogTagIds.setBlogId(blog.getId());
+                    blogTagIds.setTagId(tag.getId());
+
+                    blogTagEntity.setIds(blogTagIds);
+                    blogTagEntity.setBlog(blog);
+                    blogTagEntity.setTag(tag);
+
+                    return blogTagEntity;
+                })
+                .collect(Collectors.toSet());
     }
 }
