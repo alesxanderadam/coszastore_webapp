@@ -1,9 +1,9 @@
 package alticshaw.com.coszastore.exception;
 
-public class FileStorageException extends RuntimeException{
+
+public class UserNotFoundException extends RuntimeException{
     private String message;
 
-    @Override
     public String getMessage() {
         return message;
     }
@@ -12,7 +12,7 @@ public class FileStorageException extends RuntimeException{
         this.message = message;
     }
 
-    public FileStorageException(String message) {
+    public UserNotFoundException(String message) {
         this.message = message;
     }
 }

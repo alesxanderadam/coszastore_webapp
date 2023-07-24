@@ -95,4 +95,15 @@ public class CommentEntity {
     public void setUpdatedTime(Timestamp updatedTime) {
         this.updatedTime = updatedTime;
     }
+
+    public CommentEntity() {}
+
+    public CommentEntity(String content, String email, String name, String website, BlogEntity blog, Timestamp createdTime) {
+        this.content = content;
+        this.email = email;
+        this.name = name;
+        this.website = website;
+        this.blog = blog;
+        this.createdTime = createdTime;
+    }
 }
