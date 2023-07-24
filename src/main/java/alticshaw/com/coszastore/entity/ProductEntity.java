@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 @Entity(name = "product")
@@ -54,6 +55,16 @@ public class ProductEntity {
 
     @Column(name = "updated_at")
     private Timestamp updatedTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createdTime = new Timestamp(new Date().getTime());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedTime = new Timestamp(new Date().getTime());
+    }
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<OrderProductEntity> orderProducts;

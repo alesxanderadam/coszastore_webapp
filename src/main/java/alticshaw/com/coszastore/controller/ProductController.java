@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -56,14 +53,41 @@ public class ProductController {
         return ResponseEntity.ok().body(baseResponse);
     }
 
+    @GetMapping("/{user_id}")
+    public ResponseEntity<?> getById(@PathVariable("user_id") int user_id) {
+        ProductResponse productResponses = productServiceImp.getProductById(user_id);
+        baseResponse.setMessage(messageResponse.success());
+        baseResponse.setStatusCode(200);
+        baseResponse.setData(productResponses);
+        return ResponseEntity.ok().body(baseResponse);
+    }
+
     @PostMapping
-    public ResponseEntity<?> add(@Valid ProductRequest productRequest, BindingResult bindingResult) {
-        ProductEntity product = productServiceImp.add(productRequest, bindingResult);
-        ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
+    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest productRequest, BindingResult bindingResult) {
+        ProductResponse product = productServiceImp.addProduct(productRequest, bindingResult);
 
         baseResponse.setMessage(messageResponse.success());
         baseResponse.setStatusCode(200);
-        baseResponse.setData(productResponse);
+        baseResponse.setData(product);
+        return ResponseEntity.ok().body(baseResponse);
+    }
+
+    @PutMapping("/{user_id}")
+    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest productRequest, @PathVariable("user_id") int user_id, BindingResult bindingResult) {
+        ProductResponse product = productServiceImp.updateProduct(productRequest, user_id, bindingResult);
+
+        baseResponse.setMessage(messageResponse.success());
+        baseResponse.setStatusCode(200);
+        baseResponse.setData(product);
+        return ResponseEntity.ok().body(baseResponse);
+    }
+
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<?> delete( @PathVariable("user_id") int user_id) {
+        productServiceImp.deleteProduct(user_id);
+
+        baseResponse.setMessage(messageResponse.success());
+        baseResponse.setStatusCode(200);
         return ResponseEntity.ok().body(baseResponse);
     }
 }

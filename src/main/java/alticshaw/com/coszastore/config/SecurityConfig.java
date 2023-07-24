@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/auth/**","/**").permitAll()
                         .antMatchers("/api/test").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions

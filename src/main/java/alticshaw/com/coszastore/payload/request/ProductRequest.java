@@ -2,8 +2,13 @@ package alticshaw.com.coszastore.payload.request;
 
 import lombok.Data;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.List;
+
 @Data
 public class ProductRequest {
     @NotBlank(message = "Name must not be blank.")
@@ -27,15 +32,24 @@ public class ProductRequest {
     @Positive(message = "Category ID must be a positive integer.")
     private Integer category_id;
 
-//    @NotNull(message = "Color ID must not be null.")
-//    @Positive(message = "Color ID must be a positive integer.")
-//    private Integer color_id;
-//
-//    @NotNull(message = "Tag ID must not be null.")
-//    @Positive(message = "Tag ID must be a positive integer.")
-//    private Integer tag_id;
-//
-//    @NotNull(message = "Size ID must not be null.")
-//    @Positive(message = "Size ID must be a positive integer.")
-//    private Integer size_id;
+    @ElementCollection
+    @CollectionTable(name = "product_color",
+            joinColumns = @JoinColumn(name = "product_id"))
+    @NotEmpty(message = "Color IDs cannot be empty")
+    @Size(min = 1, message = "Color Id must have at least 1 element")
+    private List<Integer> color_id;
+
+    @ElementCollection
+    @CollectionTable(name = "product_tag",
+            joinColumns = @JoinColumn(name = "product_id"))
+    @NotEmpty(message = "Tag IDs cannot be empty")
+    @Size(min = 1, message = "Tag Id must have at least 1 element")
+    private List<Integer> tag_id;
+
+    @ElementCollection
+    @CollectionTable(name = "product_size",
+            joinColumns = @JoinColumn(name = "product_id"))
+    @NotEmpty(message = "Size IDs cannot be empty")
+    @Size(min = 1, message = "Size Id must have at least 1 element")
+    private List<Integer> size_id;
 }
