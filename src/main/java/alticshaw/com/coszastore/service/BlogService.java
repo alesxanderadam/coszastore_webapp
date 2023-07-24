@@ -163,7 +163,7 @@ public class BlogService implements BlogServiceImp {
 
     private String saveNullOrValidImage(MultipartFile image) {
         String imageName = null;
-        if (!image.isEmpty()) {
+        if (!(image == null || image.isEmpty())) {
             if (fileStorageServiceImp.isImage(image)) {
                 imageName = fileStorageServiceImp.save(image);
             } else {
