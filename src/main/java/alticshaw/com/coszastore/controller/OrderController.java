@@ -7,9 +7,8 @@ import alticshaw.com.coszastore.service.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +26,16 @@ public class OrderController {
         response.setStatusCode(200);
         response.setMessage("Success!!!!");
         response.setData(orderResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable String id) {
+        boolean isSuccess = orderServiceImp.delete(id);
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Delete successfully!");
+        response.setData(isSuccess);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

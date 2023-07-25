@@ -3,6 +3,8 @@ package alticshaw.com.coszastore.service;
 import alticshaw.com.coszastore.entity.OrderEntity;
 import alticshaw.com.coszastore.entity.OrderProductEntity;
 import alticshaw.com.coszastore.entity.ProductEntity;
+import alticshaw.com.coszastore.exception.CustomIllegalArgumentException;
+import alticshaw.com.coszastore.exception.TagNotFoundException;
 import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.response.OrderResponse;
 import alticshaw.com.coszastore.payload.response.ProductResponse;
@@ -21,6 +23,7 @@ import java.util.Set;
 public class OrderService implements OrderServiceImp {
     @Autowired
     private OrderRepository orderRepository;
+
 
     @Autowired
     private ProductRepository productRepository;
@@ -48,5 +51,18 @@ public class OrderService implements OrderServiceImp {
             orderResponseList.add(orderResponse);
         }
         return orderResponseList;
+    }
+
+    @Override
+    public boolean delete(String id) {
+        try {
+            int tagId = Integer.parseInt(id);
+            OrderEntity order = orderRepository.findById(tagId).orElseThrow(() ->
+                    new TagNotFoundException("Order not found with id: " + tagId));
+            orderRepository.delete(order);
+            return true;
+        } catch (NumberFormatException e) {
+            throw new CustomIllegalArgumentException("Illegal Order id: " + id);
+        }
     }
 }

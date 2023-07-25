@@ -7,4 +7,5 @@ import java.util.List;
 public interface OrderServiceImp{
     List<OrderResponse> findAll();
 
+    boolean delete(String id);
 }
