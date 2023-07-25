@@ -1,6 +1,6 @@
 package alticshaw.com.coszastore.exception;
 
-public class FileStorageException extends RuntimeException{
+public class BlogNotFoundException extends RuntimeException{
     private String message;
 
     @Override
@@ -12,7 +12,7 @@ public class FileStorageException extends RuntimeException{
         this.message = message;
     }
 
-    public FileStorageException(String message) {
+    public BlogNotFoundException(String message) {
         this.message = message;
     }
 }
