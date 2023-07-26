@@ -1,29 +1,33 @@
 package alticshaw.com.coszastore.service;
 
-import alticshaw.com.coszastore.entity.OrderEntity;
-import alticshaw.com.coszastore.entity.OrderProductEntity;
-import alticshaw.com.coszastore.entity.ProductEntity;
+import alticshaw.com.coszastore.entity.*;
+import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.exception.CustomIllegalArgumentException;
 import alticshaw.com.coszastore.exception.TagNotFoundException;
 import alticshaw.com.coszastore.mapper.ModelUtilMapper;
+import alticshaw.com.coszastore.payload.request.OrderRequest;
 import alticshaw.com.coszastore.payload.response.OrderResponse;
 import alticshaw.com.coszastore.payload.response.ProductResponse;
-import alticshaw.com.coszastore.repository.OrderRepository;
-import alticshaw.com.coszastore.repository.ProductRepository;
+import alticshaw.com.coszastore.repository.*;
 import alticshaw.com.coszastore.service.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class OrderService implements OrderServiceImp {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -52,6 +56,38 @@ public class OrderService implements OrderServiceImp {
         }
         return orderResponseList;
     }
+
+    @Override
+    public boolean addOrder(OrderRequest orderRequest) {
+        boolean isSuccess;
+        try {
+            OrderEntity order = new OrderEntity();
+            order.setTotalPrice(orderRequest.getPrice());
+            order.setState(orderRequest.getState());
+            order.setPostCode(orderRequest.getPostCode());
+
+            CountryEntity country = countryRepository.findById(orderRequest.getCountry_id())
+                    .orElseThrow(() -> new TagNotFoundException("Country not found: " + orderRequest.getCountry_id()));
+            order.setCountry(country);
+
+            CouponEntity coupon = couponRepository.findById(orderRequest.getCoupon_id())
+                    .orElseThrow(() -> new TagNotFoundException("Coupon not found: " + orderRequest.getCoupon_id()));
+            order.setCoupon(coupon);
+
+            UserEntity user = userRepository.findById(orderRequest.getUser_id())
+                    .orElseThrow(() -> new TagNotFoundException("User not found: " + orderRequest.getUser_id()));
+            order.setUser(user);
+
+            orderRepository.save(order);
+            isSuccess = true;
+        } catch (Exception e) {
+            throw new CustomException("Error addOrder " + e.getMessage());
+
+        }
+        return isSuccess;
+    }
+
+
 
     @Override
     public boolean delete(String id) {

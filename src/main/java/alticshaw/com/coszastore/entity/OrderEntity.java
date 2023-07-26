@@ -1,10 +1,16 @@
 package alticshaw.com.coszastore.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 @Entity(name = "orders")
+@Getter
+@Setter
 public class OrderEntity {
     @Id
     @Column(name = "id")
@@ -41,83 +47,13 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<OrderProductEntity> orderProducts;
 
-    public int getId() {
-        return id;
+    @PrePersist
+    protected void onCreate() {
+        createdTime = new Timestamp(new Date().getTime());
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getPostCode() {
-        return postCode;
-    }
-
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
-    }
-
-    public Timestamp getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Timestamp createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Timestamp getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Timestamp updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public CouponEntity getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(CouponEntity coupon) {
-        this.coupon = coupon;
-    }
-
-    public CountryEntity getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryEntity country) {
-        this.country = country;
-    }
-
-    public Set<OrderProductEntity> getOrderProducts() {
-        return orderProducts;
-    }
-
-    public void setOrderProducts(Set<OrderProductEntity> orderProducts) {
-        this.orderProducts = orderProducts;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedTime = new Timestamp(new Date().getTime());
     }
 }

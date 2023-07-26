@@ -1,5 +1,7 @@
 package alticshaw.com.coszastore.controller;
 
+import alticshaw.com.coszastore.entity.OrderEntity;
+import alticshaw.com.coszastore.payload.request.OrderRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.OrderResponse;
 import alticshaw.com.coszastore.payload.response.ProductResponse;
@@ -19,6 +21,7 @@ public class OrderController {
     @Autowired
     private OrderServiceImp orderServiceImp;
 
+
     @GetMapping("/list")
     public ResponseEntity<?> findAll() {
         List<OrderResponse> orderResponse = orderServiceImp.findAll();
@@ -26,6 +29,17 @@ public class OrderController {
         response.setStatusCode(200);
         response.setMessage("Success!!!!");
         response.setData(orderResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/add")
+    public ResponseEntity<?> addOrder(@RequestBody OrderRequest orderRequest, BindingResult errors) {
+        if(errors.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Save order successfully!");
+        response.setData(orderServiceImp.addOrder(orderRequest));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
