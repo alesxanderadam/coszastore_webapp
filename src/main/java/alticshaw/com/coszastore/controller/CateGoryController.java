@@ -22,8 +22,8 @@ import java.util.List;
 public class CateGoryController {
     @Autowired
     private CategoryServiceImp categoryServiceImp;
-    @GetMapping("/clear-cache")
-    @CacheEvict(value ="listCategory", allEntries = true)
+//    @GetMapping("/clear-cache")
+//    @CacheEvict(value ="listCategory", allEntries = true)
     public ResponseEntity<?> clearCache(){
         return new ResponseEntity<>("", HttpStatus.OK);
     }

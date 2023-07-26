@@ -22,17 +22,17 @@ import java.util.List;
 public class CategoryService implements CategoryServiceImp {
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
-    private RedisTemplate redisTemplate;
+//    @Autowired
+//    private RedisTemplate redisTemplate;
     @Override
 //    @Cacheable("listCategory")
     public List<CategoryRespone> getAllCategory() {
         List<CategoryRespone> responeList=new ArrayList<>();
-        if(redisTemplate.hasKey("listCategory")){
-             String data=redisTemplate.opsForValue().get("listCategory").toString();
-            Type listType = new TypeToken<ArrayList<CategoryRespone>>(){}.getType();
-            responeList = new Gson().fromJson(data, listType);
-        }else {
+//        if(redisTemplate.hasKey("listCategory")){
+//             String data=redisTemplate.opsForValue().get("listCategory").toString();
+//            Type listType = new TypeToken<ArrayList<CategoryRespone>>(){}.getType();
+//            responeList = new Gson().fromJson(data, listType);
+//        }else {
             List<CategoryEntity> list=categoryRepository.findAll();
 
             for (CategoryEntity data : list) {
@@ -41,10 +41,10 @@ public class CategoryService implements CategoryServiceImp {
                 categoryRespone.setName(data.getName());
                 responeList.add(categoryRespone);
             }
-            Gson gson=new Gson();
-            String data=gson.toJson(responeList);
-            redisTemplate.opsForValue().set("listCategory", data);
-        }
+//            Gson gson=new Gson();
+//            String data=gson.toJson(responeList);
+//            redisTemplate.opsForValue().set("listCategory", data);
+
 
         return responeList;
     }
