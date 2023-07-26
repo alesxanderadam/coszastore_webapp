@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.exception.FileStorageException;
 import alticshaw.com.coszastore.service.imp.FileStorageServiceImp;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FileStorageService implements FileStorageServiceImp {
@@ -69,7 +72,7 @@ public class FileStorageService implements FileStorageServiceImp {
             }
 
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
             String savedFileName = now.format(formatter) + "_" + filename;
 
             if (isImage(file)) {
@@ -79,8 +82,42 @@ public class FileStorageService implements FileStorageServiceImp {
             }
             return savedFileName;
         } catch (Exception e) {
-            throw new FileStorageException("Unable to upload file.");
+            throw new CustomException("Unable to upload file.");
         }
+    }
+
+    @Override
+    public List<String> uploadAndStoreMultipleImages(List<MultipartFile> files) {
+        List<String> savedFileNames = new ArrayList<>();
+
+        try {
+            for (MultipartFile file : files) {
+                try (InputStream inputStream = file.getInputStream()) {
+                    String filename = file.getOriginalFilename();
+                    if (filename == null || filename.trim().isEmpty()) {
+                        throw new FileStorageException("Filename can not be null or empty");
+                    }
+
+                    LocalDateTime now = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+                    String savedFileName = now.format(formatter) + "_" + filename;
+
+                    if (isImage(file)) {
+                        Files.copy(inputStream, imagePath().resolve(savedFileName));
+                    } else {
+                        Files.copy(inputStream, otherFilesPath().resolve(savedFileName));
+                    }
+
+                    savedFileNames.add(savedFileName);
+                } catch (Exception e) {
+                    throw new CustomException("Unable to upload files. " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            throw new CustomException("Unable to upload files. " + e.getMessage()); //Server error -> 500
+        }
+
+        return savedFileNames;
     }
 
     @Override

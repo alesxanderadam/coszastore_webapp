@@ -6,6 +6,7 @@ import alticshaw.com.coszastore.entity.ids.ProductSizeIds;
 import alticshaw.com.coszastore.entity.ids.ProductTagIds;
 import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.exception.NotFoundCustomException;
+import alticshaw.com.coszastore.exception.NotImageException;
 import alticshaw.com.coszastore.exception.ValidationCustomException;
 import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.ProductRequest;
@@ -15,14 +16,21 @@ import alticshaw.com.coszastore.payload.response.TagResponse;
 import alticshaw.com.coszastore.repository.*;
 import alticshaw.com.coszastore.service.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements ProductServiceImp {
+    @Value("${path.root.directory}")
+    private String pathImage;
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final SizeRepository sizeRepository;
@@ -31,15 +39,19 @@ public class ProductService implements ProductServiceImp {
     private final ProductTagRepository productTagRepository;
     private final ProductColorRepository productColorRepository;
     private final ProductSizeRepository productSizeRepository;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, SizeRepository sizeRepository,
-                          ColorRepository colorRepository,
-                          TagRepository tagRepository,
-                          ProductTagRepository productTagRepository,
-                          ProductColorRepository productColorRepository,
-                          ProductSizeRepository productSizeRepository
-
+    public ProductService(
+            ProductRepository productRepository,
+            CategoryRepository categoryRepository,
+            SizeRepository sizeRepository,
+            ColorRepository colorRepository,
+            TagRepository tagRepository,
+            ProductTagRepository productTagRepository,
+            ProductColorRepository productColorRepository,
+            ProductSizeRepository productSizeRepository,
+            FileStorageService fileStorageService
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
@@ -49,6 +61,7 @@ public class ProductService implements ProductServiceImp {
         this.productTagRepository = productTagRepository;
         this.productColorRepository = productColorRepository;
         this.productSizeRepository = productSizeRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -59,6 +72,13 @@ public class ProductService implements ProductServiceImp {
             for (ProductEntity product : productEntityList) {
                 ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
 
+                productResponse.setCategory_id(product.getCategory().getId());
+
+                if (productResponse.getImage() != null) {
+                    productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
+                } else {
+                    productResponse.setImage(null);
+                }
                 List<String> sizeList = product.getProductSizes().stream()
                         .map(sizeEntity -> sizeEntity.getSize().getName())
                         .collect(Collectors.toList());
@@ -95,12 +115,8 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public ProductResponse getProductById(Integer id) {
-        ProductEntity product = productRepository.findByProductCustom(id);
-
-        if (product == null) {
-            throw new NotFoundCustomException("Product not found with id : " + id, 404);
-        }
-
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundCustomException("Product not found with id : " + id, HttpStatus.NOT_FOUND.value()));
         try {
             ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
             List<String> sizeList = product.getProductSizes().stream()
@@ -140,12 +156,13 @@ public class ProductService implements ProductServiceImp {
         ProductEntity product = productRepository.findByProductCustom(id);
 
         if (product == null) {
-            throw new NotFoundCustomException("Product not found with id : " + id, 404);
+            throw new NotFoundCustomException("Product not found with id : " + id, HttpStatus.NOT_FOUND.value());
         }
         try {
+            fileStorageService.deleteByName(product.getImage());
             productRepository.delete(product);
             new MessageResponse().success();
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException("Delete failed: " + e.getMessage());
         }
     }
@@ -159,12 +176,12 @@ public class ProductService implements ProductServiceImp {
     private ProductResponse saveProduct(ProductRequest request) {
         try {
             CategoryEntity category = categoryRepository.findById(request.getCategory_id())
-                    .orElseThrow(() -> new NotFoundCustomException("Category id not found", 404));
+                    .orElseThrow(() -> new NotFoundCustomException("Category id not found", HttpStatus.NOT_FOUND.value()));
             ProductEntity product = new ProductEntity();
-            categoryRepository.findById(request.getCategory_id()).ifPresent(product::setCategory);
-            if (categoryRepository.findById(request.getCategory_id()).isEmpty()) {
-                throw new NotFoundCustomException("Category id not found", 404);
+            if (category == null) {
+                throw new NotFoundCustomException("Category id not found", HttpStatus.NOT_FOUND.value());
             }
+
             try {
                 product.setName(request.getName());
                 product.setShort_description(request.getShort_description());
@@ -175,21 +192,18 @@ public class ProductService implements ProductServiceImp {
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
-                product.setImage(request.getImage());
+                product.setImage(saveNullOrValidImage(request.getImage()));
                 product.setListImage(request.getList_image());
                 productRepository.save(product);
+
             } catch (Exception e) {
                 throw new CustomException("Error add product");
             }
 
             if (request.getSize_id() != null && !request.getSize_id().isEmpty()) {
-                List<SizeEntity> sizes = sizeRepository.findAllById(request.getSize_id());
+                List<SizeEntity> sizes = sizeRepository.findAllById(request.idStringToSetInteger(request.getSize_id()));
                 if (!sizes.isEmpty()) {
-                    Set<ProductSizeEntity> productSizes = product.getProductSizes();
-                    if (productSizes == null) {
-                        productSizes = new HashSet<>();
-                    }
-                    productSizes.addAll(sizes.stream().map(size -> {
+                    Set<ProductSizeEntity> productSizes = sizes.stream().map(size -> {
                         ProductSizeEntity productSizeEntity = new ProductSizeEntity();
                         ProductSizeIds productSizeIds = new ProductSizeIds();
 
@@ -200,22 +214,18 @@ public class ProductService implements ProductServiceImp {
                         productSizeEntity.setSize(size);
                         productSizeEntity.setProduct(product);
                         return productSizeEntity;
-                    }).collect(Collectors.toSet()));
+                    }).collect(Collectors.toSet());
                     product.setProductSizes(productSizes);
                 } else {
-                    throw new NotFoundCustomException("Size id not found ", 404);
+                    throw new NotFoundCustomException("Size id not found ", HttpStatus.NOT_FOUND.value());
                 }
             }
 
             if (request.getColor_id() != null && !request.getColor_id().isEmpty()) {
-                List<ColorEntity> colors = colorRepository.findAllById(request.getColor_id());
+                List<ColorEntity> colors = colorRepository.findAllById(request.idStringToSetInteger(request.getColor_id()));
 
                 if (!colors.isEmpty()) {
-                    Set<ProductColorEntity> productColors = product.getProductColors();
-                    if (productColors == null) {
-                        productColors = new HashSet<>();
-                    }
-                    productColors.addAll(colors.stream().map(color -> {
+                    Set<ProductColorEntity> productColors = colors.stream().map(color -> {
                         ProductColorEntity productColorEntity = new ProductColorEntity();
                         ProductColorIds productColorIds = new ProductColorIds();
 
@@ -226,22 +236,19 @@ public class ProductService implements ProductServiceImp {
                         productColorEntity.setIds(productColorIds);
                         productColorEntity.setProduct(product);
                         return productColorEntity;
-                    }).collect(Collectors.toSet()));
+                    }).collect(Collectors.toSet());
+
                     product.setProductColors(productColors);
                 } else {
-                    throw new NotFoundCustomException("Color id not found ", 404);
+                    throw new NotFoundCustomException("Color id not found ", HttpStatus.NOT_FOUND.value());
                 }
             }
 
             if (request.getTag_id() != null && !request.getTag_id().isEmpty()) {
-                List<TagEntity> tags = tagRepository.findAllById(request.getTag_id());
+                List<TagEntity> tags = tagRepository.findAllById(request.idStringToSetInteger(request.getTag_id()));
 
                 if (!tags.isEmpty()) {
-                    Set<ProductTagEntity> productTags = product.getProductTags();
-                    if (productTags == null) {
-                        productTags = new HashSet<>();
-                    }
-                    productTags.addAll(tags.stream().map(tag -> {
+                    Set<ProductTagEntity> productTags = tags.stream().map(tag -> {
                         ProductTagEntity productTagEntity = new ProductTagEntity();
                         ProductTagIds productTagIds = new ProductTagIds();
 
@@ -252,10 +259,11 @@ public class ProductService implements ProductServiceImp {
                         productTagEntity.setTag(tag);
                         productTagEntity.setProduct(product);
                         return productTagEntity;
-                    }).collect(Collectors.toSet()));
+                    }).collect(Collectors.toSet());
+
                     product.setProductTags(productTags);
                 } else {
-                    throw new NotFoundCustomException("Tag id not found ", 404);
+                    throw new NotFoundCustomException("Tag id not found ", HttpStatus.NOT_FOUND.value());
                 }
             }
 
@@ -266,9 +274,12 @@ public class ProductService implements ProductServiceImp {
             ProductEntity productEntity = productRepository.findByProductCustom(product.getId());
             ProductResponse productResponse = ModelUtilMapper.map(productEntity, ProductResponse.class);
 
+            productResponse.setCategory_id(product.getCategory().getId());
+
             List<String> sizeList = product.getProductSizes().stream()
                     .map(sizeEntity -> sizeEntity.getSize().getName())
                     .collect(Collectors.toList());
+
             productResponse.setSize(sizeList);
 
             List<String> colorList = product.getProductColors().stream()
@@ -284,8 +295,14 @@ public class ProductService implements ProductServiceImp {
                         return tagResponse;
                     })
                     .collect(Collectors.toList());
+
             productResponse.setTag(tagResponses);
 
+            if (productResponse.getImage() != null) {
+                productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
+            } else {
+                productResponse.setImage(null);
+            }
             return productResponse;
         } catch (CustomException e) {
             throw new CustomException(e.getMessage());
@@ -293,10 +310,21 @@ public class ProductService implements ProductServiceImp {
     }
 
     private ProductResponse updateProduct(ProductRequest request, Integer id) {
+        ProductEntity product = productRepository.findByProductCustom(id);
+        if (product == null) {
+            throw new NotFoundCustomException("Product id not found", HttpStatus.NOT_FOUND.value());
+        }
         try {
-            ProductEntity product = productRepository.findByProductCustom(id);
             CategoryEntity category = categoryRepository.findById(request.getCategory_id())
-                    .orElseThrow(() -> new NotFoundCustomException("Category id not found with ID: " + id, 404));
+                    .orElseThrow(() -> new NotFoundCustomException("Category id not found with ID: " + id, HttpStatus.NOT_FOUND.value()));
+
+            if (request.getImage() != null) {
+                fileStorageService.deleteByName(product.getImage());
+                product.setImage(saveNullOrValidImage(request.getImage()));
+            } else {
+                product.setImage(product.getImage());
+            }
+
             try {
                 categoryRepository.findById(request.getCategory_id()).ifPresent(product::setCategory);
                 product.setName(request.getName());
@@ -308,7 +336,6 @@ public class ProductService implements ProductServiceImp {
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
-                product.setImage(request.getImage());
                 product.setListImage(request.getList_image());
 
                 productRepository.save(product);
@@ -317,7 +344,7 @@ public class ProductService implements ProductServiceImp {
             }
 
             if (request.getSize_id() != null && !request.getSize_id().isEmpty()) {
-                List<SizeEntity> sizes = sizeRepository.findAllById(request.getSize_id());
+                List<SizeEntity> sizes = sizeRepository.findAllById(request.idStringToSetInteger(request.getSize_id()));
                 if (!sizes.isEmpty()) {
                     Set<ProductSizeEntity> productSizes = sizes.stream().map(size -> {
                         ProductSizeEntity productSizeEntity = new ProductSizeEntity();
@@ -334,13 +361,13 @@ public class ProductService implements ProductServiceImp {
 
                     product.setProductSizes(productSizes);
                 } else {
-                    throw new NotFoundCustomException("Size id not found with ID: " + request.getSize_id(), 404);
+                    throw new NotFoundCustomException("Size id not found with ID: " + request.getSize_id(), HttpStatus.NOT_FOUND.value());
 
                 }
             }
 
             if (request.getColor_id() != null && !request.getColor_id().isEmpty()) {
-                List<ColorEntity> colors = colorRepository.findAllById(request.getColor_id());
+                List<ColorEntity> colors = colorRepository.findAllById(request.idStringToSetInteger(request.getColor_id()));
 
                 if (!colors.isEmpty()) {
                     Set<ProductColorEntity> productColors = colors.stream().map(color -> {
@@ -373,12 +400,12 @@ public class ProductService implements ProductServiceImp {
 //                        return productColorEntity;
 //                    }).collect(Collectors.toSet()));
                 } else {
-                    throw new NotFoundCustomException("Color id not found with Id: " + request.getColor_id(), 404);
+                    throw new NotFoundCustomException("Color id not found with Id: " + request.getColor_id(), HttpStatus.NOT_FOUND.value());
                 }
             }
 
             if (request.getTag_id() != null && !request.getTag_id().isEmpty()) {
-                List<TagEntity> tags = tagRepository.findAllById(request.getTag_id());
+                List<TagEntity> tags = tagRepository.findAllById(request.idStringToSetInteger(request.getTag_id()));
 
                 if (!tags.isEmpty()) {
                     Set<ProductTagEntity> productTags = tags.stream().map(tag -> {
@@ -396,7 +423,7 @@ public class ProductService implements ProductServiceImp {
 
                     product.setProductTags(productTags);
                 } else {
-                    throw new NotFoundCustomException("Tag id not found with ID: " + request.getTag_id(), 404);
+                    throw new NotFoundCustomException("Tag id not found with ID: " + request.getTag_id(), HttpStatus.NOT_FOUND.value());
                 }
             }
 
@@ -427,9 +454,26 @@ public class ProductService implements ProductServiceImp {
                     .collect(Collectors.toList());
             productResponse.setTag(tagResponses);
 
+            if (productResponse.getImage() != null) {
+                productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
+            } else {
+                productResponse.setImage(null);
+            }
             return productResponse;
         } catch (CustomException e) {
             throw new CustomException(e.getMessage());
         }
+    }
+
+    private String saveNullOrValidImage(MultipartFile image) {
+        String imageName = null;
+        if (!(image == null || image.isEmpty())) {
+            if (fileStorageService.isImage(image)) {
+                imageName = fileStorageService.save(image);
+            } else {
+                throw new NotImageException(image.getOriginalFilename() + " is not an image!");
+            }
+        }
+        return imageName;
     }
 }

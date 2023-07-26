@@ -1,24 +1,12 @@
 package alticshaw.com.coszastore.controller;
 
-import alticshaw.com.coszastore.entity.CategoryEntity;
-import alticshaw.com.coszastore.entity.ProductEntity;
-import alticshaw.com.coszastore.entity.RoleEntity;
-import alticshaw.com.coszastore.entity.UserEntity;
-import alticshaw.com.coszastore.exception.ConflictCustomException;
-import alticshaw.com.coszastore.exception.NotFoundCustomException;
-import alticshaw.com.coszastore.exception.ValidationCustomException;
-import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.ProductRequest;
-import alticshaw.com.coszastore.payload.request.SignUpRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.payload.response.MessageResponse;
 import alticshaw.com.coszastore.payload.response.ProductResponse;
-import alticshaw.com.coszastore.payload.response.UserResponse;
-import alticshaw.com.coszastore.repository.CategoryRepository;
-import alticshaw.com.coszastore.repository.ProductRepository;
 import alticshaw.com.coszastore.service.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -53,17 +41,17 @@ public class ProductController {
         return ResponseEntity.ok().body(baseResponse);
     }
 
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> getById(@PathVariable("user_id") int user_id) {
-        ProductResponse productResponses = productServiceImp.getProductById(user_id);
+    @GetMapping("/{product_id}")
+    public ResponseEntity<?> getById(@PathVariable("product_id") Integer product_id) {
+        ProductResponse productResponses = productServiceImp.getProductById(product_id);
         baseResponse.setMessage(messageResponse.success());
         baseResponse.setStatusCode(200);
         baseResponse.setData(productResponses);
         return ResponseEntity.ok().body(baseResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest productRequest, BindingResult bindingResult) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> add(@ModelAttribute @RequestBody @Valid ProductRequest productRequest, BindingResult bindingResult) {
         ProductResponse product = productServiceImp.addProduct(productRequest, bindingResult);
 
         baseResponse.setMessage(messageResponse.success());
@@ -72,9 +60,9 @@ public class ProductController {
         return ResponseEntity.ok().body(baseResponse);
     }
 
-    @PutMapping("/{user_id}")
-    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest productRequest, @PathVariable("user_id") int user_id, BindingResult bindingResult) {
-        ProductResponse product = productServiceImp.updateProduct(productRequest, user_id, bindingResult);
+    @PutMapping(value = "/{product_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> add(@ModelAttribute @RequestBody @Valid ProductRequest productRequest, @PathVariable("product_id") Integer product_id, BindingResult bindingResult) {
+        ProductResponse product = productServiceImp.updateProduct(productRequest, product_id, bindingResult);
 
         baseResponse.setMessage(messageResponse.success());
         baseResponse.setStatusCode(200);
@@ -82,9 +70,9 @@ public class ProductController {
         return ResponseEntity.ok().body(baseResponse);
     }
 
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<?> delete( @PathVariable("user_id") int user_id) {
-        productServiceImp.deleteProduct(user_id);
+    @DeleteMapping("/{product_id}")
+    public ResponseEntity<?> delete(@PathVariable("product_id") Integer product_id) {
+        productServiceImp.deleteProduct(product_id);
 
         baseResponse.setMessage(messageResponse.success());
         baseResponse.setStatusCode(200);
