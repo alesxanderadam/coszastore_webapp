@@ -84,7 +84,7 @@ public class BlogService implements BlogServiceImp {
         List<BlogEntity> blogEntityList = blogRepository.findAll();
         return blogEntityList.stream()
                 .map(data -> new BlogResponse(
-                        data.getImage(),
+                        fileStorageServiceImp.getImageDirectoryPath() + "\\" + data.getImage(),
                         data.getContent(),
                         new UserResponseWithBlogDto(data.getUser().getId(), data.getUser().getUsername()),
                         getListTagResponseByBlogId(data.getId()),

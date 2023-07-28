@@ -10,4 +10,6 @@ public interface FileStorageServiceImp {
     boolean deleteAll();
     boolean deleteByName(String filename);
     boolean isImage(MultipartFile image);
+    String getImageDirectoryPath();
+    String getOtherFilesDirectoryPath();
 }
