@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +13,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,7 +44,6 @@ public class FileStorageService implements FileStorageServiceImp {
         try {
             Path imageFile = imagePath().resolve(filename);
             Path otherFiles = otherFilesPath().resolve(filename);
-            Path file = Paths.get(this.directory).resolve(filename);
 
             if (Files.exists(imageFile)) {
                 Files.delete(imageFile);
