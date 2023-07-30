@@ -67,61 +67,69 @@ public class ProductService implements ProductServiceImp {
         this.fileStorageService = fileStorageService;
     }
 
+//    @Override
+//    public List<ProductResponse> getAll() {
+//        List<ProductEntity> productEntityList = productRepository.findAllProductsCustom();
+//        List<ProductResponse> productResponses = new ArrayList<>();
+//        String path = pathImage + File.separator + "images" + File.separator;
+//        try {
+//            for (ProductEntity product : productEntityList) {
+//                ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
+//
+//                productResponse.setCategory_id(product.getCategory().getId());
+//
+//                if (productResponse.getImage() != null && !productResponse.getImage().isEmpty()) {
+//                    productResponse.setImage(path + product.getImage());
+//                } else {
+//                    productResponse.setImage(null);
+//                }
+//
+//                if (productResponse.getListImage() != null && !productResponse.getListImage().isEmpty()) {
+//                    List<String> listImage = ConvertArray.parseStringToList(productResponse.getListImage());
+//                    List<String> listImage2 = new ArrayList<>();
+//                    for (String image : listImage) {
+//                        listImage2.add(path + image);
+//                    }
+//
+//                    productResponse.setListImage(ConvertArray.convertListToUrlString(listImage2));
+//                } else {
+//                    productResponse.setListImage(null);
+//                }
+//
+//                List<String> sizeList = product.getProductSizes().stream()
+//                        .map(sizeEntity -> sizeEntity.getSize().getName())
+//                        .collect(Collectors.toList());
+//                productResponse.setSize(sizeList);
+//
+//                List<String> colorList = product.getProductColors().stream()
+//                        .map(colorEntity -> colorEntity.getColor().getName())
+//                        .collect(Collectors.toList());
+//                productResponse.setColor(colorList);
+//
+//                List<TagResponse> tagResponses = product.getProductTags().stream()
+//                        .map(tagEntity -> {
+//                            TagResponse tagResponse = ModelUtilMapper.map(tagEntity, TagResponse.class);
+//                            tagResponse.setId(tagEntity.getTag().getId());
+//                            tagResponse.setName(tagEntity.getTag().getName());
+//                            return tagResponse;
+//                        })
+//                        .collect(Collectors.toList());
+//                productResponse.setTag(tagResponses);
+//
+//                productResponses.add(productResponse);
+//            }
+//        } catch (CustomException e) {
+//            throw new CustomException("Error get list product");
+//        }
+//        return productResponses;
+//    }
+
     @Override
     public List<ProductResponse> getAll() {
         List<ProductEntity> productEntityList = productRepository.findAllProductsCustom();
-        List<ProductResponse> productResponses = new ArrayList<>();
-        String path = pathImage + File.separator + "images" + File.separator;
-        try {
-            for (ProductEntity product : productEntityList) {
-                ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
-
-                productResponse.setCategory_id(product.getCategory().getId());
-
-                if (productResponse.getImage() != null && !productResponse.getImage().isEmpty()) {
-                    productResponse.setImage(path + product.getImage());
-                } else {
-                    productResponse.setImage(null);
-                }
-
-                if (productResponse.getListImage() != null && !productResponse.getListImage().isEmpty()) {
-                    List<String> listImage = ConvertArray.parseStringToList(productResponse.getListImage());
-                    List<String> listImage2 = new ArrayList<>();
-                    for (String image : listImage) {
-                        listImage2.add(path + image);
-                    }
-
-                    productResponse.setListImage(ConvertArray.convertListToUrlString(listImage2));
-                } else {
-                    productResponse.setListImage(null);
-                }
-
-                List<String> sizeList = product.getProductSizes().stream()
-                        .map(sizeEntity -> sizeEntity.getSize().getName())
-                        .collect(Collectors.toList());
-                productResponse.setSize(sizeList);
-
-                List<String> colorList = product.getProductColors().stream()
-                        .map(colorEntity -> colorEntity.getColor().getName())
-                        .collect(Collectors.toList());
-                productResponse.setColor(colorList);
-
-                List<TagResponse> tagResponses = product.getProductTags().stream()
-                        .map(tagEntity -> {
-                            TagResponse tagResponse = ModelUtilMapper.map(tagEntity, TagResponse.class);
-                            tagResponse.setId(tagEntity.getTag().getId());
-                            tagResponse.setName(tagEntity.getTag().getName());
-                            return tagResponse;
-                        })
-                        .collect(Collectors.toList());
-                productResponse.setTag(tagResponses);
-
-                productResponses.add(productResponse);
-            }
-        } catch (CustomException e) {
-            throw new CustomException("Error get list product");
-        }
-        return productResponses;
+        return productEntityList.stream()
+                .map(this::mapProductEntityToProductResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -224,12 +232,6 @@ public class ProductService implements ProductServiceImp {
         }
     }
 
-    private void validateRequest(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationCustomException(bindingResult);
-        }
-    }
-
     private ProductResponse saveProduct(ProductRequest request) {
         try {
             CategoryEntity category = categoryRepository.findById(request.getCategory_id())
@@ -249,8 +251,6 @@ public class ProductService implements ProductServiceImp {
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
-//                product.setImage(saveNullOrValidImage(request.getImage()));
-//                product.setListImage(request.getList_image());
                 productRepository.save(product);
 
             } catch (Exception e) {
@@ -331,8 +331,7 @@ public class ProductService implements ProductServiceImp {
             productColorRepository.saveAll(product.getProductColors());
             productTagRepository.saveAll(product.getProductTags());
 
-            ProductEntity productEntity = productRepository.findByProductCustom(product.getId());
-            ProductResponse productResponse = ModelUtilMapper.map(productEntity, ProductResponse.class);
+            ProductResponse productResponse = mapProductEntityToProductResponse(product);
 
             productResponse.setCategory_id(product.getCategory().getId());
 
@@ -357,12 +356,6 @@ public class ProductService implements ProductServiceImp {
                     .collect(Collectors.toList());
 
             productResponse.setTag(tagResponses);
-
-            if (productResponse.getImage() != null) {
-                productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
-            } else {
-                productResponse.setImage(null);
-            }
             return productResponse;
         } catch (CustomException e) {
             throw new CustomException(e.getMessage());
@@ -520,4 +513,57 @@ public class ProductService implements ProductServiceImp {
             }
         return listImage;
     }
+
+    private ProductResponse mapProductEntityToProductResponse(ProductEntity product) {
+        String path = pathImage + File.separator + "images" + File.separator;
+        ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
+
+        productResponse.setCategory_id(product.getCategory().getId());
+
+        if (productResponse.getImage() != null && !productResponse.getImage().isEmpty()) {
+            productResponse.setImage(path + product.getImage());
+        } else {
+            productResponse.setImage(null);
+        }
+
+        if (productResponse.getListImage() != null && !productResponse.getListImage().isEmpty()) {
+            List<String> listImage = ConvertArray.parseStringToList(productResponse.getListImage());
+            List<String> listImage2 = listImage.stream()
+                    .map(image -> path + image)
+                    .collect(Collectors.toList());
+
+            productResponse.setListImage(ConvertArray.convertListToUrlString(listImage2));
+        } else {
+            productResponse.setListImage(null);
+        }
+
+        List<String> sizeList = product.getProductSizes().stream()
+                .map(sizeEntity -> sizeEntity.getSize().getName())
+                .collect(Collectors.toList());
+        productResponse.setSize(sizeList);
+
+        List<String> colorList = product.getProductColors().stream()
+                .map(colorEntity -> colorEntity.getColor().getName())
+                .collect(Collectors.toList());
+        productResponse.setColor(colorList);
+
+        List<TagResponse> tagResponses = product.getProductTags().stream()
+                .map(tagEntity -> {
+                    TagResponse tagResponse = ModelUtilMapper.map(tagEntity, TagResponse.class);
+                    tagResponse.setId(tagEntity.getTag().getId());
+                    tagResponse.setName(tagEntity.getTag().getName());
+                    return tagResponse;
+                })
+                .collect(Collectors.toList());
+        productResponse.setTag(tagResponses);
+
+        return productResponse;
+    }
+
+    private void validateRequest(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationCustomException(bindingResult);
+        }
+    }
+
 }
