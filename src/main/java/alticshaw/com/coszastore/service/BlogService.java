@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.dto.BlogDto;
 import alticshaw.com.coszastore.dto.UserResponseWithBlogDto;
 import alticshaw.com.coszastore.entity.BlogEntity;
 import alticshaw.com.coszastore.entity.BlogTagEntity;
@@ -14,6 +15,9 @@ import alticshaw.com.coszastore.repository.*;
 import alticshaw.com.coszastore.service.imp.BlogServiceImp;
 import alticshaw.com.coszastore.service.imp.FileStorageServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +34,7 @@ public class BlogService implements BlogServiceImp {
     private final BlogTagRepository blogTagRepository;
     private final CommentRepository commentRepository;
     private final TagRepository tagRepository;
+
     @Autowired
     public BlogService(BlogRepository blogRepository,
                        UserRepository userRepository,
@@ -80,19 +85,32 @@ public class BlogService implements BlogServiceImp {
     }
 
     @Override
-    public List<BlogResponse> getAllResponseBlogs() {
-        List<BlogEntity> blogEntityList = blogRepository.findAll();
-        return blogEntityList.stream()
-                .map(data -> new BlogResponse(
-                        data.getImage(),
-                        data.getContent(),
-                        new UserResponseWithBlogDto(data.getUser().getId(), data.getUser().getUsername()),
-                        getListTagResponseByBlogId(data.getId()),
-                        data.getCreatedTime(),
-                        data.getUpdatedTime(),
-                        commentRepository.countByBlogId(data.getId())
-                ))
-                .collect(Collectors.toList());
+    public BlogResponse getAllResponseBlogs(Integer pageNo, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<BlogEntity> pagedResult = blogRepository.findAll(paging);
+        List<BlogDto> blogs = new ArrayList<>();
+        int currentPage = 0;
+        int totalItems = 0;
+        int totalPages = 0;
+        if (pagedResult.hasContent()) {
+            blogs = pagedResult.getContent().stream()
+                    .map(data -> new BlogDto(
+                            data.getId(),
+                            (data.getImage() != null) ?
+                                    fileStorageServiceImp.getImageDirectoryPath() + "\\" + data.getImage() : null,
+                            data.getContent(),
+                            new UserResponseWithBlogDto(data.getUser().getId(), data.getUser().getUsername()),
+                            getListTagResponseByBlogId(data.getId()),
+                            data.getCreatedTime(),
+                            data.getUpdatedTime(),
+                            commentRepository.countByBlogId(data.getId())
+                    ))
+                    .collect(Collectors.toList());
+            currentPage = pagedResult.getNumber();
+            totalItems = pagedResult.getSize();
+            totalPages = pagedResult.getTotalPages();
+        }
+        return new BlogResponse(blogs, currentPage, totalItems, totalPages);
     }
 
     @Override

@@ -19,4 +19,6 @@ public interface FileStorageServiceImp {
     boolean deleteByName(String filename);
 
     boolean isImage(MultipartFile image);
+    String getImageDirectoryPath();
+    String getOtherFilesDirectoryPath();
 }

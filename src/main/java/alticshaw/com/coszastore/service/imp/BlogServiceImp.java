@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BlogServiceImp {
     boolean post(BlogRequest blogRequest, BindingResult bindingResult);
-    List<BlogResponse> getAllResponseBlogs();
+    BlogResponse getAllResponseBlogs(Integer pageNo, Integer pageSize);
     List<TagResponse> getListTagResponseByBlogId(int blogId);
     boolean deleteById(String id);
     boolean edit(String id, BlogRequest blogRequest, BindingResult bindingResult);

@@ -165,4 +165,12 @@ public class    FileStorageService implements FileStorageServiceImp {
         return Paths.get(directory + "\\others");
     }
 
+    public String getImageDirectoryPath() {
+        return this.directory + "\\images";
+    }
+
+    public String getOtherFilesDirectoryPath() {
+        return this.directory + "\\ others";
+    }
+
 }
