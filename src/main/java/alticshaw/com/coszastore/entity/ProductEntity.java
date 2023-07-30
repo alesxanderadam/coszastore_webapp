@@ -41,7 +41,7 @@ public class ProductEntity {
     @Column(name = "weight")
     private String weight;
 
-    @Column(name = "dimensions ")
+    @Column(name = "dimensions")
     private String dimensions;
 
     @Column(name = "materials")

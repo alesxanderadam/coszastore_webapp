@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.common.ConvertArray;
 import alticshaw.com.coszastore.entity.*;
 import alticshaw.com.coszastore.entity.ids.ProductColorIds;
 import alticshaw.com.coszastore.entity.ids.ProductSizeIds;
@@ -10,8 +11,10 @@ import alticshaw.com.coszastore.exception.NotImageException;
 import alticshaw.com.coszastore.exception.ValidationCustomException;
 import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.ProductRequest;
+import alticshaw.com.coszastore.payload.request.ProductUploadRequest;
 import alticshaw.com.coszastore.payload.response.MessageResponse;
 import alticshaw.com.coszastore.payload.response.ProductResponse;
+import alticshaw.com.coszastore.payload.response.ProductUploadResponse;
 import alticshaw.com.coszastore.payload.response.TagResponse;
 import alticshaw.com.coszastore.repository.*;
 import alticshaw.com.coszastore.service.imp.ProductServiceImp;
@@ -68,17 +71,31 @@ public class ProductService implements ProductServiceImp {
     public List<ProductResponse> getAll() {
         List<ProductEntity> productEntityList = productRepository.findAllProductsCustom();
         List<ProductResponse> productResponses = new ArrayList<>();
+        String path = pathImage + File.separator + "images" + File.separator;
         try {
             for (ProductEntity product : productEntityList) {
                 ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
 
                 productResponse.setCategory_id(product.getCategory().getId());
 
-                if (productResponse.getImage() != null) {
-                    productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
+                if (productResponse.getImage() != null && !productResponse.getImage().isEmpty()) {
+                    productResponse.setImage(path + product.getImage());
                 } else {
                     productResponse.setImage(null);
                 }
+
+                if (productResponse.getListImage() != null && !productResponse.getListImage().isEmpty()) {
+                    List<String> listImage = ConvertArray.parseStringToList(productResponse.getListImage());
+                    List<String> listImage2 = new ArrayList<>();
+                    for (String image : listImage) {
+                        listImage2.add(path + image);
+                    }
+
+                    productResponse.setListImage(ConvertArray.convertListToUrlString(listImage2));
+                } else {
+                    productResponse.setListImage(null);
+                }
+
                 List<String> sizeList = product.getProductSizes().stream()
                         .map(sizeEntity -> sizeEntity.getSize().getName())
                         .collect(Collectors.toList());
@@ -152,6 +169,44 @@ public class ProductService implements ProductServiceImp {
     }
 
     @Override
+    public ProductUploadResponse uploadImages(ProductUploadRequest productUploadRequest, Integer id) {
+        ProductUploadResponse response = new ProductUploadResponse();
+        String path = pathImage + File.separator + "images" + File.separator;
+        try {
+            ProductEntity productEntity = productRepository.findById(id).orElseThrow(() -> new NotFoundCustomException("Product id node found with id: " + id, HttpStatus.NOT_FOUND.value()));
+            String image = saveNullOrValidImage(productUploadRequest.getImage());
+            List<String> listImage = saveNullOrValidListImage(productUploadRequest.getListImage());
+            if (productEntity.getImage() != null && !productEntity.getImage().isEmpty()) {
+                fileStorageService.deleteByName(productEntity.getImage());
+            }
+
+            if (productEntity.getListImage() != null && !productEntity.getListImage().isEmpty()) {
+                List<String> listImage1 = ConvertArray.parseStringToList(productEntity.getListImage());
+                for (String image2 : listImage1) {
+                    fileStorageService.deleteByName(image2);
+                }
+            }
+
+            if (image != null && !image.isEmpty()) {
+                productEntity.setImage(image);
+                response.setImage(path + image);
+            }
+            if (listImage.size() > 0) {
+                List<String> listWithFullPath = new ArrayList<>();
+                for (String image1 : listImage) {
+                    listWithFullPath.add(path + image1);
+                }
+                productEntity.setListImage(ConvertArray.convertListToUrlString(listImage));
+                response.setList_images(listWithFullPath);
+            }
+            productRepository.save(productEntity);
+        } catch (Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     public void deleteProduct(Integer id) {
         ProductEntity product = productRepository.findByProductCustom(id);
 
@@ -159,7 +214,9 @@ public class ProductService implements ProductServiceImp {
             throw new NotFoundCustomException("Product not found with id : " + id, HttpStatus.NOT_FOUND.value());
         }
         try {
-            fileStorageService.deleteByName(product.getImage());
+            if (product.getImage() != null) {
+                fileStorageService.deleteByName(product.getImage());
+            }
             productRepository.delete(product);
             new MessageResponse().success();
         } catch (Exception e) {
@@ -192,16 +249,16 @@ public class ProductService implements ProductServiceImp {
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
-                product.setImage(saveNullOrValidImage(request.getImage()));
-                product.setListImage(request.getList_image());
+//                product.setImage(saveNullOrValidImage(request.getImage()));
+//                product.setListImage(request.getList_image());
                 productRepository.save(product);
 
             } catch (Exception e) {
                 throw new CustomException("Error add product");
             }
 
-            if (request.getSize_id() != null && !request.getSize_id().isEmpty()) {
-                List<SizeEntity> sizes = sizeRepository.findAllById(request.idStringToSetInteger(request.getSize_id()));
+            if (request.getSize().getSize_id() != null && !request.getSize().getSize_id().isEmpty()) {
+                List<SizeEntity> sizes = sizeRepository.findAllById(request.getSize().getSize_id());
                 if (!sizes.isEmpty()) {
                     Set<ProductSizeEntity> productSizes = sizes.stream().map(size -> {
                         ProductSizeEntity productSizeEntity = new ProductSizeEntity();
@@ -212,17 +269,19 @@ public class ProductService implements ProductServiceImp {
 
                         productSizeEntity.setIds(productSizeIds);
                         productSizeEntity.setSize(size);
+                        productSizeEntity.setQuantity(request.getSize().getQuantity());
                         productSizeEntity.setProduct(product);
                         return productSizeEntity;
                     }).collect(Collectors.toSet());
+
                     product.setProductSizes(productSizes);
                 } else {
                     throw new NotFoundCustomException("Size id not found ", HttpStatus.NOT_FOUND.value());
                 }
             }
 
-            if (request.getColor_id() != null && !request.getColor_id().isEmpty()) {
-                List<ColorEntity> colors = colorRepository.findAllById(request.idStringToSetInteger(request.getColor_id()));
+            if (request.getColor().getColor_id() != null && !request.getColor().getColor_id().isEmpty()) {
+                List<ColorEntity> colors = colorRepository.findAllById((request.getColor().getColor_id()));
 
                 if (!colors.isEmpty()) {
                     Set<ProductColorEntity> productColors = colors.stream().map(color -> {
@@ -235,6 +294,7 @@ public class ProductService implements ProductServiceImp {
 
                         productColorEntity.setIds(productColorIds);
                         productColorEntity.setProduct(product);
+                        productColorEntity.setQuantity(request.getColor().getQuantity());
                         return productColorEntity;
                     }).collect(Collectors.toSet());
 
@@ -245,7 +305,7 @@ public class ProductService implements ProductServiceImp {
             }
 
             if (request.getTag_id() != null && !request.getTag_id().isEmpty()) {
-                List<TagEntity> tags = tagRepository.findAllById(request.idStringToSetInteger(request.getTag_id()));
+                List<TagEntity> tags = tagRepository.findAllById(request.getTag_id());
 
                 if (!tags.isEmpty()) {
                     Set<ProductTagEntity> productTags = tags.stream().map(tag -> {
@@ -318,13 +378,6 @@ public class ProductService implements ProductServiceImp {
             CategoryEntity category = categoryRepository.findById(request.getCategory_id())
                     .orElseThrow(() -> new NotFoundCustomException("Category id not found with ID: " + id, HttpStatus.NOT_FOUND.value()));
 
-            if (request.getImage() != null) {
-                fileStorageService.deleteByName(product.getImage());
-                product.setImage(saveNullOrValidImage(request.getImage()));
-            } else {
-                product.setImage(product.getImage());
-            }
-
             try {
                 categoryRepository.findById(request.getCategory_id()).ifPresent(product::setCategory);
                 product.setName(request.getName());
@@ -336,15 +389,14 @@ public class ProductService implements ProductServiceImp {
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
-                product.setListImage(request.getList_image());
 
                 productRepository.save(product);
             } catch (Exception e) {
                 throw new CustomException("Error add product");
             }
 
-            if (request.getSize_id() != null && !request.getSize_id().isEmpty()) {
-                List<SizeEntity> sizes = sizeRepository.findAllById(request.idStringToSetInteger(request.getSize_id()));
+            if (request.getSize().getSize_id() != null && !request.getSize().getSize_id().isEmpty()) {
+                List<SizeEntity> sizes = sizeRepository.findAllById(request.getSize().getSize_id());
                 if (!sizes.isEmpty()) {
                     Set<ProductSizeEntity> productSizes = sizes.stream().map(size -> {
                         ProductSizeEntity productSizeEntity = new ProductSizeEntity();
@@ -361,13 +413,13 @@ public class ProductService implements ProductServiceImp {
 
                     product.setProductSizes(productSizes);
                 } else {
-                    throw new NotFoundCustomException("Size id not found with ID: " + request.getSize_id(), HttpStatus.NOT_FOUND.value());
+                    throw new NotFoundCustomException("Size id not found with ID: " + request.getSize().getSize_id(), HttpStatus.NOT_FOUND.value());
 
                 }
             }
 
-            if (request.getColor_id() != null && !request.getColor_id().isEmpty()) {
-                List<ColorEntity> colors = colorRepository.findAllById(request.idStringToSetInteger(request.getColor_id()));
+            if (request.getColor().getColor_id() != null && !request.getColor().getColor_id().isEmpty()) {
+                List<ColorEntity> colors = colorRepository.findAllById(request.getColor().getColor_id());
 
                 if (!colors.isEmpty()) {
                     Set<ProductColorEntity> productColors = colors.stream().map(color -> {
@@ -384,28 +436,13 @@ public class ProductService implements ProductServiceImp {
                     }).collect(Collectors.toSet());
 
                     product.setProductColors(productColors);
-//                    if (productColors == null) {
-//                        productColors = new HashSet<>();
-//                    }
-//                    productColors.addAll(colors.stream().map(color -> {
-//                        ProductColorEntity productColorEntity = new ProductColorEntity();
-//                        ProductColorIds productColorIds = new ProductColorIds();
-//
-//                        productColorIds.setProductId(product.getId());
-//                        productColorIds.setColorId(color.getId());
-//                        productColorEntity.setColor(color);
-//
-//                        productColorEntity.setIds(productColorIds);
-//                        productColorEntity.setProduct(product);
-//                        return productColorEntity;
-//                    }).collect(Collectors.toSet()));
                 } else {
-                    throw new NotFoundCustomException("Color id not found with Id: " + request.getColor_id(), HttpStatus.NOT_FOUND.value());
+                    throw new NotFoundCustomException("Color id not found with Id: " + request.getColor().getColor_id(), HttpStatus.NOT_FOUND.value());
                 }
             }
 
             if (request.getTag_id() != null && !request.getTag_id().isEmpty()) {
-                List<TagEntity> tags = tagRepository.findAllById(request.idStringToSetInteger(request.getTag_id()));
+                List<TagEntity> tags = tagRepository.findAllById(request.getTag_id());
 
                 if (!tags.isEmpty()) {
                     Set<ProductTagEntity> productTags = tags.stream().map(tag -> {
@@ -454,11 +491,6 @@ public class ProductService implements ProductServiceImp {
                     .collect(Collectors.toList());
             productResponse.setTag(tagResponses);
 
-            if (productResponse.getImage() != null) {
-                productResponse.setImage(pathImage + File.separator + "images" + File.separator + product.getImage());
-            } else {
-                productResponse.setImage(null);
-            }
             return productResponse;
         } catch (CustomException e) {
             throw new CustomException(e.getMessage());
@@ -466,14 +498,26 @@ public class ProductService implements ProductServiceImp {
     }
 
     private String saveNullOrValidImage(MultipartFile image) {
-        String imageName = null;
         if (!(image == null || image.isEmpty())) {
             if (fileStorageService.isImage(image)) {
-                imageName = fileStorageService.save(image);
+                return fileStorageService.save(image);
             } else {
                 throw new NotImageException(image.getOriginalFilename() + " is not an image!");
             }
         }
-        return imageName;
+        return null;
+    }
+
+    private List<String> saveNullOrValidListImage(List<MultipartFile> images) {
+        List<String> listImage = new ArrayList<>();
+        for (MultipartFile image : images)
+            if (image != null && !image.isEmpty()) {
+                if (fileStorageService.isImage(image)) {
+                    listImage.add(fileStorageService.save(image));
+                } else {
+                    throw new NotImageException(image.getOriginalFilename() + " is not an image!");
+                }
+            }
+        return listImage;
     }
 }

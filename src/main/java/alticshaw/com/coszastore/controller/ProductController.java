@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.controller;
 
 import alticshaw.com.coszastore.payload.request.ProductRequest;
+import alticshaw.com.coszastore.payload.request.ProductUploadRequest;
 import alticshaw.com.coszastore.payload.response.*;
 import alticshaw.com.coszastore.payload.response.ApiResponse;
 import alticshaw.com.coszastore.service.imp.ProductServiceImp;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,10 +71,24 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PostMapping(value = "/uploadImage/{product_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation(value = "Upload product images", notes = "Upload images for a specific product")
+    public ResponseEntity<ApiResponse<ProductUploadResponse>> uploadImage(
+            @ApiParam(value = "Product ID", required = true) @PathVariable("product_id") Integer product_id,
+            @ModelAttribute @Validated ProductUploadRequest request
+    ) {
+        ProductUploadResponse product = productServiceImp.uploadImages(request, product_id);
+        ApiResponse<ProductUploadResponse> response = new ApiResponse<>();
+        response.setMessage(messageResponse.success());
+        response.setStatusCode(200);
+        response.setData(product);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PutMapping(value = "/{product_id}")
     @ApiOperation(value = "Update an existing product", notes = "Update an existing product based on its ID")
     public ResponseEntity<ApiResponse<ProductResponse>> update(
-            @ApiParam(value = "Product informat1ion", required = true) @ModelAttribute @RequestBody @Valid ProductRequest productRequest,
+            @ApiParam(value = "Product informat1ion", required = true) @RequestBody @Valid ProductRequest productRequest,
             @ApiParam(value = "Product ID", required = true) @PathVariable("product_id") Integer product_id,
             BindingResult bindingResult
     ) {
