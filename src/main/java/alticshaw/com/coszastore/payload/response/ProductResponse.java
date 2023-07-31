@@ -17,6 +17,9 @@ public class ProductResponse {
     @ApiModelProperty(value = "Product name", example = "Example Product")
     private String name;
 
+    @ApiModelProperty(value = "URL of the product list image", example = "10.99")
+    private BigDecimal import_price;
+
     @ApiModelProperty(value = "Product price", example = "19.99")
     private BigDecimal price;
 
@@ -43,6 +46,12 @@ public class ProductResponse {
 
     @ApiModelProperty(value = "URL of the product list image")
     private String listImage;
+
+    @ApiModelProperty(value = "Is new product ?", example = "1")
+    private int is_new_product;
+
+    @ApiModelProperty(value = "Product is best seller ?", example = "0")
+    private int is_best_selling;
 
     @ApiModelProperty(value = "Category ID", example = "2")
     private int category_id;

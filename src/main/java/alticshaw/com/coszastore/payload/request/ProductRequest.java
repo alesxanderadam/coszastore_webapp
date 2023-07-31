@@ -36,24 +36,29 @@ public class ProductRequest {
     @ApiModelProperty(value = "Product dimensions", example = "10 x 5 x 2 cm", position = 6)
     private String dimensions;
 
+    @ApiModelProperty(value = "Product import price", required = true, example = "10.99", position = 7)
+    @DecimalMin(value = "10.99", message = "Price must be at least 0.01.")
+    private BigDecimal import_price;
 
-
-//    @ApiModelProperty(value = "List image URLs", example = "[\"url1\", \"url2\"]", position = 7)
-//    private String list_image;
-
-    @ApiModelProperty(value = "Product price", required = true, example = "19.99", position = 9)
-    @DecimalMin(value = "0.01", message = "Price must be at least 0.01.")
+    @ApiModelProperty(value = "Product price", required = true, example = "19.99", position = 8)
+    @DecimalMin(value = "12.99", message = "Price must be at least 0.01.")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "Product quantity", required = true, example = "100", position = 10)
+    @ApiModelProperty(value = "Product quantity", required = true, example = "100", position = 9)
     @Min(value = 1, message = "Quantity cannot be negative.")
     private int quantity;
 
-    @ApiModelProperty(value = "Category ID", required = true, example = "1", position = 11)
+    @ApiModelProperty(value = "Is new product ?", example = "1")
+    private int is_new_product;
+
+    @ApiModelProperty(value = "Product is best seller ?", example = "0")
+    private int is_best_selling;
+
+    @ApiModelProperty(value = "Category ID", required = true, example = "1", position = 10)
     @NotNull(message = "Category ID must not be null.")
     private Integer category_id;
 
-    @ApiModelProperty(value = "Tag IDs", required = true, example = "[1, 2, 3]", position = 12)
+    @ApiModelProperty(value = "Tag IDs", required = true, example = "[1, 2, 3]", position = 11)
     @NotEmpty(message = "Tag must not be empty.")
     private Set<Integer> tag_id;
 
