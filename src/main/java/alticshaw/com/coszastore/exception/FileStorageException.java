@@ -12,8 +12,6 @@ public class FileStorageException extends RuntimeException{
         this.message = message;
     }
 
-    public FileStorageException() {}
-
     public FileStorageException(String message) {
         this.message = message;
     }

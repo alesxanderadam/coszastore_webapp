@@ -69,8 +69,8 @@ public class SecurityConfig {
 //                .and()
 //=======
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/api/auth/**").permitAll()
-                        .antMatchers("/api/category/**").hasAuthority("ADMIN")
+                        .antMatchers("/api/auth/**","/**").permitAll()
+                        .antMatchers("/api/test").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
