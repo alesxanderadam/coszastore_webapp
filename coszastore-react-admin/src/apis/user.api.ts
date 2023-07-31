@@ -1,6 +1,7 @@
 import { IPaginationModel } from 'models/pagination.model';
 import { IUserPagingRequest, UserModel, UserUpdateModel } from "./../models/user.model";
 import Fetcher from "./fetcher";
+import { ResponseModel } from 'models/response.model';
 
 // mock.onGet("/users").reply(200, {
 //     users: UserMocks,
@@ -46,22 +47,22 @@ export default class UserApi extends Fetcher {
         super();
     }
 
-    getUserPaging(request: IUserPagingRequest): Promise<IPaginationModel<UserModel>> {
-        return this.get(`${this.rootApiUrl}/api/user/paging`, request);
-    }
-    getUsers(): Promise<UserModel[]> {
+    // getUserPaging(request: IUserPagingRequest): Promise<IPaginationModel<UserModel>> {
+    //     return this.get(`${this.rootApiUrl}/api/user/paging`, request);
+    // }
+    getUsers(): Promise<ResponseModel<UserModel[]>> {
         return this.get(`${this.rootApiUrl}/api/user`);
     }
 
-    getUserById(id: string): Promise<UserModel> {
+    getUserById(id: string): Promise<ResponseModel<UserModel>> {
         return this.get(`${this.rootApiUrl}/api/user/${id}`);
     }
 
-    addUser(user: UserUpdateModel): Promise<UserModel> {
+    addUser(user: UserUpdateModel): Promise<ResponseModel<UserModel>> {
         return this.post(`${this.rootApiUrl}/api/user`, user);
     }
 
-    update(userId: string, user: UserUpdateModel): Promise<UserModel> {
+    update(userId: string, user: UserUpdateModel): Promise<ResponseModel<UserModel>> {
         return this.put(`${this.rootApiUrl}/api/user/${userId}`, user);
     }
 

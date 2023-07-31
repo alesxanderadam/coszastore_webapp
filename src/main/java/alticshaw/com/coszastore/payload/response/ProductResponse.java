@@ -47,6 +47,9 @@ public class ProductResponse {
     @ApiModelProperty(value = "Category ID", example = "2")
     private int category_id;
 
+    @ApiModelProperty(value = "Category")
+    private CategoryResponse category;
+
     @ApiModelProperty(value = "List of tags associated with the product")
     private List<TagResponse> tag;
 

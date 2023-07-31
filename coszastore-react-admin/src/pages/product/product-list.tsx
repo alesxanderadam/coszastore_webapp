@@ -14,91 +14,90 @@ export const Product = () => {
     const history = useHistory();
     const [data, setData] = useState<ProductModel[]>([]);
     const [loading, setLoading] = useState(false);
-    const [totalItems, setTotalItems] = useState<number>(0);
-    const [filter, setFilter] = useState<IUserPagingRequest>({
-        pageIndex: 0,
-        pageSize: 10,
-        search: ''
-    })
-    const columns: ColumnsType<ProductUpdateModel> = [
+    // const [totalItems, setTotalItems] = useState<number>(0);
+    // const [filter, setFilter] = useState<IUserPagingRequest>({
+    //     pageIndex: 0,
+    //     pageSize: 10,
+    //     search: ''
+    // })
+    const columns: ColumnsType<ProductModel> = [
         {
             title: "Mã",
-            dataIndex: "code",
             width: 120,
             fixed: 'left',
             render: (data) => (<h5 style={{ fontWeight: '700' }}>{data}</h5>)
         },
         {
-            title: "Tên",
+            title: "Tên sản phẩm",
             dataIndex: "name",
             width: 220,
         },
         {
             title: "Danh mục",
             width: 220,
-            render: (data: ProductUpdateModel) => (
+            render: (data: ProductModel) => (
                 <>
                     {data.category.name}
                 </>
             ),
         },
+        {
+            title: "Mô tả sản phẩm",
+            dataIndex: "description",
+            width: 250,
+            render: (shortDescription: string) => (
+                <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
+            )
+        },
         // {
-        //     title: "Mô tả sản phẩm",
-        //     dataIndex: "description",
-        //     width: 250,
-        //     render: (shortDescription: string) => (
-        //         <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
-        //     )
+        //     title: "Sản Phẩm mới",
+        //     width: 200,
+        //     render: (data: ProductModel) => (
+        //         <>
+        //             <Tag color={data.isNewProduct === true ? "red" : "gold"}>{data.isNewProduct === true ? "Spản phẩm mới" : "Sản phẩm cũ"}</Tag>
+        //         </>
+        //     ),
+        // },
+        // {
+        //     title: "Bán chạy nhất",
+        //     width: 200,
+        //     render: (data: ProductModel) => (
+        //         <>
+        //             <Tag color={data.isBestSelling === true ? "red" : "gold"}>{data.isBestSelling === true ? "Bán chạy" : "Bán chậm"}</Tag>
+        //         </>
+        //     ),
+        // },
+        // {
+        //     title: "Đơn vị cơ bản",
+        //     dataIndex: "basicUnit",
+        //     width: 200,
+        // },
+        // {
+        //     title: "Giá vốn",
+        //     dataIndex: "importPrice",
+        //     width: 200,
+        //     render: (value) => utils.$number.numberFormatter(value)
         // },
         {
-            title: "Sản Phẩm mới",
-            width: 200,
-            render: (data: ProductUpdateModel) => (
-                <>
-                    <Tag color={data.isNewProduct === true ? "red" : "gold"}>{data.isNewProduct === true ? "Spản phẩm mới" : "Sản phẩm cũ"}</Tag>
-                </>
-            ),
-        },
-        {
-            title: "Bán chạy nhất",
-            width: 200,
-            render: (data: ProductUpdateModel) => (
-                <>
-                    <Tag color={data.isBestSelling === true ? "red" : "gold"}>{data.isBestSelling === true ? "Bán chạy" : "Bán chậm"}</Tag>
-                </>
-            ),
-        },
-        {
-            title: "Đơn vị cơ bản",
-            dataIndex: "basicUnit",
-            width: 200,
-        },
-        {
-            title: "Giá vốn",
-            dataIndex: "importPrice",
-            width: 200,
-            render: (value) => utils.$number.numberFormatter(value)
-        },
-        {
             title: "Giá bán",
-            dataIndex: "salePrice",
+            dataIndex: "price",
             width: 200,
             render: (value) => utils.$number.numberFormatter(value)
         },
-        {
-            title: "Trạng thái",
-            width: 220,
-            render: (data: ProductUpdateModel) => (
-                <>
-                    <RenderStatus status={data.status} />
-                </>
-            ),
-        },
+        // {
+        //     title: "Trạng thái",
+        //     width: 220,
+        //     render: (data: ProductModel) => (
+        //         <>
+        //             <RenderStatus status={data.} />
+        //         </>
+        //     ),
+        // },
         {
             title: "Thao tác",
             width: 150,
             fixed: 'right',
-            render: (data: ProductModel, name: ProductUpdateModel) => (
+            render: (data: ProductModel, name: ProductModel) => (
                 <>
                     <div className="ant-employed d-flex align-items-center justify-content-center">
                         <Button className="table-action-button" onClick={() => { history.push(UrlResolver.buildUrl(`/${PageConstant.product}/${data.id}/edit`)); }} type="default">
@@ -126,9 +125,9 @@ export const Product = () => {
                 message.success('Xóa thành công')
                 services.productApi.deleteProduct(data.id).then(() => {
                     setLoading(true);
-                    services.productApi.getProduct(filter).then((res) => {
-                        setData(res.items || [])
-                        setTotalItems(res.totalCount);
+                    services.productApi.getProduct().then((res) => {
+                        setData(res.data || [])
+                        // setTotalItems(res.totalCount);
                         setLoading(false);
                     });
                 });
@@ -140,22 +139,22 @@ export const Product = () => {
     };
 
 
-    const onPageChange = (page: number, size: number) => {
-        setFilter({
-            ...filter,
-            pageIndex: page - 1,
-            pageSize: size
-        })
-    }
+    // const onPageChange = (page: number, size: number) => {
+    //     setFilter({
+    //         ...filter,
+    //         pageIndex: page - 1,
+    //         pageSize: size
+    //     })
+    // }
 
     useEffect(() => {
         setLoading(true);
-        services.productApi.getProduct(filter).then((res) => {
-            setData(res.items || [])
-            setTotalItems(res.totalCount);
+        services.productApi.getProduct().then((res) => {
+            setData(res.data || [])
+            // setTotalItems(res.totalCount);
             setLoading(false);
         });
-    }, [filter])
+    }, [])
     return (
         <>
             <div className="tabled">
@@ -167,12 +166,13 @@ export const Product = () => {
                             </>
                         }>
                             <div className="table-responsive">
-                                <Table loading={loading} columns={columns} dataSource={data} pagination={{
+                                {/*Attribute table:  pagination={{
                                     total: totalItems ?? 0,
                                     current: filter.pageIndex + 1,
                                     pageSize: filter.pageSize,
                                     onChange: onPageChange
-                                }}
+                                }} */}
+                                <Table loading={loading} columns={columns} dataSource={data}
                                     sticky
                                     size="middle"
                                     scroll={{ x: 1300 }}

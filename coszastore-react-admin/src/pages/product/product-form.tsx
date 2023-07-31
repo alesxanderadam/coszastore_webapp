@@ -2,8 +2,8 @@ import { Row, Col, Card, Button, Input, Form, Select, Switch, Upload, Modal, Inp
 import services from "apis";
 import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
-import { CategoryModel, ICategoryRequest } from "models/category.model";
-import { IProductImageModel, ProductModel, ProductUpdateModel } from 'models/product.model'
+import { CategoryModel } from "models/category.model";
+import { ProductModel, ProductUpdateModel } from 'models/product.model'
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import type { RcFile, UploadProps } from 'antd/es/upload';
@@ -57,11 +57,11 @@ const ProductForm = ({
     );
 
     const [form] = Form.useForm();
-    const [filter, setFilter] = useState<ICategoryRequest>({
-        pageIndex: 0,
-        pageSize: 10,
-        search: '',
-    });
+    // const [filter, setFilter] = useState<ICategoryRequest>({
+    //     pageIndex: 0,
+    //     pageSize: 10,
+    //     search: '',
+    // });
     useEffect(() => {
         if (product) {
             form.setFieldsValue(product)
@@ -69,16 +69,16 @@ const ProductForm = ({
                 product.description = ''
                 setDescriptionInit(product.description);
             }
-            product.productImages.map((item) => {
-                images.push(item.id)
-                console.log(item)
-            })
+            // product.productImages.map((item) => {
+            //     images.push(item.id)
+            //     console.log(item)
+            // })
         }
     }, [product])
 
 
     const onSubmit = (values: ProductModel) => {
-        values.keepedProductImageIds = images
+        // values.keepedProductImageIds = images
         const fileUpload = fileList.map(x => x.originFileObj);
         submitted(values, fileUpload);
     };

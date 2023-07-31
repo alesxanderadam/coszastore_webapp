@@ -9,10 +9,15 @@ export default class ProductApi extends Fetcher {
         super();
     }
 
-    getProduct(request: IProductRequest): Promise<IPaginationModel<ProductModel>> {
-        return this.get(`${this.rootApiUrl}/api/product`, request);
+    // getProduct(request: IProductRequest): Promise<IPaginationModel<ProductModel>> {
+    //     return this.get(`${this.rootApiUrl}/api/product`, request);
+    // }
+
+    getProduct(): Promise<ResponseModel<ProductModel[]>> {
+        return this.get(`${this.rootApiUrl}/api/product`);
     }
-    getProductById(productId: string): Promise<ProductModel> {
+
+    getProductById(productId: string): Promise<ResponseModel<ProductModel>> {
         return this.get(`${this.rootApiUrl}/api/product/${productId}`);
     }
     addProduct(product: ProductUpdateModel, imageFiles: UploadFile[]): Promise<ResponseModel<ProductModel>> {
