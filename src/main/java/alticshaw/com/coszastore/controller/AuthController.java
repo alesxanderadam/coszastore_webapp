@@ -2,7 +2,7 @@ package alticshaw.com.coszastore.controller;
 
 import alticshaw.com.coszastore.dto.TokenDto;
 import alticshaw.com.coszastore.entity.UserEntity;
-import alticshaw.com.coszastore.exception.AuthCustomException;
+import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.SignInRequest;
 import alticshaw.com.coszastore.payload.request.SignUpRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
@@ -29,7 +29,8 @@ public class AuthController {
     public AuthController(
             BaseResponse baseResponse,
             MessageResponse messageResponse,
-            AuthServiceImp authServiceImp) {
+            AuthServiceImp authServiceImp
+            ) {
         this.baseResponse = baseResponse;
         this.messageResponse = messageResponse;
         this.authServiceImp = authServiceImp;
@@ -47,7 +48,7 @@ public class AuthController {
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult signUpBindingResult) {
         UserEntity user = authServiceImp.addUser(signUpRequest, signUpBindingResult);
-        UserResponse userResponse = new UserResponse().MapUserEntityToUserResponse(user);
+        UserResponse userResponse = ModelUtilMapper.map(user, UserResponse.class);
         baseResponse.setStatusCode(200);
         baseResponse.setMessage(messageResponse.success());
         baseResponse.setData(userResponse);

@@ -10,6 +10,9 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "content")
     private String content;
 
@@ -35,6 +38,14 @@ public class CommentEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getContent() {
@@ -83,5 +94,16 @@ public class CommentEntity {
 
     public void setUpdatedTime(Timestamp updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    public CommentEntity() {}
+
+    public CommentEntity(String content, String email, String name, String website, BlogEntity blog, Timestamp createdTime) {
+        this.content = content;
+        this.email = email;
+        this.name = name;
+        this.website = website;
+        this.blog = blog;
+        this.createdTime = createdTime;
     }
 }
