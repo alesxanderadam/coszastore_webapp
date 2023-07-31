@@ -1,4 +1,4 @@
-import { IProductRequest, ProductModel, ProductUpdateModel } from '../models/product.model';
+import { ProductModel, ProductUpdateModel } from '../models/product.model';
 import { ResponseModel } from 'models/response.model';
 import { IPaginationModel } from '../models/pagination.model';
 import Fetcher from "./fetcher";
@@ -30,7 +30,7 @@ export default class ProductApi extends Fetcher {
 
         return this.postFromForm(`${this.rootApiUrl}/api/product`, product, formData);
     }
-    updateProduct(productId: string, product: ProductUpdateModel, imageFiles: UploadFile[]): Promise<ResponseModel<ProductModel>> {
+    updateProduct(productId: number, product: ProductUpdateModel, imageFiles: UploadFile[]): Promise<ResponseModel<ProductModel>> {
         const formData = new FormData();
         if (imageFiles && imageFiles.length > 0) {
             imageFiles.forEach(file => {

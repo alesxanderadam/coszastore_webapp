@@ -1,5 +1,4 @@
-import { CategoryModel, ICategoryRequest, CategoryUpdateModel } from './../models/category.model';
-import { IPaginationModel } from './../models/pagination.model';
+import { CategoryModel, CategoryUpdateModel } from './../models/category.model';
 import Fetcher from './fetcher'
 import { ResponseModel } from 'models/response.model';
 
@@ -8,8 +7,11 @@ export default class CategoryApi extends Fetcher {
         super();
     }
 
-    getCategory(request: ICategoryRequest): Promise<IPaginationModel<CategoryModel>> {
-        return this.get(`${this.rootApiUrl}/api/category`, request);
+    // getCategory(request: ICategoryRequest): Promise<IPaginationModel<CategoryModel>> {
+    //     return this.get(`${this.rootApiUrl}/api/category`, request);
+    // }
+    getCategory(): Promise<ResponseModel<CategoryModel[]>> {
+        return this.get(`${this.rootApiUrl}/api/category`);
     }
     getCategoryById(id: string): Promise<CategoryModel> {
         return this.get(`${this.rootApiUrl}/api/category/${id}`);

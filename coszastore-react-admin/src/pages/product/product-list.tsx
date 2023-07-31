@@ -4,9 +4,7 @@ import { ColumnsType } from "antd/lib/table";
 import services from "apis";
 import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
-import RenderStatus from "components/commons/RenderStatus";
-import { ProductModel, ProductUpdateModel } from "models/product.model";
-import { IUserPagingRequest } from "models/user.model";
+import { ProductModel } from "models/product.model";
 import { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import utils from "utils";
@@ -24,6 +22,7 @@ export const Product = () => {
         {
             title: "Mã",
             width: 120,
+            dataIndex: "id",
             fixed: 'left',
             render: (data) => (<h5 style={{ fontWeight: '700' }}>{data}</h5>)
         },
@@ -42,9 +41,30 @@ export const Product = () => {
             ),
         },
         {
+            title: "Số lượng",
+            width: 220,
+            dataIndex: "quantity",
+        },
+        {
             title: "Mô tả sản phẩm",
             dataIndex: "description",
             width: 250,
+            render: (shortDescription: string) => (
+                <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
+            )
+        },
+        {
+            title: "Kích thước",
+            dataIndex: "dimensions",
+            width: 200,
+            render: (shortDescription: string) => (
+                <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
+            )
+        },
+        {
+            title: "Vật liệu",
+            dataIndex: "materials",
+            width: 200,
             render: (shortDescription: string) => (
                 <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
             )
@@ -127,7 +147,6 @@ export const Product = () => {
                     setLoading(true);
                     services.productApi.getProduct().then((res) => {
                         setData(res.data || [])
-                        // setTotalItems(res.totalCount);
                         setLoading(false);
                     });
                 });
@@ -151,6 +170,7 @@ export const Product = () => {
         setLoading(true);
         services.productApi.getProduct().then((res) => {
             setData(res.data || [])
+            console.log(res)
             // setTotalItems(res.totalCount);
             setLoading(false);
         });

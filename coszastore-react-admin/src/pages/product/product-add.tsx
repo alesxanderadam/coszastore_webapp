@@ -11,13 +11,13 @@ const ProductAdd = () => {
     const history = useHistory();
     const onProductAdd = (product: ProductUpdateModel, imageFiles: UploadFile[]) => {
         services.productApi.addProduct(product, imageFiles).then((res) => {
-            if (res.responseType === ResponseType.Success) {
+            if (res.statusCode === ResponseType.Success) {
                 message.success("Thêm thành công", 1.5);
                 history.push(UrlResolver.buildUrl(`${PageConstant.product}`));
                 return;
             }
             else {
-                if (res.responseType === ResponseType.Error) {
+                if (res.statusCode === ResponseType.Error) {
                     message.warning(`${res.message}`)
                     return;
                 }

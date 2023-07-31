@@ -19,7 +19,7 @@ export const CategoryEdit = () => {
     const history = useHistory();
     const onEditCategory = (updateCategory: CategoryUpdateModel) => {
         services.categoryApi.updateCategory(category.id, updateCategory).then((res) => {
-            if (res.responseType === ResponseType.Success) {
+            if (res.statusCode === ResponseType.Success) {
                 message.success("Sửa thành công", 1.5)
                 history.push(UrlResolver.buildUrl(`${PageConstant.category}`));
                 return;

@@ -5,7 +5,7 @@ import { PageConstant } from 'commons/page.constant';
 import { UrlResolver } from 'commons/url-resolver';
 import RenderStatus from 'components/commons/RenderStatus';
 import DigitalTable from 'components/digital-table/digital-table';
-import { CategoryModel, ICategoryRequest } from 'models/category.model';
+import { CategoryModel } from 'models/category.model';
 import { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
@@ -20,14 +20,6 @@ export default function Category() {
         {
             title: "Tên",
             dataIndex: "name",
-        },
-        {
-            title: "Trạng Thái",
-            render: (data: CategoryModel) => (
-                <>
-                    <RenderStatus status={data.status} />
-                </>
-            ),
         },
         {
             title: "",
@@ -65,8 +57,8 @@ export default function Category() {
         });
     };
 
-    const getDataSource = async (filter: ICategoryRequest) => {
-        return services.categoryApi.getCategory(filter);
+    const getDataSource = async () => {
+        return services.categoryApi.getCategory();
     }
 
     return (

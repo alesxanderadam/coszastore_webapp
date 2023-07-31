@@ -2,13 +2,15 @@ import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { DEFAULT_PAGE_SIZE } from "commons/constants/common.constant";
 import { IPaginationModel, IPagingRequest } from "models/pagination.model";
+import { ResponseModel } from "models/response.model";
 import { useEffect, useState } from "react";
 
 export interface IDigitalTableProps {
     reloadPage: [];
     initPagingRequest?: IPagingRequest;
     columns?: ColumnsType<any>;
-    getDataSource: (filter: IPagingRequest) => Promise<IPaginationModel<any>>;
+    // getDataSource: (filter: IPagingRequest) => Promise<IPaginationModel<any>>;
+    getDataSource: () => Promise<ResponseModel<any>>;
 }
 
 const DigitalTable = ({
@@ -46,8 +48,9 @@ const DigitalTable = ({
     const fetchDataPaging = async () => {
         setLoading(true);
 
-        const res = await getDataSource(filterParams)
-        setDataPaging(res);
+        // const res = await getDataSource(filterParams)
+        // setDataPaging(res);
+        const res = await getDataSource()
 
         setLoading(false);
     }

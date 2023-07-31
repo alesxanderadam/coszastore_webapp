@@ -13,19 +13,19 @@ export const ProductEdit = () => {
     const [product, setProduct] = useState<ProductModel>(null!);
     useEffect(() => {
         services.productApi.getProductById(id).then((res) => {
-            setProduct(res)
+            setProduct(res.data)
         })
     }, [])
     const history = useHistory()
     const onEditProduct = (updateProduct: any, imageFiles: UploadFile[]) => {
         services.productApi.updateProduct(product.id, updateProduct, imageFiles).then((res) => {
-            if (res.responseType === ResponseType.Success) {
+            if (res.statusCode === ResponseType.Success) {
                 message.success("Sửa thành công", 1.5)
                 history.push(UrlResolver.buildUrl(`${PageConstant.product}`))
                 return;
             }
             else {
-                if (res.responseType === ResponseType.Error) {
+                if (res.statusCode === ResponseType.Error) {
                     message.warning(`${res.message}`)
                     return;
                 }

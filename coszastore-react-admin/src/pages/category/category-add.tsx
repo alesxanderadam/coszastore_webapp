@@ -11,7 +11,7 @@ export default function CategoryAdd() {
     const history = useHistory();
     const onCategoryAdd = (category: CategoryUpdateModel) => {
         services.categoryApi.addCategory(category).then((res) => {
-            if (res.responseType === ResponseType.Success) {
+            if (res.statusCode === ResponseType.Success) {
                 message.success("Thêm thành công", 1.5);
                 history.push(UrlResolver.buildUrl(`${PageConstant.category}`));
                 return;

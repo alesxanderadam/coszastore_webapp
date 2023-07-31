@@ -26,9 +26,13 @@ function User() {
     })
     var getData = () => {
         setLoading(true);
-        services.userApi.getUserPaging(filter).then((res) => {
-            setData(res.items || [])
-            setTotalItems(res.totalCount);
+        // services.userApi.getUserPaging(filter).then((res) => {
+        //     setData(res.items || [])
+        //     setTotalItems(res.totalCount);
+        //     setLoading(false);
+        // });
+        services.userApi.getUsers().then((res) => {
+            setData(res.data || [])
             setLoading(false);
         });
     };

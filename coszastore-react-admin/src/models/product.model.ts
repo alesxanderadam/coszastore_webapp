@@ -41,7 +41,7 @@ export class ProductUpdateModel {
     quantity: number;
     short_description: string;
     description: string;
-    category!: CategoryModel;
+    category: CategoryModel;
     weight: string;
     materials: string;
     dimensions: string;

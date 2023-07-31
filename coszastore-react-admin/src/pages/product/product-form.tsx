@@ -92,8 +92,8 @@ const ProductForm = ({
     };
 
     useEffect(() => {
-        services.categoryApi.getCategory(filter).then((res) => {
-            setCategorys(res.items || [])
+        services.categoryApi.getCategory().then((res) => {
+            setCategorys(res.data || [])
         })
     }, [])
 
@@ -204,7 +204,7 @@ const ProductForm = ({
                                 <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
                                 </Modal>
-                                <div className='row'>
+                                {/* <div className='row'>
                                     {
                                         product.productImages.map((item) => {
                                             return <div className="col-4 mt-2">
@@ -213,7 +213,7 @@ const ProductForm = ({
                                         })
                                     }
 
-                                </div>
+                                </div> */}
                             </Form.Item>
                         </Form>
                     </Card>
