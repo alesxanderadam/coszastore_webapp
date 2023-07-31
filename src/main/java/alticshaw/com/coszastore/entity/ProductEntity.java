@@ -1,6 +1,8 @@
 package alticshaw.com.coszastore.entity;
 
+import alticshaw.com.coszastore.common.CustomBoolean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +31,9 @@ public class ProductEntity {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "import_price")
+    private BigDecimal import_price;
+
     @Column(name = "short_description")
     private String short_description;
 
@@ -46,6 +51,14 @@ public class ProductEntity {
 
     @Column(name = "materials")
     private String materials;
+
+    @Column(name = "is_new_product")
+//    @JsonSerialize(using = CustomBoolean.class)
+    private int isNewProduct;
+
+    @Column(name = "is_best_selling")
+//    @JsonSerialize(using = CustomBoolean.class)
+    private int isBestSelling;
 
     @Column(name = "list_image")
     private String listImage;

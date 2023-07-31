@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class    FileStorageService implements FileStorageServiceImp {
+public class FileStorageService implements FileStorageServiceImp {
     @Value("${path.root.directory}")
     private String directory;
 
