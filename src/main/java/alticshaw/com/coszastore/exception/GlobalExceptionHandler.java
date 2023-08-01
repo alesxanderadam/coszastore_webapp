@@ -56,6 +56,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 
+    @ExceptionHandler(NotFoundCustomException.class)
+    public ResponseEntity<?> handleNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<?> handleFileStorageException(Exception e) {
         return ResponseEntity.ok()
@@ -107,5 +113,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleNotImageException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(CouponAlreadyExistException.class)
+    public ResponseEntity<?> handleCouponAlreadyExistException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<?> handleCouponNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 }

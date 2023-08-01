@@ -33,11 +33,14 @@ public class BlogController {
     }
 
     @GetMapping("/list/all")
-    public ResponseEntity<?> getAllBlogs() {
+    public ResponseEntity<?> getAllBlogs(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
         response.setMessage("Get all blog successfully!");
-        response.setData(blogServiceImp.getAllResponseBlogs());
+        response.setData(blogServiceImp.getAllResponseBlogs(pageNo, pageSize));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

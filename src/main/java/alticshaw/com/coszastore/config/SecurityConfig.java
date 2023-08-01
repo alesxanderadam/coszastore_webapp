@@ -62,8 +62,14 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+//<<<<<<< HEAD
+//                .authorizeHttpRequests()
+//                .antMatchers("/signup", "/signin").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//=======
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/auth/**","/**").permitAll()
                         .antMatchers("/api/test").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions

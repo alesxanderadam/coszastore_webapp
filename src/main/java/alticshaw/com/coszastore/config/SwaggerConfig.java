@@ -10,13 +10,15 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Collections;
+
 @Configuration
 @EnableSwagger2
-@EnableWebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig implements WebMvcConfigurer {
     @Bean
@@ -25,8 +27,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("alticshaw.com.coszastore.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .securitySchemes(Collections.singletonList(apiKey()));
     }
+
 
     @Bean
     public InternalResourceViewResolver defaultViewResolver() {
@@ -40,5 +44,9 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    private ApiKey apiKey() {
+        return new ApiKey("Bearer Token", "Authorization", "header");
     }
 }

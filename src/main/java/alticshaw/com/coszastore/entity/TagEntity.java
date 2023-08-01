@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class TagEntity {
     private Set<CategoryTagEntity> categoryTags;
 
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<ProductTagEntity> productTags;
 
 }
