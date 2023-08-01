@@ -1,10 +1,11 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.entity.RoleEntity;
 import alticshaw.com.coszastore.entity.UserEntity;
-import alticshaw.com.coszastore.exception.CustomException;
-import alticshaw.com.coszastore.exception.UserCustomException;
+import alticshaw.com.coszastore.exception.*;
 import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.UserResponse;
+import alticshaw.com.coszastore.repository.RoleRepository;
 import alticshaw.com.coszastore.repository.UserRepository;
 import alticshaw.com.coszastore.service.imp.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class UserService implements UserServiceImp {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public List<UserResponse> findAll() {
@@ -51,9 +55,20 @@ public class UserService implements UserServiceImp {
     }
 
     @Override
-    public boolean addUser(UserEntity userEntity) {
+    public boolean addUser(UserRequest userRequest) {
         boolean isSuccess;
         try {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername(userRequest.getUsername());
+            userEntity.setPassword(userRequest.getPassword());
+            userEntity.setEmail(userRequest.getEmail());
+            userEntity.setAddress(userRequest.getAddress());
+            userEntity.setPhone_number(userRequest.getPhone_number());
+            userEntity.setAvatar(userRequest.getAvatar());
+            userEntity.setStatus(userRequest.getStatus());
+            RoleEntity role = roleRepository.findRoleById(userRequest.getRole_id())
+                    .orElseThrow(() -> new UserNotFoundException("Role not found: " + userRequest.getRole_id()));
+            userEntity.setRole(role);
             userRepository.save(userEntity);
             isSuccess = true;
         } catch (Exception e) {
@@ -83,7 +98,7 @@ public class UserService implements UserServiceImp {
         boolean isSuccess;
         UserEntity deleteUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-        ;
+
         userRepository.delete(deleteUser);
         isSuccess = true;
 

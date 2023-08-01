@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     private UserServiceImp userServiceImp;
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<?> findAll() {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
@@ -35,8 +35,8 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestBody UserEntity userEntityUpdate, BindingResult errors) {
+    @PostMapping
+    public ResponseEntity<?> addUser(@RequestBody UserRequest userEntityUpdate, BindingResult errors) {
         if(errors.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

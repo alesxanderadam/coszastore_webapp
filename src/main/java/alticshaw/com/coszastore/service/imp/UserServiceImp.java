@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserServiceImp {
     List<UserResponse> findAll();
     Optional<UserEntity> getUserById(Integer id);
-    boolean addUser(UserEntity userEntity);
+    boolean addUser(UserRequest userRequest);
     boolean updateUser(Integer userId, UserRequest updatedUser);
     boolean deleteUser(Integer userId,UserEntity updatedUser);
 }
