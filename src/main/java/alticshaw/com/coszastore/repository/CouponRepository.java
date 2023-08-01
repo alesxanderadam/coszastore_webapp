@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CouponRepository extends JpaRepository<CouponEntity, Integer> {
+    boolean existsByCode(String code);
 }
