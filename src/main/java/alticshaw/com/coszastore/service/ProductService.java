@@ -245,12 +245,15 @@ public class ProductService implements ProductServiceImp {
                 product.setName(request.getName());
                 product.setShort_description(request.getShort_description());
                 product.setDescription(request.getDescription());
+                product.setImport_price(request.getImport_price());
                 product.setPrice(request.getPrice());
                 product.setCategory(category);
                 product.setQuantity(request.getQuantity());
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
+                product.setIsNewProduct(request.getIs_new_product());
+                product.setIsBestSelling(request.getIs_best_selling());
                 productRepository.save(product);
 
             } catch (Exception e) {
@@ -376,12 +379,15 @@ public class ProductService implements ProductServiceImp {
                 product.setName(request.getName());
                 product.setShort_description(request.getShort_description());
                 product.setDescription(request.getDescription());
+                product.setImport_price(request.getImport_price());
                 product.setPrice(request.getPrice());
                 product.setCategory(category);
                 product.setQuantity(request.getQuantity());
                 product.setDimensions(request.getDimensions());
                 product.setWeight(request.getWeight());
                 product.setMaterials(request.getMaterials());
+                product.setIsNewProduct(request.getIs_new_product());
+                product.setIsBestSelling(request.getIs_best_selling());
 
                 productRepository.save(product);
             } catch (Exception e) {
@@ -461,8 +467,7 @@ public class ProductService implements ProductServiceImp {
             productColorRepository.saveAll(product.getProductColors());
             productTagRepository.saveAll(product.getProductTags());
 
-            ProductEntity productEntity = productRepository.findByProductCustom(product.getId());
-            ProductResponse productResponse = ModelUtilMapper.map(productEntity, ProductResponse.class);
+            ProductResponse productResponse = mapProductEntityToProductResponse(product);
 
             List<String> sizeList = product.getProductSizes().stream()
                     .map(sizeEntity -> sizeEntity.getSize().getName())
@@ -518,6 +523,8 @@ public class ProductService implements ProductServiceImp {
         String path = pathImage + File.separator + "images" + File.separator;
         ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
 
+        productResponse.setIs_new_product(product.getIsNewProduct());
+        productResponse.setIs_best_selling(product.getIsBestSelling());
         productResponse.setCategory_id(product.getCategory().getId());
 
         if (productResponse.getImage() != null && !productResponse.getImage().isEmpty()) {
