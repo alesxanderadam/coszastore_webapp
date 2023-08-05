@@ -1,6 +1,7 @@
 import { Row, Col, Card, Button, Input, Form, Select } from "antd";
 import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
+import { Status } from "models/enums/status.enum";
 import { UserModel, UserUpdateModel } from "models/user.model";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -52,15 +53,11 @@ const UserForm = ({
                 <Col xs={24} xl={24}>
                     <Card bordered={false} className="criclebox">
                         <Form form={form} {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
-                            <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item name="userName" label="Tên đăng nhập" rules={[{ required: true }]}>
+                            <Form.Item name="email" label="Email" rules={[{ required: true, type: "email" }]}>
                                 <Input disabled={isEdit} />
                             </Form.Item>
 
-                            <Form.Item name="email" label="Email" rules={[{ required: true, type: "email" }]}>
+                            <Form.Item name="username" label="Họ và tên" rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
 
@@ -68,18 +65,18 @@ const UserForm = ({
                                 <Input />
                             </Form.Item>
 
-                            <Form.Item name="phoneNumber" label="Số điện thoại" rules={[{ required: true }]}>
+                            <Form.Item name="phone_number" label="Số điện thoại" rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
 
-                            <Form.Item initialValue={1} name="status" label="Trạng thái">
+                            <Form.Item initialValue={Status.Inactive} name="status" label="Trạng thái">
                                 <Select style={{ width: 180 }} options={[
                                     {
-                                        value: 1,
+                                        value: Status.Active,
                                         label: "Hoạt động",
                                     },
                                     {
-                                        value: 0,
+                                        value: Status.Inactive,
                                         label: "Không Hoạt động",
                                     },
                                 ]}

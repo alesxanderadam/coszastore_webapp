@@ -1,5 +1,6 @@
 import { UrlResolver } from "commons/url-resolver";
 import { UrlParamHelper } from "helpers/url-param.helper";
+import { ACCESS_TOKEN, settings } from "utils/config";
 
 class Fetcher {
     private _rootApiUrl: string;
@@ -23,7 +24,13 @@ class Fetcher {
         }
 
         const requestUrl = params ? `${url}?${params}` : url;
-        return fetch(requestUrl).then((response) => response.json());
+        return fetch(requestUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${settings.getStore(ACCESS_TOKEN)}`
+            }
+        }).then((response) => response.json());
     };
 
     post(url: string, data: any) {

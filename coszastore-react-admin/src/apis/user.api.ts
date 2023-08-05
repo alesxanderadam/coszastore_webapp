@@ -1,5 +1,5 @@
 import { IPaginationModel } from 'models/pagination.model';
-import { IUserPagingRequest, UserModel, UserUpdateModel } from "./../models/user.model";
+import { IUserBaseReponse, IUserPagingRequest, UserModel, UserUpdateModel } from "./../models/user.model";
 import Fetcher from "./fetcher";
 import { ResponseModel } from 'models/response.model';
 
