@@ -26,7 +26,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/user_id={user_id}")
+    @GetMapping("/{user_id}")
     public ResponseEntity<?> findById(@PathVariable int user_id) {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);

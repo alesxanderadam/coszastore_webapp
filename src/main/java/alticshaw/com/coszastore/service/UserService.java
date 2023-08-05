@@ -1,8 +1,10 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.dto.RoleDto;
 import alticshaw.com.coszastore.entity.RoleEntity;
 import alticshaw.com.coszastore.entity.UserEntity;
 import alticshaw.com.coszastore.exception.*;
+import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.RoleRepository;
@@ -38,7 +40,7 @@ public class UserService implements UserServiceImp {
             userResponse.setPhone_number(data.getPhone_number());
             userResponse.setAvatar(data.getAvatar());
             userResponse.setStatus(data.getStatus());
-            userResponse.setRole_name(data.getRole().getName());
+            userResponse.setRole(ModelUtilMapper.map(data.getRole(), RoleDto.class));
             userResponseList.add(userResponse);
         }
 
