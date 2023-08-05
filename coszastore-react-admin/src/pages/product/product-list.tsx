@@ -1,23 +1,18 @@
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { Row, Col, Card, Table, Button, Modal, message, Tag, InputNumber } from "antd";
+import { Card, Button, Modal, message, Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import services from "apis";
 import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
+import DigitalTable from "components/digital-table/digital-table";
 import { ProductModel } from "models/product.model";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useHistory } from "react-router-dom";
 import utils from "utils";
 export const Product = () => {
     const history = useHistory();
     const [data, setData] = useState<ProductModel[]>([]);
-    const [loading, setLoading] = useState(false);
-    // const [totalItems, setTotalItems] = useState<number>(0);
-    // const [filter, setFilter] = useState<IUserPagingRequest>({
-    //     pageIndex: 0,
-    //     pageSize: 10,
-    //     search: ''
-    // })
+    const [reloadPage, setReloadPage] = useState(null);
     const columns: ColumnsType<ProductModel> = [
         {
             title: "Mã",
@@ -69,50 +64,36 @@ export const Product = () => {
                 <div dangerouslySetInnerHTML={{ __html: shortDescription }} />
             )
         },
-        // {
-        //     title: "Sản Phẩm mới",
-        //     width: 200,
-        //     render: (data: ProductModel) => (
-        //         <>
-        //             <Tag color={data.isNewProduct === true ? "red" : "gold"}>{data.isNewProduct === true ? "Spản phẩm mới" : "Sản phẩm cũ"}</Tag>
-        //         </>
-        //     ),
-        // },
-        // {
-        //     title: "Bán chạy nhất",
-        //     width: 200,
-        //     render: (data: ProductModel) => (
-        //         <>
-        //             <Tag color={data.isBestSelling === true ? "red" : "gold"}>{data.isBestSelling === true ? "Bán chạy" : "Bán chậm"}</Tag>
-        //         </>
-        //     ),
-        // },
-        // {
-        //     title: "Đơn vị cơ bản",
-        //     dataIndex: "basicUnit",
-        //     width: 200,
-        // },
-        // {
-        //     title: "Giá vốn",
-        //     dataIndex: "importPrice",
-        //     width: 200,
-        //     render: (value) => utils.$number.numberFormatter(value)
-        // },
+        {
+            title: "Sản Phẩm mới",
+            width: 200,
+            render: (data: ProductModel) => (
+                <>
+                    <Tag color={data.is_new_product === 1 ? "red" : "gold"}>{data.is_new_product === 1 ? "Sản phẩm mới" : "Sản phẩm cũ"}</Tag>
+                </>
+            ),
+        },
+        {
+            title: "Bán chạy nhất",
+            width: 200,
+            render: (data: ProductModel) => (
+                <>
+                    <Tag color={data.is_best_selling === 1 ? "red" : "gold"}>{data.is_best_selling === 1 ? "Bán chạy" : "Bán chậm"}</Tag>
+                </>
+            ),
+        },
+        {
+            title: "Giá vốn",
+            dataIndex: "import_price",
+            width: 200,
+            render: (value) => utils.$number.numberFormatter(value)
+        },
         {
             title: "Giá bán",
             dataIndex: "price",
             width: 200,
             render: (value) => utils.$number.numberFormatter(value)
         },
-        // {
-        //     title: "Trạng thái",
-        //     width: 220,
-        //     render: (data: ProductModel) => (
-        //         <>
-        //             <RenderStatus status={data.} />
-        //         </>
-        //     ),
-        // },
         {
             title: "Thao tác",
             width: 150,
@@ -133,75 +114,42 @@ export const Product = () => {
         }
     ]
     const { confirm } = Modal;
-    const showDeleteConfirm = (data: any) => {
-        confirm({
-            title: "Xóa thông tin sản phẩm",
-            icon: <ExclamationCircleFilled />,
-            content: `Tên sản phẩm: ${data.name} sẽ bị được xóa? `,
-            okText: "Đồng ý",
-            okType: "primary",
-            cancelText: "Không",
-            onOk() {
-                message.success('Xóa thành công')
-                services.productApi.deleteProduct(data.id).then(() => {
-                    setLoading(true);
-                    services.productApi.getProduct().then((res) => {
-                        setData(res.data || [])
-                        setLoading(false);
+    const showDeleteConfirm = useCallback(
+        (data: any) => {
+            confirm({
+                title: "Xóa thông tin sản phẩm",
+                icon: <ExclamationCircleFilled />,
+                content: `Tên sản phẩm: ${data.name} sẽ bị được xóa? `,
+                okText: "Đồng ý",
+                okType: "primary",
+                cancelText: "Không",
+                onOk() {
+                    services.productApi.deleteProduct(data.id).then(() => {
+                        services.productApi.getProduct().then(() => {
+                            message.success('Xóa thành công')
+                            setReloadPage([]);;
+                        });
+
                     });
-                });
-            },
-            onCancel() {
-                console.log("Hủy");
-            },
-        });
-    };
+                },
+            });
+        }, [])
 
+    const getDataSource = async () => {
+        return services.productApi.getProduct();
+    }
 
-    // const onPageChange = (page: number, size: number) => {
-    //     setFilter({
-    //         ...filter,
-    //         pageIndex: page - 1,
-    //         pageSize: size
-    //     })
-    // }
-
-    useEffect(() => {
-        setLoading(true);
-        services.productApi.getProduct().then((res) => {
-            setData(res.data || [])
-            console.log(res)
-            // setTotalItems(res.totalCount);
-            setLoading(false);
-        });
-    }, [])
     return (
-        <>
-            <div className="tabled">
-                <Row gutter={[24, 0]}>
-                    <Col xs={24} xl={24}>
-                        <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách sản phẩm" extra={
-                            <>
-                                <Link to={`${PageConstant.product}/add`}><Button type="primary">Tạo mới</Button></Link>
-                            </>
-                        }>
-                            <div className="table-responsive">
-                                {/*Attribute table:  pagination={{
-                                    total: totalItems ?? 0,
-                                    current: filter.pageIndex + 1,
-                                    pageSize: filter.pageSize,
-                                    onChange: onPageChange
-                                }} */}
-                                <Table loading={loading} columns={columns} dataSource={data}
-                                    sticky
-                                    size="middle"
-                                    scroll={{ x: 1300 }}
-                                    className="ant-border-space" />
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-        </>
+        <div>
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách sản phẩm"
+                extra={
+                    <>
+                        <Link to={`${PageConstant.product}/add`}>  <Button type="primary">Tạo mới +</Button></Link>
+                    </>
+                }
+            />
+
+            <DigitalTable reloadPage={reloadPage} columns={columns} getDataSource={getDataSource} />
+        </div>
     )
 }

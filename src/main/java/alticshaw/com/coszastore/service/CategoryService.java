@@ -4,18 +4,12 @@ package alticshaw.com.coszastore.service;
 import alticshaw.com.coszastore.entity.CategoryEntity;
 import alticshaw.com.coszastore.exception.CustomException;
 import alticshaw.com.coszastore.payload.request.CategoryRequest;
-import alticshaw.com.coszastore.payload.response.CategoryRespone;
+import alticshaw.com.coszastore.payload.response.CategoryResponse;
 import alticshaw.com.coszastore.repository.CategoryRepository;
 import alticshaw.com.coszastore.service.imp.CategoryServiceImp;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -26,17 +20,17 @@ public class CategoryService implements CategoryServiceImp {
 //    private RedisTemplate redisTemplate;
     @Override
 //    @Cacheable("listCategory")
-    public List<CategoryRespone> getAllCategory() {
-        List<CategoryRespone> responeList=new ArrayList<>();
+    public List<CategoryResponse> getAllCategory() {
+        List<CategoryResponse> responeList=new ArrayList<>();
 //        if(redisTemplate.hasKey("listCategory")){
 //             String data=redisTemplate.opsForValue().get("listCategory").toString();
-//            Type listType = new TypeToken<ArrayList<CategoryRespone>>(){}.getType();
+//            Type listType = new TypeToken<ArrayList<CategoryResponse>>(){}.getType();
 //            responeList = new Gson().fromJson(data, listType);
 //        }else {
             List<CategoryEntity> list=categoryRepository.findAll();
 
             for (CategoryEntity data : list) {
-                CategoryRespone categoryRespone=new CategoryRespone();
+                CategoryResponse categoryRespone=new CategoryResponse();
                 categoryRespone.setId(data.getId());
                 categoryRespone.setName(data.getName());
                 responeList.add(categoryRespone);

@@ -26,6 +26,11 @@ const DigitalTable = ({
         totalCount: 0,
         items: []
     });
+    const [data, setData] = useState<ResponseModel<any>>({
+        message: "",
+        statusCode: 0,
+        data: []
+    });
 
     const [filterParams, setFilterParams] = useState<IPagingRequest>(initPagingRequest ?? {
         pageIndex: 0,
@@ -48,10 +53,8 @@ const DigitalTable = ({
     const fetchDataPaging = async () => {
         setLoading(true);
 
-        // const res = await getDataSource(filterParams)
-        // setDataPaging(res);
         const res = await getDataSource()
-
+        setData(data.data = res);
         setLoading(false);
     }
 
@@ -66,15 +69,19 @@ const DigitalTable = ({
     return (
         <div className="digital-table">
             <Table className="ant-border-space"
+                sticky
+                size="middle"
+                scroll={{ x: 1300 }}
                 loading={loading}
                 columns={columns}
-                dataSource={dataPaging.items}
+                dataSource={data.data}
                 pagination={{
                     total: dataPaging.totalCount ?? 0,
                     current: filterParams.pageIndex + 1,
                     pageSize: filterParams.pageSize,
                     onChange: onPageChange
-                }} />
+                }}
+            />
         </div>
     )
 }

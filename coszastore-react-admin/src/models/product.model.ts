@@ -1,6 +1,8 @@
 import { CategoryModel } from 'models/category.model';
 import { IPagingRequest } from './pagination.model';
 import { Tag } from './tag.model';
+import { CustomBoolean } from './enums/boolean.enum';
+import Item from './utils/item.util';
 
 // export class ProductUpdateModel {
 //     code!: string;
@@ -37,6 +39,9 @@ import { Tag } from './tag.model';
 
 export class ProductUpdateModel {
     name: string;
+    import_price: number;
+    is_best_selling: CustomBoolean;
+    is_new_product: CustomBoolean;
     price: number;
     quantity: number;
     short_description: string;
@@ -48,11 +53,31 @@ export class ProductUpdateModel {
     image: null | string;
     list_image: null | string;
     tag: Tag[];
-    color: string[];
-    size: string[];
+    color: Color[];
+    size: Size[];
 }
 
 export class ProductModel extends ProductUpdateModel {
     id: number;
     category_id: number;
 }
+
+
+export class Color extends Item {
+
+}
+export class Size extends Item {
+
+}
+
+// export class Color {
+//     color_id: number[] | [];
+//     quantity;
+
+// }
+// export class Size {
+//     size_id: number[] | [];
+//     quantity: number;
+// }
+
+

@@ -1,10 +1,10 @@
-import { Row, Col, Card, Button, Input, Form, Select, Switch, Upload, Modal, InputNumber, Image } from "antd";
+import { Row, Col, Card, Button, Input, Form, Select, Switch, Upload, Modal, InputNumber, Image, SelectProps } from "antd";
 import services from "apis";
 import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
 import { CategoryModel } from "models/category.model";
 import { ProductModel, ProductUpdateModel } from 'models/product.model'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -21,6 +21,7 @@ const getBase64 = (file: RcFile): Promise<string> => new Promise((resolve, rejec
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
 });
+
 
 const ProductForm = ({
     product,
@@ -49,6 +50,14 @@ const ProductForm = ({
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
+    const options: SelectProps['options'] = [];
+    for (let i = 0; i < product.size.length; i++) {
+        options.push({
+            value: product.size[i].id,
+            label: product.size[i].name,
+        });
+    }
+
     const uploadButton = (
         <div>
             <PlusOutlined />
@@ -77,19 +86,20 @@ const ProductForm = ({
     }, [product])
 
 
-    const onSubmit = (values: ProductModel) => {
-        // values.keepedProductImageIds = images
-        const fileUpload = fileList.map(x => x.originFileObj);
-        submitted(values, fileUpload);
-    };
+    const onSubmit = useCallback((values: ProductModel) => {
+        console.log(values)
+
+    }, []);
 
     const layout = {
         labelCol: { sm: 9, md: 7, lg: 9, xl: 6, xxl: 4 },
         wrapperCol: { sm: 12, md: 14, span: 16, xxl: 16 },
     };
+
     const validateMessages = {
         required: '${label} chưa nhập!',
     };
+
 
     useEffect(() => {
         services.categoryApi.getCategory().then((res) => {
@@ -119,6 +129,14 @@ const ProductForm = ({
                         <Form className="p-3" form={form} {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages} labelAlign="left" initialValues={{ size: "small" }}>
                             <Row gutter={[12, 12]}>
                                 <Col sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 12 }} xl={{ span: 12 }} span={24}>
+                                    <Form.Item name="id" label="Mã" rules={[{ required: true }]}>
+                                        <Input disabled />
+                                    </Form.Item>
+
+                                    <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
+                                        <Input />
+                                    </Form.Item>
+
                                     <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true }]}>
                                         <Select placeholder="Danh mục"
                                             options={
@@ -131,48 +149,47 @@ const ProductForm = ({
                                             }
                                         />
                                     </Form.Item>
-                                    <Form.Item name="code" label="Mã" rules={[{ required: true }]}>
-                                        <Input />
+
+                                    <Form.Item name="color" label="Màu sác" rules={[{ required: true }]}>
+                                        <Select placeholder="Màu sác"
+                                            options={
+                                                product.color.map((item) => {
+                                                    return {
+                                                        label: `${item.name}`,
+                                                        value: `${item.id}`
+                                                    }
+                                                })
+                                            }
+                                        />
                                     </Form.Item>
 
-                                    <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
-                                        <Input />
+                                    <Form.Item name="size" label="Kích cỡ" rules={[{ required: true }]}>
+                                        <Select
+                                            mode="multiple"
+                                            placeholder="Kích cỡ"
+                                            options={options}
+                                            size="middle"
+                                        />
                                     </Form.Item>
 
-                                    <Form.Item name="basicUnit" label="Đơn vị cơ bản " rules={[{ required: true }]}>
-                                        <Input />
-                                    </Form.Item>
+
                                 </Col>
 
                                 <Col sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 12 }} xl={{ span: 12 }} span={24}>
-                                    <Form.Item name="salePrice" label="Giá bán" >
+                                    <Form.Item name="price" label="Giá bán" >
                                         <InputNumber formatter={utils.$number.numberFormatter} className="w-100" />
                                     </Form.Item>
 
-                                    <Form.Item name="importPrice" label="Giá vốn" >
+                                    <Form.Item name="import_price" label="Giá vốn" >
                                         <InputNumber formatter={utils.$number.numberFormatter} className="w-100" />
                                     </Form.Item>
 
-                                    <Form.Item initialValue={false} valuePropName="checked" name="isNewProduct" label="Sản phẩm mới">
+                                    <Form.Item initialValue={form.getFieldValue("is_new_product") === 1 ? true : false} valuePropName="checked" name="is_new_product" label="Sản phẩm mới">
                                         <Switch />
                                     </Form.Item>
 
-                                    <Form.Item initialValue={false} valuePropName="checked" name="isBestSelling" label="Sản bán chạy">
+                                    <Form.Item initialValue={form.getFieldValue("is_best_selling") === 1 ? true : false} valuePropName="checked" name="is_best_selling" label="Sản bán chạy">
                                         <Switch />
-                                    </Form.Item>
-
-                                    <Form.Item initialValue={1} name="status" label="Trạng thái">
-                                        <Select style={{ width: 180 }} options={[
-                                            {
-                                                value: 1,
-                                                label: "Hoạt động",
-                                            },
-                                            {
-                                                value: 0,
-                                                label: "Không Hoạt động",
-                                            },
-                                        ]}
-                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -206,7 +223,7 @@ const ProductForm = ({
                                 </Modal>
                                 {/* <div className='row'>
                                     {
-                                        product.productImages.map((item) => {
+                                        product.image.map((item) => {
                                             return <div className="col-4 mt-2">
                                                 <Image width='250px' height='200px' src={UrlResolver.getUrlImage(item.imageUrl)} alt='...' ></Image>
                                             </div>

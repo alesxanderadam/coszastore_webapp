@@ -7,6 +7,6 @@ export const PageConstant = {
 }
 
 export const PageRouteConstant = {
-    // LOGIN_PAGE: '/login?returnUrl=admin'
+    // LOGIN_PAGE: '/login?returnUrl=admin'  
     LOGIN_PAGE: '/sign-in'
 }
