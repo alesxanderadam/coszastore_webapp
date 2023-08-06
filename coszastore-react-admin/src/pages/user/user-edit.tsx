@@ -13,7 +13,7 @@ export default function UserEdit() {
 
     useEffect(() => {
         services.userApi.getUserById(id).then((res) => {
-            setUser(res);
+            setUser(res.data);
         });
     }, []);
     const history = useHistory();

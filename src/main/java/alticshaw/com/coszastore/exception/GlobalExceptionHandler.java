@@ -50,6 +50,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 
+    @ExceptionHandler(UserCustomException.class)
+    public ResponseEntity<?> handleUserException(UserCustomException e) {
+        return ResponseEntity.status(e.getStatusCode())
+                .body(new ErrorResponse(e.getStatusCode(), e.getMessage()));
+    }
+
     @ExceptionHandler(RoleCustomException.class)
     public ResponseEntity<?> handleRoleNotFoundException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -25,12 +25,15 @@ function User() {
         search: ''
     })
     var getData = () => {
-        setLoading(true);
-        services.userApi.getUserPaging(filter).then((res) => {
-            setData(res.items || [])
-            setTotalItems(res.totalCount);
-            setLoading(false);
-        });
+        setLoading(false);
+        // services.userApi.getUserPaging(filter).then((res) => {
+        //     setData(res.items || [])
+        //     setTotalItems(res.totalCount);
+        //     setLoading(false);
+        // });
+        services.userApi.getUsers().then((res) => {
+            setData(res.data || [])
+        })
     };
 
 
@@ -38,14 +41,14 @@ function User() {
         {
             key: 'name',
             title: "Người dùng",
-            width: 250,
+            width: 230,
             fixed: 'left',
-            render: (data: any) => (
+            render: (data: UserModel) => (
                 <>
                     <Avatar.Group>
-                        <Avatar className="shape-avatar" shape="square" size={40} src={data.img} ></Avatar>
+                        <Avatar className="shape-avatar" shape="square" size={40} src={data.avatar} ></Avatar>
                         <div className="avatar-info">
-                            <Title level={5}>{data.name}</Title>
+                            <Title level={5}>{data.userName}</Title>
                             <p>{data.email}</p>
                         </div>
                     </Avatar.Group>{" "}
@@ -53,22 +56,8 @@ function User() {
             ),
         },
         {
-            title: "Địa chỉ",
-            dataIndex: "address",
-            width: 220,
-        },
-        {
-            title: "Trạng thái",
-            render: (data: UserUpdateModel) => (
-                <>
-                    <RenderStatus status={data.status} />
-                </>
-            ),
-            width: 220,
-        },
-        {
-            title: "Số Điện Thoại",
-            dataIndex: "phoneNumber",
+            title: "Họ và tên",
+            dataIndex: "username",
             width: 220,
         },
         {
@@ -87,26 +76,12 @@ function User() {
         },
         {
             title: "Số Điện Thoại",
-            dataIndex: "phoneNumber",
+            dataIndex: "phone_number",
             width: 220,
         },
         {
             title: "Địa chỉ",
             dataIndex: "address",
-            width: 220,
-        },
-        {
-            title: "Trạng thái",
-            render: (data: UserUpdateModel) => (
-                <>
-                    <RenderStatus status={data.status} />
-                </>
-            ),
-            width: 220,
-        },
-        {
-            title: "Số Điện Thoại",
-            dataIndex: "phoneNumber",
             width: 220,
         },
         {

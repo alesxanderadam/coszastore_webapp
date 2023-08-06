@@ -1,9 +1,12 @@
 package alticshaw.com.coszastore.service;
 
+import alticshaw.com.coszastore.dto.RoleDto;
 import alticshaw.com.coszastore.dto.TokenDto;
 import alticshaw.com.coszastore.entity.RoleEntity;
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.entity.enums.Status;
 import alticshaw.com.coszastore.exception.*;
+import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.SignInRequest;
 import alticshaw.com.coszastore.payload.request.SignUpRequest;
 import alticshaw.com.coszastore.payload.response.UserResponse;
@@ -66,7 +69,7 @@ public class AuthService implements AuthServiceImp {
             String email = claims.get("email", String.class);
             UserEntity user = userRepository.findByEmail(email);
             if (user != null) {
-                return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().getName());
+                return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getAddress(), user.getPhone_number(), user.getAvatar(), user.getStatus(), ModelUtilMapper.map(user.getRole(), RoleDto.class));
             }
         }
         throw new AuthCustomException("Not authorized", 401);

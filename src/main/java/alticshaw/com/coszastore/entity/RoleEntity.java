@@ -12,11 +12,10 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "description")
-    private String description;
-
     @Column(name = "name")
     private String name;
+    @Column(name = "description")
+    private String description;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -29,7 +28,13 @@ public class RoleEntity {
     public void setId(int id) {
         this.id = id;
     }
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
     public String getDescription() {
         return description;
     }
@@ -38,19 +43,5 @@ public class RoleEntity {
         this.description = description;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<UserEntity> getUserEntities() {
-        return userEntities;
-    }
-
-    public void setUserEntities(Set<UserEntity> userEntities) {
-        this.userEntities = userEntities;
-    }
 }

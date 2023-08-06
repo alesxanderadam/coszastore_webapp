@@ -1,6 +1,14 @@
 package alticshaw.com.coszastore.payload.response;
 
+import alticshaw.com.coszastore.dto.RoleDto;
+import alticshaw.com.coszastore.entity.enums.Status;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
     private int id;
 
@@ -8,46 +16,13 @@ public class UserResponse {
 
     private String email;
 
-    private String role_name;
+    private String address;
 
-    public UserResponse(int id, String username, String email, String role_name) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role_name = role_name;
-    }
+    private String phone_number;
 
-    public UserResponse(){}
+    private String avatar;
 
-    public int getId() {
-        return id;
-    }
+    private Status status;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole_name() {
-        return role_name;
-    }
-
-    public void setRole_name(String role_name) {
-        this.role_name = role_name;
-    }
+    private RoleDto role;
 }
