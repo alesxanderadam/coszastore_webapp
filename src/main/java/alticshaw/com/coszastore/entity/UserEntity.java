@@ -1,5 +1,6 @@
 package alticshaw.com.coszastore.entity;
 
+import alticshaw.com.coszastore.entity.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -23,9 +24,21 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone_number")
+    private String phone_number;
+
+    @Column(name = "avatar")
+    private String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
-    @JsonIgnore
     private RoleEntity role;
 
     @Column(name = "created_at")
@@ -45,15 +58,19 @@ public class UserEntity {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<BlogEntity> blogs;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<OrderEntity> orders;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<FeedBackEntity> feedbacks;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<RateEntity> rateEntities;
 
     public int getId() {
@@ -86,6 +103,38 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Timestamp getCreatedTime() {

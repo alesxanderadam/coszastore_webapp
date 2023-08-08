@@ -1,9 +1,13 @@
 package alticshaw.com.coszastore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity(name = "size")
+@Data
 public class SizeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,29 +17,6 @@ public class SizeEntity {
     private String name;
 
     @OneToMany(mappedBy = "size", fetch = FetchType.LAZY)
-    private Set<ProductEntity> products;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<ProductEntity> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<ProductEntity> products) {
-        this.products = products;
-    }
+    @JsonBackReference
+    private Set<ProductSizeEntity> productSizes;
 }

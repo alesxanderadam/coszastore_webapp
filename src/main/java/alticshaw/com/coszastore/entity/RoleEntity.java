@@ -1,5 +1,7 @@
 package alticshaw.com.coszastore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ public class RoleEntity {
     private String description;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserEntity> userEntities;
 
     public int getId() {

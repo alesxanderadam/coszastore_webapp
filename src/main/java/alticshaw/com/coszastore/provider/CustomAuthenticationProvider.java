@@ -1,6 +1,10 @@
 package alticshaw.com.coszastore.provider;
 
+import alticshaw.com.coszastore.dto.RoleDto;
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.exception.AuthCustomException;
+import alticshaw.com.coszastore.mapper.ModelUtilMapper;
+import alticshaw.com.coszastore.payload.response.UserResponse;
 import alticshaw.com.coszastore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -13,10 +17,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
+
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
@@ -28,12 +35,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        UserEntity user = userRepository.findByEmail(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(String.valueOf(user.getRole()));
-            return new UsernamePasswordAuthenticationToken(username, user.getPassword(), List.of(authority));
-        }
-        return null;
+        Optional<UserEntity> userOptional = Optional.ofNullable(userRepository.findByEmail(username));
+        //Avoid handling null when the entity for the given email is not found.
+        return userOptional.map(user -> {
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(authority);
+                return new UsernamePasswordAuthenticationToken(new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getAddress(), user.getPhone_number(), user.getAvatar(), user.getStatus(), ModelUtilMapper.map(user.getRole(), RoleDto.class) ), null, authorities);
+            } else {
+                throw new AuthCustomException("Invalid Email or Password! Try again", 401);
+            }
+        }).orElse(null);
     }
 
     @Override

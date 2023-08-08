@@ -1,6 +1,7 @@
 package alticshaw.com.coszastore.controller;
 
 import alticshaw.com.coszastore.entity.UserEntity;
+import alticshaw.com.coszastore.payload.request.UserRequest;
 import alticshaw.com.coszastore.payload.response.BaseResponse;
 import alticshaw.com.coszastore.service.imp.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class UserController {
     @Autowired
     private UserServiceImp userServiceImp;
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<?> findAll() {
         BaseResponse response = new BaseResponse();
         response.setStatusCode(200);
@@ -25,8 +26,17 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestBody UserEntity userEntityUpdate, BindingResult errors) {
+    @GetMapping("/{user_id}")
+    public ResponseEntity<?> findById(@PathVariable int user_id) {
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Success!!!!");
+        response.setData(userServiceImp.getUserById(user_id));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addUser(@RequestBody UserRequest userEntityUpdate, BindingResult errors) {
         if(errors.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -40,7 +50,7 @@ public class UserController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id")Integer userId,
-                                        @RequestBody UserEntity userEntityUpdate, BindingResult errors) {
+                                        @RequestBody UserRequest userEntityUpdate, BindingResult errors) {
         if(errors.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

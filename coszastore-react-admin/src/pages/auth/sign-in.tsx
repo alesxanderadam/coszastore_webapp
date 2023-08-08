@@ -14,7 +14,7 @@ const signIn = () => {
     const onFinish = (values: SignInModel) => {
         services.authApi.signIn(values).then((res: any) => {
             if (res && res.data) {
-                settings.setStorage(ACCESS_TOKEN, res?.data)
+                settings.setStorage(ACCESS_TOKEN, res?.data.accessToken)
                 message.success("Đăng  nhập thành công")
                 setTimeout(() => {
                     window.location.href = "/"
