@@ -1,31 +1,27 @@
+import { Status } from './enums/status.enum';
 import { IPagingRequest } from './pagination.model';
-import { Status } from "./enums/status.enum";
 
 export class UserUpdateModel {
-    name!: string;
-    userName!: string;
-    address!: string;
-    email!: string;
-    phoneNumber!: string;
-    status!: Status;
-    avatar!: string;
+    username: string;
+    email: string;
+    address: string;
+    phone_number: string;
+    avatar: string;
+    status: Status;
+    role: Role;
 }
 
 export class UserModel extends UserUpdateModel {
     id!: string;
 }
 
+export class Role {
+    id: number;
+    name: string;
+    description: string;
+}
+
 export interface IUserPagingRequest extends IPagingRequest {
     search: string;
 }
 
-export interface IUserBaseReponse<T> {
-    statusCode: number;
-    message: string;
-    data: T
-}
-
-export interface IUserInforModel {
-    userId: string;
-    roles: string[];
-}

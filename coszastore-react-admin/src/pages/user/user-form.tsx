@@ -3,7 +3,7 @@ import { PageConstant } from "commons/page.constant";
 import { UrlResolver } from "commons/url-resolver";
 import { Status } from "models/enums/status.enum";
 import { UserModel, UserUpdateModel } from "models/user.model";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const UserForm = ({
@@ -20,9 +20,9 @@ const UserForm = ({
         }
     }, [user]);
 
-    const onSubmit = (values: UserUpdateModel) => {
+    const onSubmit = useCallback((values: UserUpdateModel) => {
         submitted(values);
-    };
+    }, []);
 
     const layout = {
         labelCol: { span: 3 },

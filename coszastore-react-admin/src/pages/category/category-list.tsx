@@ -4,6 +4,7 @@ import services from 'apis';
 import { PageConstant } from 'commons/page.constant';
 import { UrlResolver } from 'commons/url-resolver';
 import RenderStatus from 'components/commons/RenderStatus';
+import { DigitalPopup } from 'components/digital-popup/digital-popup';
 import DigitalTable from 'components/digital-table/digital-table';
 import { CategoryModel } from 'models/category.model';
 import { useState } from 'react'
@@ -30,27 +31,22 @@ export default function Category() {
                         <Button className="mx-2 table-action-button" onClick={() => { history.push(UrlResolver.buildUrl(`/${PageConstant.category}/${data.id}/edit`)); }} type="default">
                             <EditOutlined />
                         </Button>
-                        <Button className='table-action-button' onClick={() => { showDeleteConfirm(data); }}>
-                            <DeleteOutlined style={{ color: '#e90000' }} />
-                        </Button>
+                        <Button className="table-action-button" onClick={() => handleDeleteCategory(data)}>
+                            <DeleteOutlined style={{ color: "#e90000" }} />
+                        </Button>;
                     </div>
                 </>
             ),
         },
     ];
-
-    const { confirm } = Modal;
-    const showDeleteConfirm = (data: any) => {
-        confirm({
-            title: "Bạn muốn xóa category này?",
+    const handleDeleteCategory = (data) => {
+        DigitalPopup({
+            title: "Bạn muốn xóa danh mục này?",
             icon: <ExclamationCircleFilled />,
-            content: `Danh mục:  ${data.code} sẽ bị xóa !`,
-            okText: "Đồng ý",
-            okType: "primary",
-            cancelText: "Đóng",
-            onOk() {
+            content: `Danh mục: ${data.id} sẽ bị xóa !`,
+            callback: () => {
                 services.categoryApi.delCategory(data.id).then(() => {
-                    message.success("Xóa thành công", 1.5)
+                    message.success("Xóa thành công", 1.5);
                     setReloadPage([]);
                 });
             },

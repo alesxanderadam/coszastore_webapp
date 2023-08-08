@@ -9,38 +9,21 @@ import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, RetweetOutlined 
 import RenderStatus from "components/commons/RenderStatus";
 import UserChangePasswordModal from "../../components/change-password-modal/user-change-password-modal";
 import type { ColumnsType } from 'antd/es/table';
+import DigitalTable from "components/digital-table/digital-table";
+import { DigitalPopup } from "components/digital-popup/digital-popup";
 const { Title } = Typography;
 
 function User() {
     const history = useHistory();
-    const [data, setData] = useState<UserModel[]>([]);
     const [userId, setUserId] = useState<string>("");
-    const [loading, setLoading] = useState(false);
-    const [totalItems, setTotalItems] = useState<number>(0);
+    const [reloadPage, setReloadPage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState<Boolean>(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [filter, setFilter] = useState<IUserPagingRequest>({
-        pageIndex: 0,
-        pageSize: 10,
-        search: ''
-    })
-    var getData = () => {
-        setLoading(true);
-        // services.userApi.getUserPaging(filter).then((res) => {
-        //     setData(res.items || [])
-        //     setTotalItems(res.totalCount);
-        //     setLoading(false);
-        // });
-        services.userApi.getUsers().then((res) => {
-            setData(res.data || [])
-            setLoading(false);
-        });
-    };
 
 
     const columns: ColumnsType<UserModel> = [
         {
-            key: 'name',
+            key: 'username',
             title: "Người dùng",
             width: 230,
             fixed: 'left',
@@ -49,17 +32,12 @@ function User() {
                     <Avatar.Group>
                         <Avatar className="shape-avatar" shape="square" size={40} src={data.avatar} ></Avatar>
                         <div className="avatar-info">
-                            <Title level={5}>{data.userName}</Title>
+                            <Title level={5}>{data.username}</Title>
                             <p>{data.email}</p>
                         </div>
                     </Avatar.Group>{" "}
                 </>
             ),
-        },
-        {
-            title: "Họ và tên",
-            dataIndex: "username",
-            width: 220,
         },
         {
             title: "Địa chỉ",
@@ -96,9 +74,9 @@ function User() {
                             <EditOutlined />
                         </Button>
 
-                        <Button className="mx-2 table-action-button" onClick={() => { showDeleteConfirm(name); }} >
-                            <DeleteOutlined style={{ color: '#e90000' }} />
-                        </Button>
+                        <Button className="mx-2 table-action-button" onClick={() => handleDeleteUser(data)}>
+                            <DeleteOutlined style={{ color: "#e90000" }} />
+                        </Button>;
 
                         <Button className="table-action-button" onClick={() => { showModal(data.id) }} type="default">
                             <RetweetOutlined style={{ color: '#08a' }} />
@@ -108,7 +86,6 @@ function User() {
             ),
         },
     ];
-    const { confirm } = Modal;
     const showModal = (userId: string) => {
         setUserId(userId)
         setIsModalOpen(true);
@@ -125,68 +102,39 @@ function User() {
             setConfirmLoading(false);
         }, 1100);
     };
-    const showDeleteConfirm = (data: any) => {
-        confirm({
-            title: "Xóa người dùng",
+
+    const handleDeleteUser = (data: any) => {
+        const handleConfirmDelete = () => {
+            services.userApi.delUser(data.id).then((res) => {
+                console.log(res)
+                message.success("Xóa thành công");
+                setReloadPage([]);
+            }).catch((err) => message.error("Có lỗi xảy ra " + err.message));
+        };
+
+        DigitalPopup({
+            title: "Bạn muốn xóa người dùng này?",
             icon: <ExclamationCircleFilled />,
-            content: `Người dùng: ${data.name} sẽ bị được xóa? `,
-            okText: "Đồng ý",
-            okType: "primary",
-            cancelText: "Không",
-            onOk() {
-                message.success('Xóa thành công')
-                services.userApi.delUser(data.id).then(() => {
-                    getData();
-                });
-            },
-            onCancel() {
-                console.log("Hủy");
-            },
-        });
-    };
-
-    useEffect(() => {
-        getData();
-    }, [filter]);
-
-    const onPageChange = (page: number, size: number) => {
-        setFilter({
-            ...filter,
-            pageIndex: page - 1,
-            pageSize: size
-        })
+            content: `Người dùng: ${data.id} sẽ bị xóa !`,
+            callback: handleConfirmDelete,
+        })();
     }
 
+    const getDataSource = async () => {
+        return services.userApi.getUsers();
+    }
     return (
         <>
-            <div className="tabled">
-                <Row gutter={[24, 0]}>
-                    <Col xs="24" xl={24}>
-                        <Card bordered={false} className="criclebox tablespace mb-24" title="Thông tin người dùng"
-                            extra={
-                                <>
-                                    <Link to={`${PageConstant.user}/add`}>  <Button type="primary">Tạo mới +</Button></Link>
-                                </>
-                            }>
-                            <div className="table-responsive">
-                                <Table
-                                    loading={loading}
-                                    columns={columns}
-                                    dataSource={data}
-                                    pagination={{
-                                        total: totalItems ?? 0,
-                                        current: filter.pageIndex + 1,
-                                        pageSize: filter.pageSize,
-                                        onChange: onPageChange
-                                    }}
-                                    sticky
-                                    size="middle"
-                                    scroll={{ x: 1300 }}
-                                />
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
+            <div>
+                <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách danh mục"
+                    extra={
+                        <>
+                            <Link to={`${PageConstant.user}/add`}>  <Button type="primary">Tạo mới +</Button></Link>
+                        </>
+                    }
+                />
+
+                <DigitalTable reloadPage={reloadPage} columns={columns} getDataSource={getDataSource} />
             </div>
             <UserChangePasswordModal handleOk={handleOk} userId={userId} handleCancel={handleCancel} isModalOpen={isModalOpen} confirmLoading={confirmLoading} />
         </>

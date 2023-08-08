@@ -32,10 +32,6 @@ import RoleEdit from "pages/role/role-edit";
 import Blog from "pages/blog/blog-list";
 import BlogAdd from 'pages/blog/blog-add'
 import BlogEdit from "pages/blog/blog-edit";
-import { useEffect, useState } from "react";
-import { IUserInforModel } from "models/user.model";
-import services from "apis";
-import { useHistory } from "react-router-dom";
 import Category from "pages/category/category-list";
 import CategoryAdd from "pages/category/category-add";
 import { CategoryEdit } from "pages/category/category-edit";
