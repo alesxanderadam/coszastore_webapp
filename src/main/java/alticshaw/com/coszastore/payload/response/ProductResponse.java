@@ -1,12 +1,11 @@
 package alticshaw.com.coszastore.payload.response;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 @Data
 @ApiModel(description = "Product details")
@@ -62,9 +61,15 @@ public class ProductResponse {
     @ApiModelProperty(value = "List of tags associated with the product")
     private List<TagResponse> tag;
 
-    @ApiModelProperty(value = "List of available colors for the product", example = "[\"Red\", \"Blue\", \"Green\"]")
-    private List<String> color;
+//    @ApiModelProperty(value = "List of available colors for the product", example = "[\"Red\", \"Blue\", \"Green\"]")
+//    private List<String> color;
 
-    @ApiModelProperty(value = "List of available sizes for the product", example = "[\"S\", \"M\", \"L\"]")
-    private List<String> size;
+    @ApiModelProperty(value = "List of colors associated with the product")
+    private List<ColorResponse> colors;
+
+//    @ApiModelProperty(value = "List of available sizes for the product", example = "[\"S\", \"M\", \"L\"]")
+//    private List<String> size;
+
+    @ApiModelProperty(value = "List of size associated with the product")
+    private List<SizeResponse> sizes;
 }

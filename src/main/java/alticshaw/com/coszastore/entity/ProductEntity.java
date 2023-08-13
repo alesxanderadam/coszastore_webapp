@@ -58,7 +58,7 @@ public class ProductEntity {
 
     @Column(name = "is_best_selling")
 //    @JsonSerialize(using = CustomBoolean.class)
-    private int isBestSelling;
+        private int isBestSelling;
 
     @Column(name = "list_image")
     private String listImage;

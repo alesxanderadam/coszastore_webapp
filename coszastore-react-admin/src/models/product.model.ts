@@ -53,8 +53,8 @@ export class ProductUpdateModel {
     image: null | string;
     list_image: null | string;
     tag: Tag[];
-    color: Color[];
-    size: Size[];
+    colors: Color[];
+    sizes: Size[];
 }
 
 export class ProductModel extends ProductUpdateModel {

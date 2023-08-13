@@ -50,13 +50,23 @@ const ProductForm = ({
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
-    const options: SelectProps['options'] = [];
-    for (let i = 0; i < product.size.length; i++) {
-        options.push({
-            value: product.size[i].id,
-            label: product.size[i].name,
+
+    const size: SelectProps['options'] = [];
+    for (let i = 0; i < product?.sizes.length; i++) {
+        size.push({
+            value: product?.sizes[i].id,
+            label: product?.sizes[i].name,
         });
     }
+
+    const color: SelectProps['options'] = [];
+    for (let i = 0; i < product?.colors.length; i++) {
+        color.push({
+            value: product?.colors[i].id,
+            label: product?.colors[i].name,
+        });
+    }
+
 
     const uploadButton = (
         <div>
@@ -66,11 +76,6 @@ const ProductForm = ({
     );
 
     const [form] = Form.useForm();
-    // const [filter, setFilter] = useState<ICategoryRequest>({
-    //     pageIndex: 0,
-    //     pageSize: 10,
-    //     search: '',
-    // });
     useEffect(() => {
         if (product) {
             form.setFieldsValue(product)
@@ -152,22 +157,16 @@ const ProductForm = ({
 
                                     <Form.Item name="color" label="Màu sác" rules={[{ required: true }]}>
                                         <Select placeholder="Màu sác"
-                                            options={
-                                                product.color.map((item) => {
-                                                    return {
-                                                        label: `${item.name}`,
-                                                        value: `${item.id}`
-                                                    }
-                                                })
-                                            }
+                                            mode="multiple"
+                                            options={color}
                                         />
                                     </Form.Item>
 
-                                    <Form.Item name="size" label="Kích cỡ" rules={[{ required: true }]}>
+                                    <Form.Item name="sizes" label="Kích cỡ" rules={[{ required: true }]}>
                                         <Select
                                             mode="multiple"
                                             placeholder="Kích cỡ"
-                                            options={options}
+                                            options={size}
                                             size="middle"
                                         />
                                     </Form.Item>

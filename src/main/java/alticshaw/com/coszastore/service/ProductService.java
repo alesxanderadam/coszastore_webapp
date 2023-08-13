@@ -12,10 +12,7 @@ import alticshaw.com.coszastore.exception.ValidationCustomException;
 import alticshaw.com.coszastore.mapper.ModelUtilMapper;
 import alticshaw.com.coszastore.payload.request.ProductRequest;
 import alticshaw.com.coszastore.payload.request.ProductUploadRequest;
-import alticshaw.com.coszastore.payload.response.MessageResponse;
-import alticshaw.com.coszastore.payload.response.ProductResponse;
-import alticshaw.com.coszastore.payload.response.ProductUploadResponse;
-import alticshaw.com.coszastore.payload.response.TagResponse;
+import alticshaw.com.coszastore.payload.response.*;
 import alticshaw.com.coszastore.repository.*;
 import alticshaw.com.coszastore.service.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,15 +141,33 @@ public class ProductService implements ProductServiceImp {
                 .orElseThrow(() -> new NotFoundCustomException("Product not found with id : " + id, HttpStatus.NOT_FOUND.value()));
         try {
             ProductResponse productResponse = ModelUtilMapper.map(product, ProductResponse.class);
-            List<String> sizeList = product.getProductSizes().stream()
-                    .map(sizeEntity -> sizeEntity.getSize().getName())
-                    .collect(Collectors.toList());
-            productResponse.setSize(sizeList);
 
-            List<String> colorList = product.getProductColors().stream()
-                    .map(colorEntity -> colorEntity.getColor().getName())
+//            List<String> sizeList = product.getProductSizes().stream()
+//                    .map(sizeEntity -> sizeEntity.getSize().getName())
+//                    .collect(Collectors.toList());
+//            productResponse.setSize(sizeList);
+//
+//            List<String> colorList = product.getProductColors().stream()
+//                    .map(colorEntity -> colorEntity.getColor().getName())
+//                    .collect(Collectors.toList());
+//            productResponse.setColor(colorList);
+
+            List<SizeResponse> sizeList = product.getProductSizes().stream()
+                    .map(colorEntity -> {
+                        SizeResponse response = new SizeResponse();
+                        return response.mapTagEntityToSizeResponse(colorEntity.getSize());
+                    })
                     .collect(Collectors.toList());
-            productResponse.setColor(colorList);
+            productResponse.setSizes(sizeList);
+
+
+            List<ColorResponse> colorList = product.getProductColors().stream()
+                    .map(colorEntity -> {
+                        ColorResponse response = new ColorResponse();
+                        return response.mapEntityToColorResponse(colorEntity.getColor());
+                    })
+                    .collect(Collectors.toList());
+            productResponse.setColors(colorList);
 
             List<TagResponse> tagResponses = product.getProductTags().stream()
                     .map(tagEntity -> {
@@ -163,6 +178,10 @@ public class ProductService implements ProductServiceImp {
                     })
                     .collect(Collectors.toList());
             productResponse.setTag(tagResponses);
+
+            productResponse.setCategory_id(product.getCategory().getId());
+            productResponse.setIs_new_product(product.getIsNewProduct());
+            productResponse.setIs_best_selling(product.getIsBestSelling());
 
             return productResponse;
         } catch (Exception e) {
@@ -338,16 +357,22 @@ public class ProductService implements ProductServiceImp {
 
             productResponse.setCategory_id(product.getCategory().getId());
 
-            List<String> sizeList = product.getProductSizes().stream()
-                    .map(sizeEntity -> sizeEntity.getSize().getName())
+            List<SizeResponse> sizeList = product.getProductSizes().stream()
+                    .map(colorEntity -> {
+                        SizeResponse response = new SizeResponse();
+                        return response.mapTagEntityToSizeResponse(colorEntity.getSize());
+                    })
                     .collect(Collectors.toList());
+            productResponse.setSizes(sizeList);
 
-            productResponse.setSize(sizeList);
 
-            List<String> colorList = product.getProductColors().stream()
-                    .map(colorEntity -> colorEntity.getColor().getName())
+            List<ColorResponse> colorList = product.getProductColors().stream()
+                    .map(colorEntity -> {
+                        ColorResponse response = new ColorResponse();
+                        return response.mapEntityToColorResponse(colorEntity.getColor());
+                    })
                     .collect(Collectors.toList());
-            productResponse.setColor(colorList);
+            productResponse.setColors(colorList);
 
             List<TagResponse> tagResponses = product.getProductTags().stream()
                     .map(tagEntity -> {
@@ -469,15 +494,18 @@ public class ProductService implements ProductServiceImp {
 
             ProductResponse productResponse = mapProductEntityToProductResponse(product);
 
-            List<String> sizeList = product.getProductSizes().stream()
-                    .map(sizeEntity -> sizeEntity.getSize().getName())
-                    .collect(Collectors.toList());
-            productResponse.setSize(sizeList);
+//            List<String> sizeList = product.getProductSizes().stream()
+//                    .map(sizeEntity -> sizeEntity.getSize().getName())
+//                    .collect(Collectors.toList());
+//            productResponse.setSize(sizeList);
 
-            List<String> colorList = product.getProductColors().stream()
-                    .map(colorEntity -> colorEntity.getColor().getName())
+            List<ColorResponse> colorList = product.getProductColors().stream()
+                    .map(colorEntity -> {
+                        ColorResponse response = new ColorResponse();
+                        return response.mapEntityToColorResponse(colorEntity.getColor());
+                    })
                     .collect(Collectors.toList());
-            productResponse.setColor(colorList);
+            productResponse.setColors(colorList);
 
             List<TagResponse> tagResponses = product.getProductTags().stream()
                     .map(tagEntity -> {
@@ -544,15 +572,22 @@ public class ProductService implements ProductServiceImp {
             productResponse.setListImage(null);
         }
 
-        List<String> sizeList = product.getProductSizes().stream()
-                .map(sizeEntity -> sizeEntity.getSize().getName())
+        List<SizeResponse> sizeList = product.getProductSizes().stream()
+                .map(colorEntity -> {
+                    SizeResponse response = new SizeResponse();
+                    return response.mapTagEntityToSizeResponse(colorEntity.getSize());
+                })
                 .collect(Collectors.toList());
-        productResponse.setSize(sizeList);
+        productResponse.setSizes(sizeList);
 
-        List<String> colorList = product.getProductColors().stream()
-                .map(colorEntity -> colorEntity.getColor().getName())
+
+        List<ColorResponse> colorList = product.getProductColors().stream()
+                .map(colorEntity -> {
+                    ColorResponse response = new ColorResponse();
+                    return response.mapEntityToColorResponse(colorEntity.getColor());
+                })
                 .collect(Collectors.toList());
-        productResponse.setColor(colorList);
+        productResponse.setColors(colorList);
 
         List<TagResponse> tagResponses = product.getProductTags().stream()
                 .map(tagEntity -> {
@@ -563,6 +598,10 @@ public class ProductService implements ProductServiceImp {
                 })
                 .collect(Collectors.toList());
         productResponse.setTag(tagResponses);
+
+        productResponse.setCategory_id(product.getCategory().getId());
+        productResponse.setIs_new_product(product.getIsNewProduct());
+        productResponse.setIs_best_selling(product.getIsBestSelling());
 
         return productResponse;
     }
