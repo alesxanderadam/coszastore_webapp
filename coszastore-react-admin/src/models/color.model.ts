@@ -1,4 +1,9 @@
 import Item from "./utils/item.util";
 
-export class Color extends Item {
+export class ColorUpdate {
+    name: string;
+}
+
+export class Color extends ColorUpdate {
+    id: number;
 }

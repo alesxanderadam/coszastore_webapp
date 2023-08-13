@@ -1,3 +1,8 @@
-import Item from "./utils/item.util";
 
-export class Size extends Item { }
+export class SizeUpdate {
+    name: string;
+}
+
+export class Size extends SizeUpdate {
+    id: number;
+}

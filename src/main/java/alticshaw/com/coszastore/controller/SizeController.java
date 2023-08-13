@@ -20,16 +20,7 @@ public class SizeController {
         this.sizeServiceImp = sizeServiceImp;
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> addSizes(@RequestParam String name) {
-        sizeServiceImp.add(name);
-        BaseResponse response = new BaseResponse();
-        response.setStatusCode(200);
-        response.setMessage("Add size successfully!");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping("/list")
+    @GetMapping()
     public ResponseEntity<?> getAllSizes() {
         List<SizeResponse> sizeResponseList = sizeServiceImp.getAllSizes();
         BaseResponse response = new BaseResponse();
@@ -38,7 +29,16 @@ public class SizeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{id}")
+    @PostMapping()
+    public ResponseEntity<?> addSizes(@RequestParam String name) {
+        sizeServiceImp.add(name);
+        BaseResponse response = new BaseResponse();
+        response.setStatusCode(200);
+        response.setMessage("Add size successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
     public ResponseEntity<?> editSize(@PathVariable Integer id, @RequestParam String name) {
         sizeServiceImp.edit(id, name);
         BaseResponse response = new BaseResponse();
@@ -47,7 +47,7 @@ public class SizeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSize(@PathVariable Integer id) {
         sizeServiceImp.delete(id);
         BaseResponse response = new BaseResponse();

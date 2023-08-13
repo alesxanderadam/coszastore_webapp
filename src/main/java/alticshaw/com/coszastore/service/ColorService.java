@@ -41,7 +41,7 @@ public class ColorService implements ColorServiceImp {
     public List<ColorResponse> getAllColors() {
         ColorResponse colorResponse = new ColorResponse();
         return colorRepository.findAll().stream()
-                .map(colorResponse::mapColorEntityToColorResponse)
+                .map(colorResponse::mapEntityToColorResponse)
                 .collect(Collectors.toList());
     }
 

@@ -14,6 +14,8 @@ import utils from "utils";
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 // @ts-ignore
 import { CKEditor } from '@ckeditor/ckeditor5-react'
+import { Size } from "models/size.moel";
+import { Color } from "models/color.model";
 
 const getBase64 = (file: RcFile): Promise<string> => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -37,6 +39,8 @@ const ProductForm = ({
     const [images, setimages] = useState<string[]>([]);
     const [fileList, setFileList] = useState<UploadFile[]>([])
     const [categorys, setCategorys] = useState<CategoryModel[]>([])
+    const [sizes, setSizes] = useState<Size[]>([])
+    const [colors, setColors] = useState<Color[]>([])
 
     const handleCancel = () => setPreviewOpen(false);
     const handlePreview = async (file: UploadFile) => {
@@ -49,15 +53,19 @@ const ProductForm = ({
     };
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
-    };
-
-    const size: SelectProps['options'] = [];
-    for (let i = 0; i < product?.sizes.length; i++) {
-        size.push({
-            value: product?.sizes[i].id,
-            label: product?.sizes[i].name,
-        });
     }
+
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div style={{ marginTop: 8, width: '100%' }}>Upload</div>
+        </div>
+    );
+
+    const sizeOptions = sizes.map((size) => ({
+        value: size.id,
+        label: size.name,
+    }));
 
     const color: SelectProps['options'] = [];
     for (let i = 0; i < product?.colors.length; i++) {
@@ -67,14 +75,6 @@ const ProductForm = ({
         });
     }
 
-
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8, width: '100%' }}>Upload</div>
-        </div>
-    );
-
     const [form] = Form.useForm();
     useEffect(() => {
         if (product) {
@@ -83,6 +83,9 @@ const ProductForm = ({
                 product.description = ''
                 setDescriptionInit(product.description);
             }
+            form.setFieldsValue({
+                sizes: product.sizes.map((size) => size.id)
+            });
             // product.productImages.map((item) => {
             //     images.push(item.id)
             //     console.log(item)
@@ -93,7 +96,6 @@ const ProductForm = ({
 
     const onSubmit = useCallback((values: ProductModel) => {
         console.log(values)
-
     }, []);
 
     const layout = {
@@ -109,6 +111,10 @@ const ProductForm = ({
     useEffect(() => {
         services.categoryApi.getCategory().then((res) => {
             setCategorys(res.data || [])
+        })
+        services.sizeApi.getSizes().then((res) => {
+            console.log(res)
+            setSizes(res.data || [])
         })
     }, [])
 
@@ -166,11 +172,10 @@ const ProductForm = ({
                                         <Select
                                             mode="multiple"
                                             placeholder="Kích cỡ"
-                                            options={size}
+                                            options={sizeOptions}
                                             size="middle"
                                         />
                                     </Form.Item>
-
 
                                 </Col>
 

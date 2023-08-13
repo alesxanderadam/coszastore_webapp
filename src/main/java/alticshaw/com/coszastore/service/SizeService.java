@@ -38,7 +38,7 @@ public class SizeService implements SizeServiceImp {
     public List<SizeResponse> getAllSizes() {
         SizeResponse sizeResponse = new SizeResponse();
         return sizeRepository.findAll().stream()
-                .map(sizeResponse::mapSizeEntityToSizeResponse)
+                .map(sizeResponse::mapTagEntityToSizeResponse)
                 .collect(Collectors.toList());
     }
 
