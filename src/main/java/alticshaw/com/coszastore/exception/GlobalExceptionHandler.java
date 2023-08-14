@@ -156,4 +156,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
+
+    @ExceptionHandler(ContactNotFoundException.class)
+    public ResponseEntity<?> handleContactNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
 }
