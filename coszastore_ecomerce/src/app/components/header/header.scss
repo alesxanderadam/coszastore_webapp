@@ -1,0 +1,54 @@
+.container-menu-desktop {
+    height: auto;
+    width: 100%;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.header-v2 .container-menu-desktop {
+    height: 84px;
+}
+
+.header-v3 .container-menu-desktop {
+    height: auto;
+}
+
+.header-v4 .container-menu-desktop {
+    height: 124px;
+}
+
+.top-bar {
+    height: 40px;
+    background-color: #222;
+}
+
+/*---------------------------------------------*/
+.left-top-bar {
+    font-family: Poppins-Regular;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #b2b2b2;
+}
+
+
+/*---------------------------------------------*/
+.right-top-bar a {
+    font-family: Poppins-Regular;
+    font-size: 12px;
+    line-height: 1.8;
+
+    height: 100%;
+    color: #b2b2b2;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.right-top-bar a:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.right-top-bar a:hover {
+    color: #6c7ae0;
+}
