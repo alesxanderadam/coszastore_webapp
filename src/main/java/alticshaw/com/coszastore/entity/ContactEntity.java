@@ -38,4 +38,18 @@ public class ContactEntity {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public ContactEntity(int id, String email, String message) {
+        this.id = id;
+        this.email = email;
+        this.message = message;
+    }
+
+    public ContactEntity(String email, String message) {
+        this.email = email;
+        this.message = message;
+    }
+
+    public ContactEntity() {
+    }
 }
