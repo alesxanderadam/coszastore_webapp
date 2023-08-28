@@ -69,7 +69,7 @@ const Header = (props: Props) => {
                     </div>
                 </div>
 
-                <div className={`flex flex-col sm:flex-row py-6 justify-between items-center h-[4.5rem] transition duration-1000  ${showBackGround ? 'bg-white bg-opacity-80 shadow-xl' : ''}`}>
+                <div className={`flex flex-col sm:flex-row justify-between items-center h-[4rem] transition duration-1000  ${showBackGround ? 'bg-amber-500 bg-opacity-80 shadow-xl' : ''}`}>
                     <div className='flex flex-grow justify-evenly max-w-xl'>
                         <MenuItem titile='HOME' address='/' Icon={AiOutlineHome} />
                         <MenuItem titile='SHOP' address='/shop' Icon={AiOutlineShop} />

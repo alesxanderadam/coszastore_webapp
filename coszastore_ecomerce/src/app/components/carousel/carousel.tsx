@@ -1,5 +1,6 @@
 "use client"
 import useEmblaCarousel, { EmblaOptionsType } from "embla-carousel-react";
+import Autoplay from 'embla-carousel-autoplay'
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import Dots from "./dots";
 import CarouselControls from "./prev";
@@ -7,7 +8,7 @@ import CarouselControls from "./prev";
 type Props = PropsWithChildren & EmblaOptionsType;
 
 const Carousel = ({ children, ...options }: Props) => {
-    const [emblaRef, emblaApi] = useEmblaCarousel(options);
+    const [emblaRef, emblaApi] = useEmblaCarousel(options, [Autoplay()]);
 
     const [selectedIndex, setSelectedIndex] = useState(0);
     const length = React.Children.count(children);
@@ -30,15 +31,15 @@ const Carousel = ({ children, ...options }: Props) => {
     return (
         <>
             <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">{children}</div>
+                <div className="flex embla__container">{children}</div>
             </div>
             <Dots itemsLength={length} selectedIndex={selectedIndex} />
-            <CarouselControls
-                canScrollNext={canScrollNext}
-                canScrollPrev={canScrollPrev}
-                onNext={() => emblaApi?.scrollNext()}
-                onPrev={() => emblaApi?.scrollPrev()}
-            />
+            {/*<CarouselControls*/}
+            {/*    canScrollNext={canScrollNext}*/}
+            {/*    canScrollPrev={canScrollPrev}*/}
+            {/*    onNext={() => emblaApi?.scrollNext()}*/}
+            {/*    onPrev={() => emblaApi?.scrollPrev()}*/}
+            {/*/>*/}
         </>
     );
 };
